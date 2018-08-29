@@ -88,7 +88,11 @@ LINKS = [
 
 
 def main():
-    data = requests.get(ENDPOINT, {"query": QUERY, "format": "json"}).json()
+    data = requests.get(
+        ENDPOINT,
+        {"query": QUERY, "format": "json"}
+    ).json()["results"]["bindings"]
+
     for k, v in NODES.items():
         with open(f"data/{k}.csv", "w", encoding="utf-8") as f:
             extract_nodes(data, v, f)
@@ -96,30 +100,25 @@ def main():
         extract_links(data, LINKS, f)
 
 
-def extract_nodes(data, fieldmap, f):
-    unique_rows = set()
-    for row in data["results"]["bindings"]:
-        cols = tuple(get_value(row, f) for f, _ in fieldmap)
-        if all(c == "" for c in cols):
-            continue
-        unique_rows.add(cols)
+def extract_nodes(data, fields, f):
+    rows = (tuple(get_value(row, f) for f, _ in fields) for row in data)
+    unique_rows = {cols for cols in rows if any(c != "" for c in cols)}
 
     w = csv.writer(f)
-    w.writerow([f for _, f in fieldmap])
-    for row in sorted(unique_rows, key=lambda r: r[1]):
+    w.writerow([f for _, f in fields])
+    for row in sorted(unique_rows, key=lambda r: r[1:]):
         w.writerow(row)
 
 
 def extract_links(data, links, f):
     unique_rows = set()
-    for row in data["results"]["bindings"]:
+    for row in data:
         a = get_value(row, "human")
         for link in links:
             b = get_value(row, link)
             if len(b) == 0:
                 continue
-            rel = link
-            unique_rows.add((a, b, rel))
+            unique_rows.add((link, a, b))
 
     w = csv.writer(f)
     w.writerow(["rel", "a", "b"])
