@@ -106,7 +106,7 @@ def extract_nodes(data, fields, f):
 
     w = csv.writer(f)
     w.writerow([f for _, f in fields])
-    for row in sorted(unique_rows, key=lambda r: r[1:]):
+    for row in sorted(unique_rows, key=lambda r: (r[1:], r[0])):
         w.writerow(row)
 
 
