@@ -16,7 +16,7 @@ html, body {
 /* Layout */
 .message {
     position: absolute;
-    top: 0.5rem;
+    bottom: 0.5rem;
     left: calc(50% - 5rem);
     width: 10rem;
     height: 2rem;
@@ -28,7 +28,7 @@ html, body {
     display: block;
 }
 
-.panel {
+.query {
     position: absolute;
     left: 0;
     right: 0;
@@ -39,9 +39,9 @@ html, body {
     font-size: 14px;
 }
 
-.panel .context {
+.context {
     position: absolute;
-    top: 1rem;
+    bottom: 1rem;
     right: 1rem;
 }
 
@@ -66,8 +66,8 @@ html, body {
     background-color: #007cfc;
 }
 
-.panel .query input {
-    font-size: 14px;
+.query input {
+    font-size: 16px;
     padding: 0.2rem 0.5rem;
 }
 
