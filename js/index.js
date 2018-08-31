@@ -65,7 +65,7 @@ async function main() {
 
 
 async function loadData() {
-  const urlPrefix = '//cdn.rawgit.com/akngs/smallworld/841752e/data/'
+  const urlPrefix = '//cdn.rawgit.com/akngs/smallworld/bf405d9/data/'
   const dataNames = [
     'affiliations',
     'birthplaces',
@@ -214,7 +214,7 @@ function isFullyExpanded(node) {
 }
 
 function onInit() {
-  toggleNode("Q45785")
+  toggleNode("Q16080217")
   updateNodes()
 }
 
