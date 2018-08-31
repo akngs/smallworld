@@ -232,18 +232,19 @@ function onNodeClick(person) {
 
   if (activeNode === person) {
     activeNode = null
+    document.querySelector('.context').innerHTML = ''
   } else {
     activeNode = person
     activeNode.fx = activeNode.x
     activeNode.fy = activeNode.y
+
+    document.querySelector('.context').innerHTML =
+      `<a href="https://www.wikidata.org/entity/${person.key}" target="_blank">Edit "${person.name}" on wikidata</a>`
+
+    d3.select(this).raise()
+    expandNode(person.key)
   }
 
-  d3.select(this).raise()
-
-  document.querySelector('.context').innerHTML =
-    `<a href="https://www.wikidata.org/entity/${person.key}" target="_blank">Edit "${person.name}" on wikidata</a>`
-
-  expandNode(person.key)
   updateNodes()
 }
 
