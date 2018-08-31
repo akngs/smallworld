@@ -111,7 +111,7 @@ async function main() {
 
 
 async function loadData() {
-  const urlPrefix = '//cdn.rawgit.com/akngs/smallworld/90ff0cf2/data/'
+  const urlPrefix = '//cdn.rawgit.com/akngs/smallworld/841752e/data/'
   const dataNames = [
     'affiliations',
     'birthplaces',
@@ -123,7 +123,10 @@ async function loadData() {
     'links',
   ]
 
+  showMessage('Loading...')
   const data = await Promise.all(dataNames.map(n => d3.csv(urlPrefix + n + '.csv')))
+  hideMessage()
+
   const result = {
     nodes: {},
     nodesMap: {},
@@ -181,6 +184,19 @@ async function loadData() {
   result.links = result.links.filter(l => !l.drop)
 
   return result
+}
+
+
+function showMessage(message) {
+  const element = document.querySelector('body > .message')
+  element.textContent = message
+  element.classList.add('show')
+}
+
+
+function hideMessage() {
+  const element = document.querySelector('body > .message')
+  element.classList.remove('show')
 }
 
 
