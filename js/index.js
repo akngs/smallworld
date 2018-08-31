@@ -75,8 +75,8 @@ async function main() {
   data.nodes['persons'].forEach(person => {
     personsHtml.push(`<li id="person-${person.key}" data-key="${person.key}">${person.name}</li>`)
   })
-  document.querySelector('.panel .persons').innerHTML = personsHtml.join('')
-  document.querySelector('.panel .persons').addEventListener('click', function (e) {
+  document.querySelector('.panels .persons').innerHTML = personsHtml.join('')
+  document.querySelector('.panels .persons').addEventListener('click', function (e) {
     toggleNode(e.target.dataset['key'])
     updateNodes()
   })
@@ -131,6 +131,11 @@ async function loadData() {
   }
   data.forEach((datum, i) => {
     result.nodes[dataNames[i]] = datum
+    datum.forEach(d => {
+      d.ins = []
+      d.outs = []
+      d.links = []
+    })
   })
 
   // Generate key-value maps for nodes
@@ -166,12 +171,6 @@ async function loadData() {
     }
 
     // Incoming/outgoing links
-    if (!link.source.ins) link.source.ins = []
-    if (!link.source.outs) link.source.outs = []
-    if (!link.source.links) link.source.links = []
-    if (!link.target.ins) link.target.ins = []
-    if (!link.target.outs) link.target.outs = []
-    if (!link.target.links) link.target.links = []
     link.source.outs.push(link)
     link.source.links.push(link)
     link.target.ins.push(link)
