@@ -1,0 +1,28 @@
+{
+  "name": "smallworld",
+  "version": "0.1.0",
+  "description": "",
+  "main": "js/index.js",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akngs/smallworld.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akngs/smallworld/issues"
+  },
+  "homepage": "https://github.com/akngs/smallworld#readme",
+  "devDependencies": {
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "d3": "^5.7.0",
+    "promise-polyfill": "^8.1.0"
+  }
+}

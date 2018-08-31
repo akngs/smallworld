@@ -1,5 +1,8 @@
 # Python
 .venv/
 
+# JS
+node_modules/
+
 # IDEs
 .idea/
