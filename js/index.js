@@ -1,5 +1,9 @@
 import * as d3 from 'd3'
+import Awesomplete from 'awesomplete'
 import Promise from 'promise-polyfill'
+
+
+const KINSHIP_RELS = ['child', 'father', 'mother', 'spouse']
 
 
 export let data
@@ -10,75 +14,26 @@ export let forceLink
 export let activeNode
 
 
-export function findNodes(name) {
-  return data.nodes['persons'].filter(n => n.name === name)
-}
-
-
-export function toggleNode(key, force) {
-  const node = data.nodesMap['persons'][key]
-  if (force && node.selected) return
-
-  // Toggle node
-  node.selected = force || !node.selected
-
-  // Update panel
-  const element = document.querySelector(`#person-${key}`)
-  if (node.selected) {
-    node.x = node.x || Math.random() - 0.5
-    node.y = node.y || Math.random() - 0.5
-    element.classList.add('selected')
-  } else {
-    element.classList.remove('selected')
-  }
-
-  // Update "fullyExpanded" flags
-  node.fullyExpanded = isFullyExpanded(node)
-  node.links.filter(l => ['child', 'father', 'mother'].indexOf(l.rel) !== -1).forEach(l => {
-    l.source.fullyExpanded = isFullyExpanded(l.source)
-    l.target.fullyExpanded = isFullyExpanded(l.target)
-  })
-}
-
-
-export function expandNode(key) {
-  toggleNode(key, true)
-
-  const node = data.nodesMap['persons'][key]
-
-  if (!node.links) return
-
-  node.links.forEach(link => {
-    if (data.nodesMap['persons'][link.source.key]) {
-      if (!link.source.selected) {
-        link.source.x = node.x
-        link.source.y = node.y
-      }
-      toggleNode(link.source.key, true)
-    }
-    if (data.nodesMap['persons'][link.target.key]) {
-      if (!link.target.selected) {
-        link.target.x = node.x
-        link.target.y = node.y
-      }
-      toggleNode(link.target.key, true)
-    }
-  })
-}
-
-
 async function main() {
   data = await loadData()
 
-  // Initialize person list
-  const personsHtml = []
-  data.nodes['persons'].forEach(person => {
-    personsHtml.push(`<li id="person-${person.key}" data-key="${person.key}">${person.name}</li>`)
+  // Initialize autocomplete
+  const q = document.querySelector('.query input')
+  new Awesomplete(q, {
+    list: data.nodes['persons'].map(p => {
+      return {label: `${p.name} (${p.key})`, value: p.key}
+    }),
+    minChars: 1,
+    autoFirst: true
   })
-  document.querySelector('.panels .persons').innerHTML = personsHtml.join('')
-  document.querySelector('.panels .persons').addEventListener('click', function (e) {
-    toggleNode(e.target.dataset['key'])
+  q.form.addEventListener('submit', e => {
+    e.preventDefault()
+    q.value = ''
+  })
+  q.addEventListener('awesomplete-selectcomplete', e => {
+    toggleNode(e.text.value, true)
     updateNodes()
+    q.value = ''
   })
 
   // Initialize SVG area
@@ -99,7 +54,6 @@ async function main() {
 
   force = d3.forceSimulation(nodesSel.data())
     .force("link", forceLink)
-    .force("center", d3.forceCenter(0, 0))
     .force("x", d3.forceX(0).strength(0.01))
     .force("y", d3.forceY(0).strength(0.01))
     .force("collide", d3.forceCollide(10))
@@ -187,29 +141,80 @@ async function loadData() {
 }
 
 
+function toggleNode(key, force) {
+  const node = data.nodesMap['persons'][key]
+  if (!node) return
+  if (force && node.selected) return
+
+  // Toggle node
+  node.selected = force || !node.selected
+  if (node.selected) {
+    node.x = node.x || Math.random() - 0.5
+    node.y = node.y || Math.random() - 0.5
+  }
+
+  // Update "fullyExpanded" flags
+  node.fullyExpanded = isFullyExpanded(node)
+  node.links.filter(isKinship).forEach(l => {
+    l.source.fullyExpanded = isFullyExpanded(l.source)
+    l.target.fullyExpanded = isFullyExpanded(l.target)
+  })
+}
+
+
+function isKinship(link) {
+  return KINSHIP_RELS.indexOf(link.rel) !== -1
+}
+
+
+function expandNode(key) {
+  toggleNode(key, true)
+
+  const node = data.nodesMap['persons'][key]
+
+  if (!node.links) return
+
+  node.links.forEach(link => {
+    if (data.nodesMap['persons'][link.source.key]) {
+      if (!link.source.selected) {
+        link.source.x = node.x
+        link.source.y = node.y
+      }
+      toggleNode(link.source.key, true)
+    }
+    if (data.nodesMap['persons'][link.target.key]) {
+      if (!link.target.selected) {
+        link.target.x = node.x
+        link.target.y = node.y
+      }
+      toggleNode(link.target.key, true)
+    }
+  })
+}
+
+
 function showMessage(message) {
-  const element = document.querySelector('body > .message')
+  const element = document.querySelector('.message')
   element.textContent = message
   element.classList.add('show')
 }
 
 
 function hideMessage() {
-  const element = document.querySelector('body > .message')
+  const element = document.querySelector('.message')
   element.classList.remove('show')
 }
 
 
 function isFullyExpanded(node) {
   return node.links
-    .filter(l => ['child', 'father', 'mother'].indexOf(l.rel) !== -1)
+    .filter(isKinship)
     .filter(l => !l.source.selected || !l.target.selected)
     .length === 0
 }
 
 function onInit() {
   toggleNode("Q45785")
-  toggleNode("Q12589753")
   updateNodes()
 }
 
@@ -220,13 +225,23 @@ function onTick() {
 
 
 function onNodeClick(person) {
+  if (activeNode) {
+    delete activeNode.fx
+    delete activeNode.fy
+  }
+
   if (activeNode === person) {
     activeNode = null
   } else {
     activeNode = person
+    activeNode.fx = activeNode.x
+    activeNode.fy = activeNode.y
   }
 
   d3.select(this).raise()
+
+  document.querySelector('.context').innerHTML =
+    `<a href="https://www.wikidata.org/entity/${person.key}" target="_blank">Edit "${person.name}" on wikidata</a>`
 
   expandNode(person.key)
   updateNodes()
@@ -249,17 +264,11 @@ function onNodeDragMove(d) {
 
 
 function onNodeDragEnd(d) {
-  delete d.fx
-  delete d.fy
+  if (d !== activeNode) {
+    delete d.fx
+    delete d.fy
+  }
   force.alphaTarget(0)
-}
-
-
-/**
- * Apply changes in active node
- */
-function updateActiveNode() {
-  rerender()
 }
 
 
