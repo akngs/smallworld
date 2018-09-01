@@ -4,12 +4,12 @@ Q337504,Académie de la Grande Chaumière
 Q3603954,Accademia Teatro alla Scala
 Q4684910,Adrian C. Wilcox High School
 Q4778828,Aoyama Gakuin
-Q4782975,Aquinas College
 Q986122,Ashland University
 Q2916435,Aspen Music Festival and School
 Q4838818,Bachelor of Physical Education
 Q805122,Ball State University
 Q4879152,Bedford High School
+Q4898039,Bethlehem Central High School
 Q4917567,Bishop Gorman High School
 Q15708175,Bomoon High School
 Q4948171,Boston University College of Communication
@@ -18,11 +18,10 @@ Q4948187,Boston University School of Theology
 Q4969438,British American Drama Academy
 Q995265,Bryn Mawr College
 Q1034602,Capilano University
-Q5054516,Caulfield Grammar School
+Q1804942,Centre College
 Q3083225,Chukyo University
 Q1100801,Cleveland State University
 Q1109093,College of Wooster
-Q844673,Columbia University Graduate School of Journalism
 Q5150130,Columbus State University
 Q2994538,Conservatoire national supérieur de musique et de danse
 Q46210815,Culinary Institute of America Hyde Park
@@ -30,24 +29,23 @@ Q928272,De Anza College
 Q1815710,De La Salle University
 Q5244553,De La Salle–College of Saint Benilde
 Q3551402,De Montfort University
+Q1179603,DePaul University
 Q11414578,Dojinsha
 Q5303131,Downey High School
-Q1795487,Drew University
 Q5338957,Edmonds Woodway High School
+Q1335573,Emerson College
 Q5383867,Epping Boys High School
 Q30593054,Experimental Music Studios
 Q5436735,FIDM 대학교
 Q4126647,Faculty of Oriental Studies of the St. Petersburg University
 Q3072747,Fiorello H. LaGuardia High School
 Q5469058,Forest Park High School
-Q5483039,Franciscan University of Steubenville
 Q15221104,Freedom High School (Pennsylvania)
 Q5588265,Gould Academy
 Q5621541,Gustavus Adolphus College
 Q3125258,Haas School of Business
 Q11610361,Hagoromo Gakuen Junior High School and  High School
 Q11580620,Hakuoh University Women's Junior College
-Q3113011,Hamilton College
 Q5649027,Hannan University
 Q1034225,Harvard Divinity School
 Q5676553,Harvard School of Engineering and Applied Sciences
@@ -83,16 +81,15 @@ Q1982903,New South Wales Institute of Sport
 Q1006950,New York Film Academy
 Q770467,New York University Stern School of Business
 Q615301,Nippon Medical School
-Q7054837,North Clayton High School
 Q7063457,Notre Dame Law School
 Q749718,Oklahoma State University–Stillwater
 Q7103453,Ormond Stone Middle School
 Q7105618,Osaka University of Economics and Law
 Q7105619,Osaka University of Health and Sport Sciences
 Q1235608,Paris Diderot University
+Q4120165,Perelman School of Medicine at the University of Pennsylvania
 Q2032536,Pontifical Urbaniana University
 Q7229431,Poplar Tree Elementary School
-Q10425247,Q10425247
 Q11440171,Q11440171
 Q11472121,Q11472121
 Q11525625,Q11525625
@@ -103,7 +100,6 @@ Q11663033,Q11663033
 Q40279511,Q40279511
 Q40300338,Q40300338
 Q3108475,Queen Sofía College of Music
-Q3551664,Rider University
 Q3029157,Ross School of Business
 Q1455391,Royal Ballet School
 Q734774,Saint Louis University
@@ -111,10 +107,10 @@ Q586735,San Francisco Art Institute
 Q7432485,"School of International and Public Affairs, Columbia University"
 Q1279835,School of Visual Arts
 Q369333,Seikei University
+Q7488523,Shanghai Theatre Academy
 Q7501387,Shorecrest High School
 Q7567606,South Kent School
 Q7569667,Southern Baptist Theological Seminary
-Q1786506,Southern California Institute of Architecture
 Q7595155,St Paul's College
 Q2038889,St. Francis Xavier University
 Q5836034,Stanford University School of Engineering
@@ -129,6 +125,7 @@ Q751612,The Bronx High School of Science
 Q2979657,The Royal Conservatory of Music
 Q7762926,The Second High School Attached to Beijing Normal University
 Q859262,Toho Gakuen School of Music
+Q11525467,Tokyo Metropolitan Komatsugawa High School
 Q11524659,Tokyo University
 Q11524880,Tokyo University of Education
 Q14691855,Tulane University Law School
@@ -140,12 +137,12 @@ Q153265,University of Cincinnati
 Q1145814,University of Illinois system
 Q2661290,University of Limoges
 Q640652,University of Oklahoma
+Q1432632,University of Reading
 Q494247,University of Rouen
 Q1887879,University of San Francisco
 Q1024426,University of South Carolina
 Q7896340,University of Southern California School of International Relations
 Q1164229,University of St. Thomas
-Q7983897,Wesley College
 Q7988690,Westfield High School
 Q2166701,Wilfrid Laurier University
 Q1244726,Wolfson College
@@ -191,7 +188,6 @@ Q12583005,강원대학교 사범대학 부설고등학교
 Q5521285,강원도립대학
 Q16093287,강일여자고등학교
 Q18604795,강진중앙초등학교
-Q17304748,강진중학교
 Q18683568,개군초등학교
 Q12583239,개성고등학교
 Q12583274,개포고등학교
@@ -231,6 +227,7 @@ Q6450914,경북고등학교
 Q12583655,경북과학대학교
 Q487841,경북대학교
 Q12583661,경북대학교 사범대학 부설초등학교
+Q12583665,경북여자고등학교
 Q12583673,경북체육고등학교
 Q487836,경상대학교
 Q12583741,경상중학교
@@ -410,6 +407,7 @@ Q19939476,기린초등학교
 Q19939484,기지초등학교
 Q912329,긴키 대학
 Q5615915,길퍼드 대학교
+Q135058,김원균명칭 음악종합대학
 Q39920,김일성종합대학
 Q12588956,김천고등학교
 Q5562681,김천대학교
@@ -457,7 +455,6 @@ Q1164651,네덜란드 필름 아카데미
 Q16978474,노곡중학교
 Q17503353,노산초등학교
 Q309350,노스웨스턴 대학교
-Q1191202,노스캐롤라이나 대학교
 Q19939638,노암초등학교
 Q178848,노터데임 대학교
 Q20445395,노화초등학교
@@ -474,7 +471,6 @@ Q762266,뉴욕 시립 대학교
 Q1140241,뉴욕 주립 대학교
 Q969850,뉴욕 주립 대학교 스토니 브룩
 Q1780816,뉴욕 주립 대학교 올버니
-Q844999,뉴욕 주립 패션 공과대학교
 Q1347162,뉴잉글랜드 컨서버토리
 Q180269,능곡고등학교
 Q20445414,능서초등학교
@@ -514,7 +510,6 @@ Q12591292,대구문성초등학교
 Q5208188,대구미래대학교
 Q16093958,대구반야월초등학교
 Q16095165,대구봉덕초등학교
-Q16095330,대구북중학교
 Q17345988,대구사이버대학교
 Q16095417,대구삼덕초등학교
 Q12591314,대구상원고등학교
@@ -618,7 +613,6 @@ Q17686405,덕천중학교
 Q16095144,덕화중학교
 Q12592875,데레사여자고등학교
 Q4387971,덴리 대학
-Q1641001,덴마크 왕립 미술 아카데미
 Q1068072,델라웨어 대학교
 Q17564468,도봉중학교
 Q18731763,도산초등학교
@@ -806,7 +800,7 @@ Q12596368,밀양대학교
 Q16094905,밀양중학교
 Q16094908,밀양초등학교
 Q167733,바너드 대학교
-Q809633,바루크 뉴욕시립대학교
+Q17987873,박문중학교
 Q18605148,반곡초등학교
 Q17346072,반송여자중학교
 Q17564512,반송여자중학교
@@ -967,6 +961,7 @@ Q19940095,상탑초등학교
 Q27621,상트페테르부르크 대학교
 Q913861,샌디에이고 주립 대학교
 Q1256981,샌프란시스코 주립대학
+Q1132066,생시르 사관학교
 Q18605236,생초중학교
 Q18605237,생초초등학교
 Q374457,서강대학교
@@ -986,10 +981,8 @@ Q17346123,서라벌중학교
 Q12600898,서라벌초등학교
 Q20445228,서룡초등학교
 Q16095576,서문여자고등학교
-Q1514848,서스캐처원 대학교
 Q16978673,서울가동초등학교
 Q19940116,서울가락초등학교
-Q18684439,서울가산초등학교
 Q18605258,서울갈산초등학교
 Q18880663,서울갈현초등학교
 Q19000227,서울강남초등학교
@@ -1094,7 +1087,6 @@ Q18605328,서울신성초등학교
 Q18605329,서울신암초등학교
 Q16095790,서울신용산초등학교
 Q18605332,서울신원초등학교
-Q17487249,서울신월초등학교
 Q16767559,서울신천초등학교
 Q11250404,서울신학대학교
 Q19940122,서울신학초등학교
@@ -1315,7 +1307,6 @@ Q16299064,숭의초등학교
 Q7430513,스카릿 대학교
 Q41506,스탠퍼드 대학교
 Q8012895,스탠퍼드 법학대학원
-Q221645,스톡홀름 대학교
 Q487556,시드니 대학교
 Q617433,시러큐스 대학교
 Q131252,시카고 대학교
@@ -1381,7 +1372,6 @@ Q16079806,양곡고등학교
 Q18605485,양곡초등학교
 Q18684761,양곡초등학교
 Q12606212,양구초등학교
-Q12606245,양명여자고등학교
 Q12606259,양산남부고등학교
 Q16096450,양산제일고등학교
 Q16079809,양영디지털고등학교
@@ -1454,7 +1444,6 @@ Q18191723,예천중학교
 Q16096667,오금고등학교
 Q16096669,오류중학교
 Q766145,오리건 대학교
-Q861888,오리건 주립 대학교
 Q17990277,오마중학교
 Q18684832,오마초등학교
 Q651233,오사카 대학
@@ -1480,7 +1469,6 @@ Q12608249,온산중학교
 Q19940565,온양온천초등학교
 Q16096728,온양중학교
 Q274486,와세다 대학
-Q17314440,완주중학교
 Q854280,왕립 공과대학교
 Q523926,왕립연극학교
 Q304985,왕립음악대학
@@ -1501,7 +1489,6 @@ Q12608913,우성고등학교
 Q12608921,우송고등학교
 Q625421,우송대학교
 Q12608925,우송중학교
-Q20445348,우수영초등학교
 Q17503879,우신중학교
 Q19599196,우암초등학교
 Q18605574,우촌초등학교
@@ -1511,7 +1498,6 @@ Q12189982,울산과학대학교
 Q491717,울산대학교
 Q17990459,울산제일중학교
 Q19599231,울진남부초등학교
-Q185246,웁살라 대학교
 Q17349240,웅남중학교
 Q21059697,웅남초등학교
 Q865528,워릭 대학교
@@ -1534,6 +1520,7 @@ Q18156435,원주중학교
 Q16096904,원촌중학교
 Q18684910,월성초등학교
 Q12609509,웨스트민스터신학대학원대학교
+Q49167,웨슬리언 대학교
 Q1072029,웨일스 대학교
 Q49205,웰즐리 대학교
 Q7878055,위덕대학교
@@ -1596,6 +1583,7 @@ Q12613496,인천대건고등학교
 Q497488,인천대학교
 Q16097299,인천동막초등학교
 Q18531321,인천미산초등학교
+Q12613502,인천박문여자고등학교
 Q21060032,인천부평동초등학교
 Q17504035,인천서림초등학교
 Q19940891,인천서화초등학교
@@ -1659,7 +1647,6 @@ Q6180216,전북과학대학교
 Q623851,전북대학교
 Q12615168,전북체육고등학교
 Q16097846,전주고등학교
-Q12615301,전주공업고등학교
 Q18531331,전주교육대학교 전주부설초등학교
 Q12615304,전주근영여자고등학교
 Q12615305,전주근영중학교
@@ -1675,7 +1662,6 @@ Q12615323,전주여자고등학교
 Q16097865,전주영생고등학교
 Q6673534,전주예술고등학교
 Q17314799,전주예술중학교
-Q18880789,전주조촌초등학교
 Q18605733,전주중산초등학교
 Q18605734,전주중앙초등학교
 Q19794983,전주진북초등학교
@@ -1749,7 +1735,7 @@ Q12617699,중앙여자고등학교 (서울)
 Q17990994,중앙여자중학교
 Q17401446,중앙중학교
 Q17504225,중앙중학교
-Q12617713,중원대학교
+Q2822274,중앙희극학원
 Q16098076,중화고등학교
 Q17991007,중흥중학교
 Q18697725,중흥초등학교
@@ -1836,7 +1822,6 @@ Q491714,충북대학교
 Q12620156,충암고등학교
 Q17504388,충암중학교
 Q18605843,충암초등학교
-Q17401468,충의중학교
 Q5116377,충주고등학교
 Q17504389,충주남산초등학교
 Q3551808,충주대학교
@@ -1861,7 +1846,6 @@ Q1026827,캘리포니아 예술 대학
 Q815352,캘리포니아 주립 대학교
 Q1026926,캘리포니아 주립대학교 롱비치 교
 Q60450,커티스 음악원
-Q907481,컬럼비아 경영대학원
 Q49088,컬럼비아 대학교
 Q20944511,케이씨대학교
 Q35794,케임브리지 대학교
@@ -1928,9 +1912,7 @@ Q18067949,평촌중학교
 Q12621825,평택고등학교
 Q12621827,평택대학교
 Q12621836,평택중학교
-Q18156491,포천중학교
 Q12621965,포항고등학교
-Q40018,포항공과대학교
 Q12621978,포항여자전자고등학교
 Q16098591,포항제철고등학교
 Q12621984,포항제철공업고등학교
@@ -2013,7 +1995,6 @@ Q626067,한세대학교
 Q19657556,한솔초등학교
 Q16079672,한수중학교
 Q624561,한신대학교
-Q16098827,한신초등학교
 Q12624260,한양공업고등학교
 Q40006,한양대학교
 Q12624170,한양대학교 사범대학 부속고등학교

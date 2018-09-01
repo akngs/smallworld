@@ -1,7 +1,6 @@
 key,name
 Q19204627,American football player
 Q613087,Anwalt
-Q13414980,Australian rules footballer
 Q19841381,Canadian football player
 Q250867,Catholic priest
 Q40871491,Hapkido practitioner
@@ -21,6 +20,7 @@ Q19595175,amateur wrestler
 Q38687772,annelidologist
 Q17344952,arachnologist
 Q890527,archer
+Q1797162,artistic director
 Q13381572,artistic gymnast
 Q752129,astrophysicist
 Q28143257,badminton coach
@@ -42,14 +42,18 @@ Q3303330,calligrapher
 Q13382566,canoeist
 Q16868721,carcinologist
 Q26876987,carom billiards player
+Q1734662,cartographer
 Q1114448,cartoonist
 Q13219637,cellist
 Q10873124,chess player
 Q4853732,children's writer
 Q24067349,classical guitarist
+Q5135542,cloth merchant
 Q22343478,collagist
 Q1500610,community leader
+Q5784340,consort
 Q811122,construction worker
+Q984276,court painter
 Q2159907,criminal
 Q6430706,critic
 Q18544928,cue sports player
@@ -74,12 +78,13 @@ Q8563456,fitness professional
 Q3075052,folklorist
 Q1495660,food critic
 Q46069542,former comfort women
-Q1544133,game author
 Q3126128,geneticist
+Q901402,geographer
 Q2640827,gynaecologist
 Q13365201,handball coach
 Q13365117,handball player
 Q3127709,harpist
+Q43423468,hedge fund manager
 Q13382122,high jumper
 Q2505739,hispanist
 Q13724897,hurdler
@@ -117,13 +122,14 @@ Q931260,murderer
 Q3922505,music producer
 Q18534068,music promoter
 Q2340668,music video director
-Q6337803,neuroscientist
+Q10669499,navy officer
 Q7016454,new media artist
+Q1225716,ornithologist
 Q21484199,ostracodologist
 Q1662561,paleontologist
 Q1145647,paper recycling
 Q16323111,peace activist
-Q17098559,penciller
+Q1854900,people smuggling
 Q4351403,percussionist
 Q16010345,performer
 Q2312637,physical education teacher
@@ -132,7 +138,6 @@ Q15295720,poker player
 Q1238570,political scientist
 Q20540007,pool player
 Q21178131,portraitist
-Q739437,poster artist
 Q831474,presbyter
 Q1255921,president
 Q11336312,professional baseball player
@@ -149,12 +154,14 @@ Q7353430,roboticist
 Q3951423,rock climber
 Q13382576,rower
 Q14089670,rugby union player
+Q1097498,ruler
 Q476246,sailor
 Q12800682,saxophonist
 Q2251335,school teacher
 Q18844224,science fiction writer
 Q1133195,scree
 Q7458488,sex columnist
+Q15255771,sinologist
 Q51679083,sitarist
 Q13388442,skeleton racer
 Q23765993,ski jumping coach
@@ -190,7 +197,6 @@ Q28389,각본가
 Q186360,간호사
 Q3455803,감독
 Q1569495,강사
-Q876864,객원 편집자
 Q42973,건축가
 Q1519593,검술
 Q210167,게임 개발사/개발자
@@ -210,8 +216,8 @@ Q974144,교육자
 Q486839,국회의원
 Q8473,군사
 Q47064,군인
+Q116,군주
 Q13382355,궁수
-Q627325,그래픽 디자이너
 Q214917,극작가
 Q1154500,기상 캐스터
 Q81096,기술자
@@ -226,6 +232,7 @@ Q131512,농부
 Q270389,뉴스 캐스터
 Q3427349,대표
 Q1622272,대학 교수
+Q12592397,대한민국의 국가보훈처장
 Q14850694,대한민국의 국회의원
 Q12592438,대한민국의 문화재청장
 Q12592450,대한민국의 병무청장
@@ -247,6 +254,7 @@ Q2462658,매니저
 Q4610556,모델
 Q152002,목사
 Q327591,무소속
+Q19598808,무신
 Q11417,무예
 Q169470,물리학자
 Q846430,미래학자
@@ -264,6 +272,7 @@ Q40348,변호사
 Q4991371,병사
 Q7301138,부동산 투자가
 Q8246794,블로거
+Q854979,비구니
 Q6399436,비디오 자키
 Q213608,비트박스
 Q2095549,비행사
@@ -279,6 +288,7 @@ Q15839134,생태학자
 Q219477,선교사
 Q2066131,선수
 Q45199,선원
+Q477406,섭정
 Q2405480,성우
 Q3499072,셰프
 Q6625963,소설가
@@ -328,6 +338,7 @@ Q1320883,연예 매니저
 Q943995,연출가
 Q7042855,영상 편집자
 Q842811,영양사
+Q716348,영의정
 Q2526255,영화 감독
 Q10800557,영화 배우
 Q1337738,영화 배우
@@ -335,12 +346,14 @@ Q3282637,영화 프로듀서
 Q483501,예술가
 Q765778,오르가니스트
 Q2865819,오페라 가수
+Q12097,왕
 Q774306,외과의
 Q193391,외교관
 Q11631,우주비행사
 Q15253558,운동가
-Q6859454,웹 개발자
+Q713540,위안부
 Q17125263,유튜버
+Q9397505,유학자
 Q11513337,육상 선수
 Q1198887,음악 감독
 Q16145150,음악 교육자
@@ -360,11 +373,16 @@ Q36180,작가
 Q36834,작곡가
 Q753110,작곡가 겸 작사가
 Q822146,작사가
+Q83307,장관
 Q189290,장교
 Q83460,장군
 Q1294787,장인
+Q201948,저격수
 Q1930187,저널리스트
 Q482980,저자
+Q16179389,전라북도지사
+Q1250916,전사
+Q155647,점성가
 Q211346,정신과의
 Q11499147,정치운동가
 Q82955,정치인
@@ -373,6 +391,7 @@ Q13235160,제작자
 Q1281618,조각가
 Q156839,조리사
 Q29182,주교
+Q58968,지식인
 Q158852,지휘
 Q11247470,지휘관
 Q599151,직원

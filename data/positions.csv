@@ -1,8 +1,6 @@
 key,name
 Q1072363,Chief Officer
 Q47612352,Interpol Red Notice
-Q18912794,Member of the Australian House of Representatives
-Q18145518,Member of the New Zealand House of Representatives
 Q29511440,President of the United Nations Economic and Social Council
 Q19403490,Q19403490
 Q26903128,Q26903128
@@ -10,13 +8,13 @@ Q26903171,Q26903171
 Q26903172,Q26903172
 Q42591216,Secretary-General of the International Maritime Organization
 Q19969187,UNICEF Goodwill Ambassador
+Q42418632,Yushin Kanko
 Q2824523,board member
 Q47472704,chairperson of the Ethics Commission of the International Olympic Committee
 Q55775219,governor of South Chungcheong Province
 Q965043,judge of the International Criminal Court
 Q6814365,member of the Australian Capital Territory Legislative Assembly
 Q14552828,member of the House of Councillors
-Q20058770,member of the New York State Assembly
 Q948657,titular bishop
 Q50559021,강원도의원동정
 Q12583545,경기도지사
@@ -48,6 +46,7 @@ Q16177560,대한민국의 해군참모총장
 Q12592560,대한민국의 해양수산부 장관
 Q12592496,대한민국의 행정안전부 장관
 Q12592566,대한민국의 환경부 장관
+Q23665193,대한제국 황제
 Q13218630,미합중국 하원 의원
 Q75178,보좌주교
 Q50265926,부산광역시장
@@ -55,10 +54,13 @@ Q611644,사교
 Q50275527,서울특별시구청장
 Q488289,서울특별시장
 Q30185,시장
+Q207293,왕세자
 Q140686,의장
+Q12619430,의정부총리대신
 Q83307,장관
 Q50559384,제주특별자치도의원동정
 Q50275066,제주특별자치도지사
+Q22304810,조선 임금
 Q29182,주교
 Q11247470,지휘관
 Q61061,총장
@@ -67,3 +69,6 @@ Q45722,추기경
 Q16179407,충청북도지사
 Q12624008,한미연합사령부 부사령관
 Q2285706,행정부 수반
+Q7217692,황귀비
+Q39018,황제
+Q5353683,후궁
