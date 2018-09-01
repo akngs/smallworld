@@ -14,6 +14,23 @@ html, body {
     overflow: hidden;
 }
 
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+textarea,
+input.text,
+input[type="text"],
+input[type="button"],
+input[type="submit"],
+.input-checkbox {
+    -webkit-appearance: none;
+    border-radius: 0;
+    border: 1px solid #AAA;
+}
 
 /* Layout */
 .message {
@@ -36,41 +53,53 @@ html, body {
     right: 0;
     top: 0;
     height: 2rem;
-
     padding: 1.5rem;
-    font-size: 14px;
-}
-
-.actions {
-    position: absolute;
-    bottom: 1rem;
-    left: 1rem;
-    padding: 0.5rem;
 }
 
 .infobox {
     position: absolute;
-    bottom: 3rem;
+    border: 1px solid #DDD;
+    bottom: 0.5rem;
     left: 1rem;
-    padding: 0.5rem;
+    padding: 0 1rem;
 }
 
-.infobox h2, h3 {
+.infobox h2 {
+    position: absolute;
+    top: 0.2rem;
+    right: 0.5rem;
+    font-variant-caps: small-caps;
     font-size: 1rem;
+    font-weight: normal;
+    float: right;
+    margin: 0;
 }
+
 .infobox h3 {
+    font-size: 1rem;
     margin-bottom: 0;
 }
+
 .infobox .image {
-    height: 10rem;
+    width: 10rem;
+    margin-bottom: 1rem;
 }
+
+@media (max-width: 1000px) {
+    .infobox .image {
+        width: 6rem;
+    }
+}
+
 
 .infobox .item {
     display: none;
 }
+
 .infobox .item.show {
     display: block;
 }
+
 .infobox .item ul {
     list-style-type: none;
     margin-top: 0.2rem;
@@ -90,7 +119,6 @@ html, body {
     height: 100%;
 }
 
-
 /* Etc */
 .message {
     text-align: center;
@@ -107,8 +135,13 @@ html, body {
 }
 
 .query input {
-    font-size: 16px;
     padding: 0.2rem 0.5rem;
+}
+
+@media (max-width: 1000px) {
+    .query input {
+        font-size: 16px;
+    }
 }
 
 svg .links {
@@ -135,6 +168,7 @@ svg .node circle {
 svg .node.active circle {
     stroke: #bafc6a;
 }
+
 svg .node.active text {
     stroke: #bafc6a;
 }

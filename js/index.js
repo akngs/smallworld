@@ -3,6 +3,8 @@ import Awesomplete from 'awesomplete'
 import Promise from 'promise-polyfill'
 
 
+const DATA_HASH = '60c23c5'
+
 const KINSHIP_RELS = ['child', 'father', 'mother', 'spouse']
 
 const LINK_TARGETS = {
@@ -74,7 +76,7 @@ async function main() {
 
 
 async function loadData() {
-  const urlPrefix = '//cdn.rawgit.com/akngs/smallworld/0b72d2d/data/'
+  const urlPrefix = `//cdn.rawgit.com/akngs/smallworld/${DATA_HASH}/data/`
   const dataNames = [
     'affiliations',
     'birthplaces',
@@ -279,15 +281,12 @@ function activateNode(key) {
   if (activeNode === person) {
     activeNode = null
     document.querySelector('.infobox').innerHTML = ''
-    document.querySelector('.actions').innerHTML = ''
   } else {
     activeNode = person
     activeNode.fx = activeNode.x
     activeNode.fy = activeNode.y
 
     renderInfobox(activeNode.key)
-    document.querySelector('.actions').innerHTML =
-      `<a href="https://www.wikidata.org/entity/${activeNode.key}" target="_blank">Edit on wikidata</a>`
 
     d3.select(this).raise()
     expandNode(person.key)
@@ -345,7 +344,6 @@ function renderInfobox(key) {
   const info = node.info
   const infobox = d3.select('.infobox').html(
     '<h2></h2>' +
-    `<img class="item image" src="#" alt="profile">` +
     '<div class="item occupation"><h3>직업</h3><ul></ul></div>' +
     '<div class="item affiliation"><h3>소속</h3><ul></ul></div>' +
     '<div class="item position"><h3>직위 </h3><ul></ul></div>' +
@@ -355,17 +353,12 @@ function renderInfobox(key) {
     '<div class="item mother"><h3>어머니</h3><ul></ul></div>' +
     '<div class="item father"><h3>아버지</h3><ul></ul></div>' +
     '<div class="item spouse"><h3>배우자</h3><ul></ul></div>' +
+    `<img class="item image" src="#" alt="profile">` +
     ''
   )
 
   // Title
-  infobox.select('h2').text(`${node.name} (${node.key})`)
-
-  // Image
-  infobox.select('.image').classed('show', node.image)
-  if(node.image) {
-    infobox.select('.image').attr('src', node.image.replace('http:', ''))
-  }
+  infobox.select('h2').html(`<a href="https://www.wikidata.org/entity/${node.key}" target="_blank">edit</a>`)
 
   // Occupation
   infobox.select('.occupation').classed('show', info.occupation)
@@ -426,6 +419,12 @@ function renderInfobox(key) {
   infobox.select('.child ul').selectAll('li').data(info.child || []).enter()
     .append('li')
     .text(d => d.target.name)
+
+  // Image
+  infobox.select('.image').classed('show', node.image)
+  if(node.image) {
+    infobox.select('.image').attr('src', node.image.replace('http:', ''))
+  }
 }
 
 function renderGraph() {
