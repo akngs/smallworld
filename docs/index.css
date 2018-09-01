@@ -6,8 +6,10 @@
 html, body {
     font-family: sans-serif;
     font-size: 12px;
+    position: absolute;
     margin: 0;
     padding: 0;
+    width: 100%;
     height: 100%;
     overflow: hidden;
 }
@@ -35,21 +37,51 @@ html, body {
     top: 0;
     height: 2rem;
 
-    padding: 0.5rem;
+    padding: 1.5rem;
     font-size: 14px;
 }
 
-.context {
+.actions {
     position: absolute;
     bottom: 1rem;
-    right: 1rem;
+    left: 1rem;
+    padding: 0.5rem;
+}
+
+.infobox {
+    position: absolute;
+    bottom: 3rem;
+    left: 1rem;
+    padding: 0.5rem;
+}
+
+.infobox h2, h3 {
+    font-size: 1rem;
+}
+.infobox h3 {
+    margin-bottom: 0;
+}
+.infobox .image {
+    height: 10rem;
+}
+
+.infobox .item {
+    display: none;
+}
+.infobox .item.show {
+    display: block;
+}
+.infobox .item ul {
+    list-style-type: none;
+    margin-top: 0.2rem;
+    padding: 0;
 }
 
 .graph {
     position: absolute;
     left: 0;
     right: 0;
-    top: 2rem;
+    top: 0;
     bottom: 0;
 }
 
@@ -64,6 +96,14 @@ html, body {
     text-align: center;
     color: #FFF;
     background-color: #007cfc;
+}
+
+.infobox {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.actions {
+    background-color: rgba(255, 255, 255, 0.6);
 }
 
 .query input {

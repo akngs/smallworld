@@ -5,13 +5,26 @@ import Promise from 'promise-polyfill'
 
 const KINSHIP_RELS = ['child', 'father', 'mother', 'spouse']
 
+const LINK_TARGETS = {
+  'spouse': 'persons',
+  'father': 'persons',
+  'mother': 'persons',
+  'child': 'persons',
+  'birthplace': 'birthplaces',
+  'membership': 'memberships',
+  'affiliation': 'affiliations',
+  'occupation': 'occupations',
+  'education': 'educations',
+  'position': 'positions',
+}
 
-export let data
-export let linksSel
-export let nodesSel
-export let force
-export let forceLink
-export let activeNode
+
+let data
+let linksSel
+let nodesSel
+let force
+let forceLink
+let activeNode
 
 
 async function main() {
@@ -32,20 +45,13 @@ async function main() {
   })
   q.addEventListener('awesomplete-selectcomplete', e => {
     toggleNode(e.text.value, true)
+    activateNode(e.text.value)
     updateNodes()
     q.value = ''
   })
 
   // Initialize SVG area
-  const width = document.querySelector('svg').clientWidth
-  const height = document.querySelector('svg').clientHeight
-
-  const svg = d3.select('svg')
-    .attr('width', width)
-    .attr('height', height)
-    .select('.root')
-    .style('transform', `translate(${width * 0.5}px, ${height * 0.5}px)`)
-
+  const svg = d3.select('svg .root')
   linksSel = svg.select('.links').selectAll('.link')
   nodesSel = svg.select('.nodes').selectAll('.node')
 
@@ -60,12 +66,15 @@ async function main() {
     .force("charge", d3.forceManyBody().strength(-50))
     .on('tick', onTick)
 
+  onResize()
+  window.addEventListener('resize', onResize)
+
   onInit()
 }
 
 
 async function loadData() {
-  const urlPrefix = '//cdn.rawgit.com/akngs/smallworld/bf405d9/data/'
+  const urlPrefix = '//cdn.rawgit.com/akngs/smallworld/0b72d2d/data/'
   const dataNames = [
     'affiliations',
     'birthplaces',
@@ -103,22 +112,10 @@ async function loadData() {
   })
 
   // Process links
-  const linkTargets = {
-    'spouse': 'persons',
-    'father': 'persons',
-    'mother': 'persons',
-    'child': 'persons',
-    'birthplace': 'birthplaces',
-    'membership': 'memberships',
-    'affiliation': 'affiliations',
-    'occupation': 'occupations',
-    'education': 'educations',
-    'position': 'positions',
-  }
   result.links.forEach(link => {
     // Replace key strings in links into node references
     link.source = result.nodesMap['persons'][link.a]
-    link.target = result.nodesMap[linkTargets[link.rel]][link.b]
+    link.target = result.nodesMap[LINK_TARGETS[link.rel]][link.b]
     delete link.a
     delete link.b
     if (!link.source || !link.target) {
@@ -137,6 +134,11 @@ async function loadData() {
   // Drop marked links
   result.links = result.links.filter(l => !l.drop)
 
+  // Generate brief info for persons
+  result.nodes['persons'].forEach((p, i) => {
+    p.info = {}
+    d3.nest().key(d => d.rel).entries(p.outs).forEach(g => p.info[g.key] = g.values)
+  })
   return result
 }
 
@@ -213,38 +215,31 @@ function isFullyExpanded(node) {
     .length === 0
 }
 
+
 function onInit() {
   toggleNode("Q16080217")
   updateNodes()
 }
 
 
+function onResize() {
+  d3.select('svg')
+    .attr('width', innerWidth)
+    .attr('height', innerHeight)
+    .select('.root')
+    .style('transform', `translate(${innerWidth * 0.5}px, ${innerHeight * 0.5}px)`)
+
+  force.alphaTarget(0.3).restart()
+}
+
+
 function onTick() {
-  rerender()
+  renderGraph()
 }
 
 
 function onNodeClick(person) {
-  if (activeNode) {
-    delete activeNode.fx
-    delete activeNode.fy
-  }
-
-  if (activeNode === person) {
-    activeNode = null
-    document.querySelector('.context').innerHTML = ''
-  } else {
-    activeNode = person
-    activeNode.fx = activeNode.x
-    activeNode.fy = activeNode.y
-
-    document.querySelector('.context').innerHTML =
-      `<a href="https://www.wikidata.org/entity/${person.key}" target="_blank">Edit "${person.name}" on wikidata</a>`
-
-    d3.select(this).raise()
-    expandNode(person.key)
-  }
-
+  activateNode(person.key)
   updateNodes()
 }
 
@@ -270,6 +265,33 @@ function onNodeDragEnd(d) {
     delete d.fy
   }
   force.alphaTarget(0)
+}
+
+
+function activateNode(key) {
+  const person = data.nodesMap['persons'][key]
+
+  if (activeNode) {
+    delete activeNode.fx
+    delete activeNode.fy
+  }
+
+  if (activeNode === person) {
+    activeNode = null
+    document.querySelector('.infobox').innerHTML = ''
+    document.querySelector('.actions').innerHTML = ''
+  } else {
+    activeNode = person
+    activeNode.fx = activeNode.x
+    activeNode.fy = activeNode.y
+
+    renderInfobox(activeNode.key)
+    document.querySelector('.actions').innerHTML =
+      `<a href="https://www.wikidata.org/entity/${activeNode.key}" target="_blank">Edit on wikidata</a>`
+
+    d3.select(this).raise()
+    expandNode(person.key)
+  }
 }
 
 
@@ -316,7 +338,97 @@ function updateNodes() {
 }
 
 
-function rerender() {
+function renderInfobox(key) {
+  const node = data.nodesMap['persons'][key]
+  console.log(node)
+
+  const info = node.info
+  const infobox = d3.select('.infobox').html(
+    '<h2></h2>' +
+    `<img class="item image" src="#" alt="profile">` +
+    '<div class="item occupation"><h3>직업</h3><ul></ul></div>' +
+    '<div class="item affiliation"><h3>소속</h3><ul></ul></div>' +
+    '<div class="item position"><h3>직위 </h3><ul></ul></div>' +
+    '<div class="item membership"><h3>멤버십</h3><ul></ul></div>' +
+    '<div class="item education"><h3>교육</h3><ul></ul></div>' +
+    '<div class="item birthplace"><h3>출생지</h3><ul></ul></div>' +
+    '<div class="item mother"><h3>어머니</h3><ul></ul></div>' +
+    '<div class="item father"><h3>아버지</h3><ul></ul></div>' +
+    '<div class="item spouse"><h3>배우자</h3><ul></ul></div>' +
+    ''
+  )
+
+  // Title
+  infobox.select('h2').text(`${node.name} (${node.key})`)
+
+  // Image
+  infobox.select('.image').classed('show', node.image)
+  if(node.image) {
+    infobox.select('.image').attr('src', node.image.replace('http:', ''))
+  }
+
+  // Occupation
+  infobox.select('.occupation').classed('show', info.occupation)
+  infobox.select('.occupation ul').selectAll('li').data(info.occupation || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Affiliation
+  infobox.select('.affiliation').classed('show', info.affiliation)
+  infobox.select('.affiliation ul').selectAll('li').data(info.affiliation || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Position
+  infobox.select('.position').classed('show', info.position)
+  infobox.select('.position ul').selectAll('li').data(info.position || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Membership
+  infobox.select('.membership').classed('show', info.membership)
+  infobox.select('.membership ul').selectAll('li').data(info.membership || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Education
+  infobox.select('.education').classed('show', info.education)
+  infobox.select('.education ul').selectAll('li').data(info.education || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Birthplace
+  infobox.select('.birthplace').classed('show', info.birthplace)
+  infobox.select('.birthplace ul').selectAll('li').data(info.birthplace || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Mother
+  infobox.select('.mother').classed('show', info.mother)
+  infobox.select('.mother ul').selectAll('li').data(info.mother || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Father
+  infobox.select('.father').classed('show', info.father)
+  infobox.select('.father ul').selectAll('li').data(info.father || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Spouse
+  infobox.select('.spouse').classed('show', info.spouse)
+  infobox.select('.spouse ul').selectAll('li').data(info.spouse || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+
+  // Child
+  infobox.select('.child').classed('show', info.child)
+  infobox.select('.child ul').selectAll('li').data(info.child || []).enter()
+    .append('li')
+    .text(d => d.target.name)
+}
+
+function renderGraph() {
   nodesSel
     .classed('active', node => node === activeNode)
     .classed('fully-expanded', node => node.fullyExpanded)
@@ -330,6 +442,10 @@ function rerender() {
     .attr('y2', d => d.target.y)
 }
 
+
+export function _cb(json) {
+  console.log(json)
+}
 
 window.addEventListener("DOMContentLoaded", function () {
   main().then()
