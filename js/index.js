@@ -1,4 +1,7 @@
-import "babel-polyfill";
+import Promise from 'promise-polyfill'
+import "babel-polyfill"
+import 'whatwg-fetch'
+
 import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 
