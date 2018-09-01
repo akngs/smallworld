@@ -16,6 +16,7 @@ html, body {
 
 a {
     text-decoration: none;
+
 }
 a:hover {
     text-decoration: underline;
@@ -58,9 +59,9 @@ input[type="submit"],
 
 .infobox {
     position: absolute;
-    bottom: 1rem;
-    left: 1rem;
-    padding: 0 1rem;
+    bottom: 0;
+    left: 0;
+    padding: 1rem 1rem;
 }
 
 .infobox .edit {
@@ -74,7 +75,9 @@ input[type="submit"],
 
 .infobox .image {
     width: 10rem;
+    min-height: 1rem;
     margin-bottom: 1rem;
+    background-color: #DDDDDD;
 }
 
 @media (max-width: 1000px) {
@@ -136,8 +139,18 @@ input[type="submit"],
     }
 }
 
-svg .links {
+svg .links .link {
     stroke-width: 1px;
+    stroke: #AAAAAA;
+}
+
+svg .arrow {
+    fill: #AAAAAA;
+}
+
+svg .links .link.spouse {
+    stroke-width: 1px;
+    stroke: #FF0000;
 }
 
 svg .node {
@@ -148,7 +161,7 @@ svg .node .name {
     font-family: sans-serif;
     alignment-baseline: hanging;
     stroke: #FFF;
-    stroke-width: 2px;
+    stroke-width: 1px;
     paint-order: stroke;
 }
 

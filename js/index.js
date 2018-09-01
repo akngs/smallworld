@@ -3,14 +3,14 @@ import Awesomplete from 'awesomplete'
 import Promise from 'promise-polyfill'
 
 
-const DATA_HASH = '60c23c5'
+const DATA_HASH = '2abb284'
 
-const KINSHIP_RELS = ['child', 'father', 'mother', 'spouse']
+const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
 const LINK_TARGETS = {
   'spouse': 'persons',
-  'father': 'persons',
   'mother': 'persons',
+  'father': 'persons',
   'child': 'persons',
   'birthplace': 'birthplaces',
   'membership': 'memberships',
@@ -19,6 +19,8 @@ const LINK_TARGETS = {
   'education': 'educations',
   'position': 'positions',
 }
+
+const PARSE_TIME = d3.timeParse('%Y-%m-%dT%H:%M:%SZ')
 
 
 let data
@@ -36,7 +38,7 @@ async function main() {
   const q = document.querySelector('.query input')
   new Awesomplete(q, {
     list: data.nodes['persons'].map(p => {
-      return {label: `${p.name} (${p.key})`, value: p.key}
+      return {label: renderPersonBrief(p), value: p.key}
     }),
     minChars: 1,
     autoFirst: true
@@ -58,7 +60,7 @@ async function main() {
   nodesSel = svg.select('.nodes').selectAll('.node')
 
   forceLink = d3.forceLink(linksSel.data())
-    .distance(50)
+    .distance(80)
 
   force = d3.forceSimulation(nodesSel.data())
     .force("link", forceLink)
@@ -76,7 +78,10 @@ async function main() {
 
 
 async function loadData() {
-  const urlPrefix = `//cdn.rawgit.com/akngs/smallworld/${DATA_HASH}/data/`
+  const urlPrefix = location.hostname === 'localhost' ?
+    '../data/' :
+    `//cdn.rawgit.com/akngs/smallworld/${DATA_HASH}/data/`
+
   const dataNames = [
     'affiliations',
     'birthplaces',
@@ -136,8 +141,14 @@ async function loadData() {
   // Drop marked links
   result.links = result.links.filter(l => !l.drop)
 
-  // Generate brief info for persons
+
+  // Improve person nodes
   result.nodes['persons'].forEach((p, i) => {
+    // Parse birthdate and deathdate
+    if(p['birth_date']) p['birth_date'] = PARSE_TIME(p['birth_date'])
+    if(p['death_date']) p['death_date'] = PARSE_TIME(p['death_date'])
+
+    // Generate brief info for persons
     p.info = {}
     d3.nest().key(d => d.rel).entries(p.outs).forEach(g => p.info[g.key] = g.values)
   })
@@ -272,6 +283,7 @@ function onNodeDragEnd(d) {
 
 function activateNode(key) {
   const person = data.nodesMap['persons'][key]
+  console.log(person)
 
   if (activeNode) {
     delete activeNode.fx
@@ -310,7 +322,7 @@ function updateNodes() {
       d3.select(this).append('text')
         .attr('class', 'name')
         .style('transform', 'translate(8px, 8px)')
-        .text(d.name)
+        .text(d => d.name)
     })
     .on('click', onNodeClick)
     .call(d3.drag()
@@ -326,9 +338,9 @@ function updateNodes() {
   linksSel.exit().remove()
   linksSel = linksSel.enter()
     .append('line')
-    .attr('class', 'link')
-    .attr('stroke', '#444')
     .merge(linksSel)
+    .attr('class', d => `link ${d.rel}`)
+    .attr('marker-end', d => d.rel === 'child' ? 'url(#arrowMarker)' : '')
 
   // Trigger layout
   force.nodes(nodesSel.data())
@@ -345,7 +357,7 @@ function renderInfobox(key) {
     '<div class="item affiliation"><h3>소속</h3><ul></ul></div>' +
     '<div class="item position"><h3>직위 </h3><ul></ul></div>' +
     '<div class="item membership"><h3>멤버십</h3><ul></ul></div>' +
-    '<div class="item education"><h3>교육</h3><ul></ul></div>' +
+    '<div class="item education"><h3>출신학교</h3><ul></ul></div>' +
     '<div class="item birthplace"><h3>출생지</h3><ul></ul></div>' +
     '<div class="item mother"><h3>어머니</h3><ul></ul></div>' +
     '<div class="item father"><h3>아버지</h3><ul></ul></div>' +
@@ -398,30 +410,30 @@ function renderInfobox(key) {
   infobox.select('.mother').classed('show', info.mother)
   infobox.select('.mother ul').selectAll('li').data(info.mother || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => renderPersonBrief(d.target))
 
   // Father
   infobox.select('.father').classed('show', info.father)
   infobox.select('.father ul').selectAll('li').data(info.father || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => renderPersonBrief(d.target))
 
   // Spouse
   infobox.select('.spouse').classed('show', info.spouse)
   infobox.select('.spouse ul').selectAll('li').data(info.spouse || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => renderPersonBrief(d.target))
 
   // Child
   infobox.select('.child').classed('show', info.child)
   infobox.select('.child ul').selectAll('li').data(info.child || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => renderPersonBrief(d.target))
 
   // Image
   infobox.select('.image').classed('show', node.image)
   if(node.image) {
-    infobox.select('.image').attr('src', node.image.replace('http:', ''))
+    infobox.select('.image').attr('src', node.image.replace('http:', 'https:'))
   }
 }
 
@@ -431,7 +443,7 @@ function renderGraph() {
     .classed('fully-expanded', node => node.fullyExpanded)
     .style('transform', node => `translate(${node.x}px, ${node.y}px)`)
     .select('circle')
-    .attr('r', node => node.fullyExpanded ? 5 : 8)
+    .attr('r', node => node.fullyExpanded ? 5 : 7)
   linksSel
     .attr('x1', d => d.source.x)
     .attr('y1', d => d.source.y)
@@ -439,10 +451,25 @@ function renderGraph() {
     .attr('y2', d => d.target.y)
 }
 
+function renderPersonBrief(person) {
+  const name = person['name']
+  const birthdate = person['birth_date'] || null
+  const deathdate = person['death_date'] || null
 
-export function _cb(json) {
-  console.log(json)
+  let birth
+  if(birthdate) {
+    birth = `${birthdate.getFullYear()}`
+  } else if(deathdate) {
+    birth = `?-${deathdate.getFullYear()}`
+  }
+
+  if(birth) {
+    return `${name} (${birth})`
+  } else {
+    return `${name}`
+  }
 }
+
 
 window.addEventListener("DOMContentLoaded", function () {
   main().then()

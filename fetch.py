@@ -1,14 +1,15 @@
 import csv
+from json import JSONDecodeError
 
 import requests
 
 
 ENDPOINT = "https://query.wikidata.org/bigdata/namespace/wdq/sparql"
 
-QUERY = """
+QUERY_TEMPLATE = """
 SELECT
   ?human ?humanLabel ?image ?birthdate ?deathdate
-  ?spouse ?father ?mother ?child
+  ?spouse ?mother ?father ?child
   ?birthplace ?birthplaceLabel
   ?membership ?membershipLabel
   ?affiliation ?affiliationLabel
@@ -20,16 +21,14 @@ WHERE {
 
   ?human wdt:P31 wd:Q5.
 
-  { ?human (wdt:P19|wdt:P20|wdt:P27) wd:Q884. }
-  UNION
-  { ?human (wdt:P19|wdt:P20|wdt:P27) wd:Q28233. }
+  %s
 
   OPTIONAL { ?human wdt:P18 ?image. }
   OPTIONAL { ?human wdt:P569 ?birthdate. }
   OPTIONAL { ?human wdt:P570 ?deathdate. }
   OPTIONAL { ?human wdt:P26 ?spouse. }
-  OPTIONAL { ?human wdt:P22 ?father. }
   OPTIONAL { ?human wdt:P25 ?mother. }
+  OPTIONAL { ?human wdt:P22 ?father. }
   OPTIONAL { ?human wdt:P40 ?child. }
   OPTIONAL { ?human wdt:P19 ?birthplace. }
   OPTIONAL { ?human wdt:P463/wdt:P1647* ?membership. }
@@ -38,8 +37,38 @@ WHERE {
   OPTIONAL { ?human wdt:P69 ?education. }
   OPTIONAL { ?human wdt:P39 ?position. }
 }
-ORDER BY ?humanLabel
 """
+
+QUERY_CONDITIONS = [
+    "{ ?human wdt:P27 wd:Q884. } "
+    "UNION { ?human wdt:P27 wd:Q28233. } "
+    "UNION { ?human wdt:P27 wd:Q28179. } "
+    "UNION { ?human wdt:P27 wd:Q18097. } ",
+
+    "?human wdt:P26 ?spouse. "
+    "{ ?spouse wdt:P27 wd:Q884. } "
+    "UNION { ?spouse wdt:P27 wd:Q28233. } "
+    "UNION { ?spouse wdt:P27 wd:Q28179. } "
+    "UNION { ?spouse wdt:P27 wd:Q18097. } ",
+
+    "?human wdt:P25 ?mother. "
+    "{ ?mother wdt:P27 wd:Q884. } "
+    "UNION { ?mother wdt:P27 wd:Q28233. } "
+    "UNION { ?mother wdt:P27 wd:Q28179. } "
+    "UNION { ?mother wdt:P27 wd:Q18097. } ",
+
+    "?human wdt:P22 ?father. "
+    "{ ?father wdt:P27 wd:Q884. } "
+    "UNION { ?father wdt:P27 wd:Q28233. } "
+    "UNION { ?father wdt:P27 wd:Q28179. } "
+    "UNION { ?father wdt:P27 wd:Q18097. } ",
+
+    "?human wdt:P40 ?child. "
+    "{ ?child wdt:P27 wd:Q884. } "
+    "UNION { ?child wdt:P27 wd:Q28233. } "
+    "UNION { ?child wdt:P27 wd:Q28179. } "
+    "UNION { ?child wdt:P27 wd:Q18097. } ",
+]
 
 NODES = {
     "persons": (
@@ -77,8 +106,8 @@ NODES = {
 
 LINKS = [
     "spouse",
-    "father",
     "mother",
+    "father",
     "child",
     "birthplace",
     "membership",
@@ -90,10 +119,22 @@ LINKS = [
 
 
 def main():
-    data = requests.get(
-        ENDPOINT,
-        {"query": QUERY, "format": "json"}
-    ).json()["results"]["bindings"]
+    data = []
+    for condition in QUERY_CONDITIONS:
+        query = QUERY_TEMPLATE % condition
+        print(f'Trying: {condition}')
+        while True:
+            try:
+                new_data = requests.get(
+                    ENDPOINT,
+                    {"query": query, "format": "json"}
+                ).json()["results"]["bindings"]
+
+                data += new_data
+                print(f'{len(data)} (added {len(new_data)} records)')
+                break
+            except JSONDecodeError:
+                print('Retrying...')
 
     for k, v in NODES.items():
         with open(f"data/{k}.csv", "w", encoding="utf-8") as f:
