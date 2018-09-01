@@ -3,7 +3,7 @@ import Awesomplete from 'awesomplete'
 import Promise from 'promise-polyfill'
 
 
-const DATA_HASH = '2abb284'
+const DATA_HASH = '8519551'
 
 const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
@@ -353,6 +353,7 @@ function renderInfobox(key) {
   const node = data.nodesMap['persons'][key]
   const info = node.info
   const infobox = d3.select('.infobox').html(
+    `<h2>${renderPersonBrief(node)}</h2>` +
     '<div class="item occupation"><h3>직업</h3><ul></ul></div>' +
     '<div class="item affiliation"><h3>소속</h3><ul></ul></div>' +
     '<div class="item position"><h3>직위 </h3><ul></ul></div>' +
@@ -366,9 +367,6 @@ function renderInfobox(key) {
     '<div class="edit"></div>' +
     ''
   )
-
-  // Title
-  infobox.select('.edit').html(`<a href="https://www.wikidata.org/entity/${node.key}" target="_blank">edit on wikidata</a>`)
 
   // Occupation
   infobox.select('.occupation').classed('show', info.occupation)
@@ -435,6 +433,9 @@ function renderInfobox(key) {
   if(node.image) {
     infobox.select('.image').attr('src', node.image.replace('http:', 'https:'))
   }
+
+  // Edit link
+  infobox.select('.edit').html(`<a href="https://www.wikidata.org/entity/${node.key}" target="_blank">edit on wikidata</a>`)
 }
 
 function renderGraph() {
@@ -453,21 +454,24 @@ function renderGraph() {
 
 function renderPersonBrief(person) {
   const name = person['name']
+
+  // Try description
+  const description = person['description']
+  if(description) return `${name} (${description})`
+
+  // Try birthdate and deathdate
   const birthdate = person['birth_date'] || null
   const deathdate = person['death_date'] || null
-
   let birth
   if(birthdate) {
     birth = `${birthdate.getFullYear()}`
   } else if(deathdate) {
     birth = `?-${deathdate.getFullYear()}`
   }
+  if(birth) return `${name} (${birth})`
 
-  if(birth) {
-    return `${name} (${birth})`
-  } else {
-    return `${name}`
-  }
+  // Use name as fallback
+  return `${name}`
 }
 
 

@@ -18,6 +18,7 @@ a {
     text-decoration: none;
 
 }
+
 a:hover {
     text-decoration: underline;
 }
@@ -68,6 +69,11 @@ input[type="submit"],
     font-variant-caps: small-caps;
 }
 
+.infobox h2 {
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
 .infobox h3 {
     font-size: 1rem;
     margin-bottom: 0;
@@ -85,7 +91,6 @@ input[type="submit"],
         width: 6rem;
     }
 }
-
 
 .infobox .item {
     display: none;
