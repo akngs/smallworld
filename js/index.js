@@ -141,7 +141,6 @@ async function loadData() {
   // Drop marked links
   result.links = result.links.filter(l => !l.drop)
 
-
   // Improve person nodes
   result.nodes['persons'].forEach((p, i) => {
     // Parse birthdate and deathdate
@@ -283,7 +282,6 @@ function onNodeDragEnd(d) {
 
 function activateNode(key) {
   const person = data.nodesMap['persons'][key]
-  console.log(person)
 
   if (activeNode) {
     delete activeNode.fx
@@ -302,6 +300,12 @@ function activateNode(key) {
 
     d3.select(this).raise()
     expandNode(person.key)
+
+    window['dataLayer'].push({
+      'event': 'activateNode',
+      'key': activeNode.key,
+      'name': activeNode.name,
+    })
   }
 }
 
@@ -363,6 +367,7 @@ function renderInfobox(key) {
     '<div class="item mother"><h3>어머니</h3><ul></ul></div>' +
     '<div class="item father"><h3>아버지</h3><ul></ul></div>' +
     '<div class="item spouse"><h3>배우자</h3><ul></ul></div>' +
+    '<div class="item child"><h3>자녀</h3><ul></ul></div>' +
     `<img class="item image" src="#" alt="profile">` +
     '<div class="edit"></div>' +
     ''
