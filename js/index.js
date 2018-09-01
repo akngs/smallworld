@@ -242,7 +242,7 @@ function onResize() {
     .attr('width', innerWidth)
     .attr('height', innerHeight)
     .select('.root')
-    .style('transform', `translate(${innerWidth * 0.5}px, ${innerHeight * 0.5}px)`)
+    .attr('transform', `translate(${innerWidth * 0.5}, ${innerHeight * 0.5})`)
 
   force.alphaTarget(0.3).restart()
 }
@@ -270,7 +270,7 @@ function onNodeDragMove(d) {
   d.x = d.fx = d3.event.x
   d.y = d.fy = d3.event.y
   d3.select(this)
-    .style("transform", `translate(${d.x}px, ${d.y}px)`)
+    .attr("transform", `translate(${d.x}, ${d.y})`)
 }
 
 
@@ -328,7 +328,7 @@ function updateNodes() {
         .attr('fill', 'steelblue')
       d3.select(this).append('text')
         .attr('class', 'name')
-        .style('transform', 'translate(8px, 8px)')
+        .attr('transform', 'translate(8, 8)')
         .text(d => d.name)
     })
     .on('click', onNodeClick)
@@ -450,7 +450,7 @@ function renderGraph() {
   nodesSel
     .classed('active', node => node === activeNode)
     .classed('fully-expanded', node => node.fullyExpanded)
-    .style('transform', node => `translate(${node.x}px, ${node.y}px)`)
+    .attr('transform', node => `translate(${node.x}, ${node.y})`)
     .select('circle')
     .attr('r', node => node.fullyExpanded ? 5 : 7)
   linksSel
