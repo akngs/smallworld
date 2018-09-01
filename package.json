@@ -18,12 +18,13 @@
   },
   "homepage": "https://github.com/akngs/smallworld#readme",
   "devDependencies": {
+    "babel-preset-env": "^1.7.0",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
     "awesomplete": "^1.1.2",
-    "d3": "^5.7.0",
-    "promise-polyfill": "^8.1.0"
+    "babel-polyfill": "^6.26.0",
+    "d3": "^5.7.0"
   }
 }

@@ -1,6 +1,6 @@
+import "babel-polyfill";
 import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
-import Promise from 'promise-polyfill'
 
 
 const DATA_HASH = '8519551'
