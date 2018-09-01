@@ -339,11 +339,8 @@ function updateNodes() {
 
 function renderInfobox(key) {
   const node = data.nodesMap['persons'][key]
-  console.log(node)
-
   const info = node.info
   const infobox = d3.select('.infobox').html(
-    '<h2></h2>' +
     '<div class="item occupation"><h3>직업</h3><ul></ul></div>' +
     '<div class="item affiliation"><h3>소속</h3><ul></ul></div>' +
     '<div class="item position"><h3>직위 </h3><ul></ul></div>' +
@@ -354,11 +351,12 @@ function renderInfobox(key) {
     '<div class="item father"><h3>아버지</h3><ul></ul></div>' +
     '<div class="item spouse"><h3>배우자</h3><ul></ul></div>' +
     `<img class="item image" src="#" alt="profile">` +
+    '<div class="edit"></div>' +
     ''
   )
 
   // Title
-  infobox.select('h2').html(`<a href="https://www.wikidata.org/entity/${node.key}" target="_blank">edit</a>`)
+  infobox.select('.edit').html(`<a href="https://www.wikidata.org/entity/${node.key}" target="_blank">edit on wikidata</a>`)
 
   // Occupation
   infobox.select('.occupation').classed('show', info.occupation)

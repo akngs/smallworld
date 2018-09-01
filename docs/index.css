@@ -35,7 +35,7 @@ input[type="submit"],
 /* Layout */
 .message {
     position: absolute;
-    bottom: 0.5rem;
+    top: calc(50% - 1rem);
     left: calc(50% - 5rem);
     width: 10rem;
     height: 2rem;
@@ -53,26 +53,18 @@ input[type="submit"],
     right: 0;
     top: 0;
     height: 2rem;
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 .infobox {
     position: absolute;
-    border: 1px solid #DDD;
-    bottom: 0.5rem;
+    bottom: 1rem;
     left: 1rem;
     padding: 0 1rem;
 }
 
-.infobox h2 {
-    position: absolute;
-    top: 0.2rem;
-    right: 0.5rem;
+.infobox .edit {
     font-variant-caps: small-caps;
-    font-size: 1rem;
-    font-weight: normal;
-    float: right;
-    margin: 0;
 }
 
 .infobox h3 {
