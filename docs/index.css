@@ -165,9 +165,6 @@ svg .node {
 svg .node .name {
     font-family: sans-serif;
     alignment-baseline: hanging;
-    stroke: #FFF;
-    stroke-width: 1px;
-    paint-order: stroke;
 }
 
 svg .node circle {
@@ -180,5 +177,4 @@ svg .node.active circle {
 }
 
 svg .node.active text {
-    stroke: #bafc6a;
 }

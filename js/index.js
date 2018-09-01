@@ -453,6 +453,8 @@ function renderGraph() {
     .attr('transform', node => `translate(${node.x}, ${node.y})`)
     .select('circle')
     .attr('r', node => node.fullyExpanded ? 5 : 7)
+    .attr('filter', node => node === activeNode ? 'url(#dropShadow)' : '')
+
   linksSel
     .attr('x1', d => d.source.x)
     .attr('y1', d => d.source.y)
