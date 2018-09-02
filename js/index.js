@@ -64,7 +64,7 @@ async function main() {
   nodesSel = svg.select('.nodes').selectAll('.node')
 
   forceLink = d3.forceLink(linksSel.data())
-    .distance(60)
+    .distance(50)
 
   force = d3.forceSimulation(nodesSel.data())
     .force("link", forceLink)
@@ -243,7 +243,7 @@ function isFullyExpanded(node) {
 
 
 function onInit() {
-  expandNode(data.nodesMap['persons']['Q445643'], 3)
+  expandNode(data.nodesMap['persons']['Q445643'], 5)
   updateNodes()
 }
 
