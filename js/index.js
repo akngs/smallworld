@@ -6,7 +6,7 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 
 
-const DATA_HASH = '8f94d41'
+const DATA_HASH = '2375c41'
 
 const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
@@ -64,14 +64,14 @@ async function main() {
   nodesSel = svg.select('.nodes').selectAll('.node')
 
   forceLink = d3.forceLink(linksSel.data())
-    .distance(80)
+    .distance(60)
 
   force = d3.forceSimulation(nodesSel.data())
     .force("link", forceLink)
-    .force("x", d3.forceX(0).strength(0.01))
-    .force("y", d3.forceY(0).strength(0.01))
+    .force("x", d3.forceX(0).strength(0.05))
+    .force("y", d3.forceY(0).strength(0.05))
     .force("collide", d3.forceCollide(20))
-    .force("charge", d3.forceManyBody().strength(-100))
+    .force("charge", d3.forceManyBody().strength(-200))
     .on('tick', onTick)
 
   onResize()
@@ -267,6 +267,7 @@ function onTick() {
 
 function onNodeClick(person) {
   if (d3.event['shiftKey']) {
+    setActivateNode(person)
     expandNode(person)
   } else if (d3.event['altKey']) {
     deselectNode(person)
