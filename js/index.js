@@ -6,7 +6,7 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 
 
-const DATA_HASH = 'b1b6162'
+const DATA_HASH = 'd31e0d8'
 
 const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
