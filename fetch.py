@@ -42,6 +42,7 @@ QUERY_CONDITIONS = [
     (
         "Korean",
         "{ ?human wdt:P27 wd:Q884. } "
+        "UNION { ?human wdt:P27 wd:Q423. } "
         "UNION { ?human wdt:P27 wd:Q28233. } "
         "UNION { ?human wdt:P27 wd:Q28179. } "
         "UNION { ?human wdt:P27 wd:Q18097. } ",
@@ -50,6 +51,7 @@ QUERY_CONDITIONS = [
         "who has Korean spouse",
         "?human wdt:P26 ?spouse. "
         "{ ?spouse wdt:P27 wd:Q884. } "
+        "UNION { ?spouse wdt:P27 wd:Q423. } "
         "UNION { ?spouse wdt:P27 wd:Q28233. } "
         "UNION { ?spouse wdt:P27 wd:Q28179. } "
         "UNION { ?spouse wdt:P27 wd:Q18097. } ",
@@ -58,6 +60,7 @@ QUERY_CONDITIONS = [
         "who has Korean mother",
         "?human wdt:P25 ?mother. "
         "{ ?mother wdt:P27 wd:Q884. } "
+        "UNION { ?mother wdt:P27 wd:Q423. } "
         "UNION { ?mother wdt:P27 wd:Q28233. } "
         "UNION { ?mother wdt:P27 wd:Q28179. } "
         "UNION { ?mother wdt:P27 wd:Q18097. } ",
@@ -66,6 +69,7 @@ QUERY_CONDITIONS = [
         "who has Korean father",
         "?human wdt:P22 ?father. "
         "{ ?father wdt:P27 wd:Q884. } "
+        "UNION { ?father wdt:P27 wd:Q423. } "
         "UNION { ?father wdt:P27 wd:Q28233. } "
         "UNION { ?father wdt:P27 wd:Q28179. } "
         "UNION { ?father wdt:P27 wd:Q18097. } ",
@@ -74,6 +78,7 @@ QUERY_CONDITIONS = [
         "who has Korean child",
         "?human wdt:P40 ?child. "
         "{ ?child wdt:P27 wd:Q884. } "
+        "UNION { ?child wdt:P27 wd:Q423. } "
         "UNION { ?child wdt:P27 wd:Q28233. } "
         "UNION { ?child wdt:P27 wd:Q28179. } "
         "UNION { ?child wdt:P27 wd:Q18097. } ",
