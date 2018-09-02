@@ -3,6 +3,7 @@ from json import JSONDecodeError
 
 import requests
 
+
 ENDPOINT = "https://query.wikidata.org/bigdata/namespace/wdq/sparql"
 
 QUERY_TEMPLATE = """
