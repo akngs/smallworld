@@ -255,6 +255,7 @@ function onResize() {
     .select('.root')
     .attr('transform', `translate(${innerWidth * 0.5}, ${innerHeight * 0.5})`)
 
+  force.alpha(1.0)
   force.restart()
 }
 
@@ -372,6 +373,8 @@ function updateNodes() {
   // Trigger layout
   force.nodes(nodesSel.data())
   forceLink.links(linksSel.data())
+
+  force.alpha(1.0)
   force.restart()
 }
 
