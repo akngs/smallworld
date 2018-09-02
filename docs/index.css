@@ -65,8 +65,8 @@ input[type="submit"],
     padding: 1rem 1rem;
 }
 
-.infobox .edit {
-    font-variant-caps: small-caps;
+.infobox .actions {
+    text-transform: uppercase;
 }
 
 .infobox h2 {
@@ -84,6 +84,18 @@ input[type="submit"],
     min-height: 1rem;
     margin-bottom: 1rem;
     background-color: #DDDDDD;
+}
+
+.infobox .actions {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.infobox .actions li {
+    display: inline-block;
+    padding: 0;
+    margin-right: 0.5rem;
 }
 
 @media (max-width: 1000px) {
@@ -117,6 +129,7 @@ input[type="submit"],
 .graph svg {
     width: 100%;
     height: 100%;
+    user-select: none;
 }
 
 /* Etc */
@@ -169,7 +182,8 @@ svg .node .name {
 
 svg .node circle {
     stroke-width: 2px;
-    stroke: #FFF;
+    stroke: #FFFFFF;
+    fill: #888888;
 }
 
 svg .node.active circle {

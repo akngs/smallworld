@@ -6,7 +6,7 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 
 
-const DATA_HASH = 'd31e0d8'
+const DATA_HASH = '8f94d41'
 
 const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
@@ -41,7 +41,7 @@ async function main() {
   const q = document.querySelector('.query input')
   new Awesomplete(q, {
     list: data.nodes['persons'].map(p => {
-      return {label: renderPersonBrief(p), value: p.key}
+      return {label: renderNodeBrief(p), value: p.key}
     }),
     minChars: 1,
     autoFirst: true
@@ -51,8 +51,9 @@ async function main() {
     q.value = ''
   })
   q.addEventListener('awesomplete-selectcomplete', e => {
-    toggleNode(e.text.value, true)
-    activateNode(e.text.value)
+    const node = data.nodesMap['persons'][e.text.value]
+    selectNode(node)
+    setActivateNode(node)
     updateNodes()
     q.value = ''
   })
@@ -147,8 +148,8 @@ async function loadData() {
   // Improve person nodes
   result.nodes['persons'].forEach((p, i) => {
     // Parse birthdate and deathdate
-    if(p['birth_date']) p['birth_date'] = PARSE_TIME(p['birth_date'])
-    if(p['death_date']) p['death_date'] = PARSE_TIME(p['death_date'])
+    if (p['birth_date']) p['birth_date'] = PARSE_TIME(p['birth_date'])
+    if (p['death_date']) p['death_date'] = PARSE_TIME(p['death_date'])
 
     // Generate brief info for persons
     p.info = {}
@@ -158,19 +159,30 @@ async function loadData() {
 }
 
 
-function toggleNode(key, force) {
-  const node = data.nodesMap['persons'][key]
-  if (!node) return
-  if (force && node.selected) return
+function selectNode(node) {
+  if (node.selected) return
 
-  // Toggle node
-  node.selected = force || !node.selected
-  if (node.selected) {
-    node.x = node.x || Math.random() - 0.5
-    node.y = node.y || Math.random() - 0.5
-  }
+  node.selected = true
+  node.x = node.x || Math.random() - 0.5
+  node.y = node.y || Math.random() - 0.5
+  updateFullyExpandedFlag(node)
+}
 
-  // Update "fullyExpanded" flags
+
+function deselectNode(node) {
+  if (!node.selected) return
+
+  node.selected = false
+  delete node.x
+  delete node.y
+
+  if (node === activeNode) deactivateNode()
+
+  updateFullyExpandedFlag(node)
+}
+
+
+function updateFullyExpandedFlag(node) {
   node.fullyExpanded = isFullyExpanded(node)
   node.links.filter(isKinship).forEach(l => {
     l.source.fullyExpanded = isFullyExpanded(l.source)
@@ -184,11 +196,10 @@ function isKinship(link) {
 }
 
 
-function expandNode(key, depth=1) {
-  toggleNode(key, true)
-  if(depth === 0) return
+function expandNode(node, depth = 1) {
+  selectNode(node)
 
-  const node = data.nodesMap['persons'][key]
+  if (depth === 0) return
   if (!node.links) return
 
   node.links.forEach(link => {
@@ -197,14 +208,14 @@ function expandNode(key, depth=1) {
         link.source.x = node.x
         link.source.y = node.y
       }
-      expandNode(link.source.key, depth - 1)
+      expandNode(link.source, depth - 1)
     }
     if (data.nodesMap['persons'][link.target.key]) {
       if (!link.target.selected) {
         link.target.x = node.x
         link.target.y = node.y
       }
-      expandNode(link.target.key, depth - 1)
+      expandNode(link.target, depth - 1)
     }
   })
 }
@@ -232,7 +243,7 @@ function isFullyExpanded(node) {
 
 
 function onInit() {
-  expandNode('Q445643', 3)
+  expandNode(data.nodesMap['persons']['Q445643'], 3)
   updateNodes()
 }
 
@@ -244,7 +255,7 @@ function onResize() {
     .select('.root')
     .attr('transform', `translate(${innerWidth * 0.5}, ${innerHeight * 0.5})`)
 
-  force.alphaTarget(0.3).restart()
+  force.restart()
 }
 
 
@@ -254,7 +265,16 @@ function onTick() {
 
 
 function onNodeClick(person) {
-  activateNode(person.key)
+  if (d3.event['shiftKey']) {
+    expandNode(person)
+  } else if (d3.event['altKey']) {
+    deselectNode(person)
+  } else if (person === activeNode) {
+    deactivateNode()
+  } else {
+    setActivateNode(person)
+  }
+
   updateNodes()
 }
 
@@ -283,33 +303,34 @@ function onNodeDragEnd(d) {
 }
 
 
-function activateNode(key) {
-  const person = data.nodesMap['persons'][key]
+function setActivateNode(node) {
+  if (activeNode === node) return
+  if (activeNode) deactivateNode()
 
-  if (activeNode) {
-    delete activeNode.fx
-    delete activeNode.fy
-  }
+  activeNode = node
+  activeNode.fx = activeNode.x
+  activeNode.fy = activeNode.y
 
-  if (activeNode === person) {
-    activeNode = null
-    document.querySelector('.infobox').innerHTML = ''
-  } else {
-    activeNode = person
-    activeNode.fx = activeNode.x
-    activeNode.fy = activeNode.y
+  renderInfobox(activeNode)
 
-    renderInfobox(activeNode.key)
+  d3.select(this).raise()
+  selectNode(node)
 
-    d3.select(this).raise()
-    expandNode(person.key)
+  window['dataLayer'].push({
+    'event': 'activateNode',
+    'key': activeNode.key,
+    'name': activeNode.name,
+  })
+}
 
-    window['dataLayer'].push({
-      'event': 'activateNode',
-      'key': activeNode.key,
-      'name': activeNode.name,
-    })
-  }
+
+function deactivateNode() {
+  if (!activeNode) return
+
+  delete activeNode.fx
+  delete activeNode.fy
+  activeNode = null
+  document.querySelector('.infobox').innerHTML = ''
 }
 
 
@@ -325,7 +346,6 @@ function updateNodes() {
     .attr('class', 'node person')
     .each(function (d) {
       d3.select(this).append('circle')
-        .attr('fill', 'steelblue')
       d3.select(this).append('text')
         .attr('class', 'name')
         .attr('transform', 'translate(8, 8)')
@@ -352,15 +372,14 @@ function updateNodes() {
   // Trigger layout
   force.nodes(nodesSel.data())
   forceLink.links(linksSel.data())
-  force.alphaTarget(0.3).restart()
+  force.restart()
 }
 
 
-function renderInfobox(key) {
-  const node = data.nodesMap['persons'][key]
+function renderInfobox(node) {
   const info = node.info
   const infobox = d3.select('.infobox').html(
-    `<h2>${renderPersonBrief(node)}</h2>` +
+    `<h2>${renderNodeBrief(node)}</h2>` +
     '<div class="item occupation"><h3>직업</h3><ul></ul></div>' +
     '<div class="item affiliation"><h3>소속</h3><ul></ul></div>' +
     '<div class="item position"><h3>직위 </h3><ul></ul></div>' +
@@ -372,7 +391,11 @@ function renderInfobox(key) {
     '<div class="item spouse"><h3>배우자</h3><ul></ul></div>' +
     '<div class="item child"><h3>자녀</h3><ul></ul></div>' +
     `<img class="item image" src="#" alt="profile">` +
-    '<div class="edit"></div>' +
+    '<ul class="actions">' +
+    '  <li class="edit"><a href="#" target="_blank">edit</a></li>' +
+    '  <li class="expand"><a href="#">expand</a></li>' +
+    '  <li class="hide"><a href="#">hide</a></li>' +
+    '</ul>' +
     ''
   )
 
@@ -416,34 +439,42 @@ function renderInfobox(key) {
   infobox.select('.mother').classed('show', info.mother)
   infobox.select('.mother ul').selectAll('li').data(info.mother || []).enter()
     .append('li')
-    .text(d => renderPersonBrief(d.target))
+    .text(d => renderNodeBrief(d.target))
 
   // Father
   infobox.select('.father').classed('show', info.father)
   infobox.select('.father ul').selectAll('li').data(info.father || []).enter()
     .append('li')
-    .text(d => renderPersonBrief(d.target))
+    .text(d => renderNodeBrief(d.target))
 
   // Spouse
   infobox.select('.spouse').classed('show', info.spouse)
   infobox.select('.spouse ul').selectAll('li').data(info.spouse || []).enter()
     .append('li')
-    .text(d => renderPersonBrief(d.target))
+    .text(d => renderNodeBrief(d.target))
 
   // Child
   infobox.select('.child').classed('show', info.child)
   infobox.select('.child ul').selectAll('li').data(info.child || []).enter()
     .append('li')
-    .text(d => renderPersonBrief(d.target))
+    .text(d => renderNodeBrief(d.target))
 
   // Image
   infobox.select('.image').classed('show', node.image)
-  if(node.image) {
+  if (node.image) {
     infobox.select('.image').attr('src', node.image.replace('http:', 'https:'))
   }
 
-  // Edit link
-  infobox.select('.edit').html(`<a href="https://www.wikidata.org/entity/${node.key}" target="_blank">edit on wikidata</a>`)
+  // Actions
+  infobox.select('.actions .edit a').attr('href', `https://www.wikidata.org/entity/${node.key}`)
+  infobox.select('.actions .expand a').on('click', () => {
+    expandNode(activeNode)
+    updateNodes()
+  })
+  infobox.select('.actions .hide a').on('click', () => {
+    deselectNode(activeNode)
+    updateNodes()
+  })
 }
 
 function renderGraph() {
@@ -478,23 +509,23 @@ function renderGraph() {
     .attr('y2', d => d.target.y)
 }
 
-function renderPersonBrief(person) {
-  const name = person['name']
+function renderNodeBrief(node) {
+  const name = node['name']
 
   // Try description
-  const description = person['description']
-  if(description) return `${name} (${description})`
+  const description = node['description']
+  if (description) return `${name} (${description})`
 
   // Try birthdate and deathdate
-  const birthdate = person['birth_date'] || null
-  const deathdate = person['death_date'] || null
+  const birthdate = node['birth_date'] || null
+  const deathdate = node['death_date'] || null
   let birth
-  if(birthdate) {
+  if (birthdate) {
     birth = `${birthdate.getFullYear()}`
-  } else if(deathdate) {
+  } else if (deathdate) {
     birth = `?-${deathdate.getFullYear()}`
   }
-  if(birth) return `${name} (${birth})`
+  if (birth) return `${name} (${birth})`
 
   // Use name as fallback
   return `${name}`
