@@ -6,7 +6,7 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 
 
-const DATA_HASH = '8519551'
+const DATA_HASH = 'b94a168'
 
 const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
@@ -69,8 +69,8 @@ async function main() {
     .force("link", forceLink)
     .force("x", d3.forceX(0).strength(0.01))
     .force("y", d3.forceY(0).strength(0.01))
-    .force("collide", d3.forceCollide(10))
-    .force("charge", d3.forceManyBody().strength(-50))
+    .force("collide", d3.forceCollide(20))
+    .force("charge", d3.forceManyBody().strength(-100))
     .on('tick', onTick)
 
   onResize()
@@ -184,11 +184,11 @@ function isKinship(link) {
 }
 
 
-function expandNode(key) {
+function expandNode(key, depth=1) {
   toggleNode(key, true)
+  if(depth === 0) return
 
   const node = data.nodesMap['persons'][key]
-
   if (!node.links) return
 
   node.links.forEach(link => {
@@ -197,14 +197,14 @@ function expandNode(key) {
         link.source.x = node.x
         link.source.y = node.y
       }
-      toggleNode(link.source.key, true)
+      expandNode(link.source.key, depth - 1)
     }
     if (data.nodesMap['persons'][link.target.key]) {
       if (!link.target.selected) {
         link.target.x = node.x
         link.target.y = node.y
       }
-      toggleNode(link.target.key, true)
+      expandNode(link.target.key, depth - 1)
     }
   })
 }
@@ -232,7 +232,7 @@ function isFullyExpanded(node) {
 
 
 function onInit() {
-  toggleNode("Q16080217")
+  expandNode('Q445643', 3)
   updateNodes()
 }
 
@@ -447,10 +447,26 @@ function renderInfobox(key) {
 }
 
 function renderGraph() {
+  // Calculate bounding box
+  const svg = d3.select('svg')
+  const margin = 20
+  const width = +svg.attr('width')
+  const height = +svg.attr('height')
+  const xmin = width * -0.5 + margin
+  const xmax = width * +0.5 - margin
+  const ymin = height * -0.5 + margin
+  const ymax = height * +0.5 - margin
+
   nodesSel
     .classed('active', node => node === activeNode)
     .classed('fully-expanded', node => node.fullyExpanded)
-    .attr('transform', node => `translate(${node.x}, ${node.y})`)
+    .attr('transform', node => {
+      // Make nodes to respect bounding box
+      node.x = Math.max(xmin, Math.min(xmax, node.x))
+      node.y = Math.max(ymin, Math.min(ymax, node.y))
+
+      return `translate(${node.x}, ${node.y})`
+    })
     .select('circle')
     .attr('r', node => node.fullyExpanded ? 5 : 7)
     .attr('filter', node => node === activeNode ? 'url(#dropShadow)' : '')

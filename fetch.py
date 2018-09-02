@@ -3,7 +3,6 @@ from json import JSONDecodeError
 
 import requests
 
-
 ENDPOINT = "https://query.wikidata.org/bigdata/namespace/wdq/sparql"
 
 QUERY_TEMPLATE = """
@@ -40,34 +39,45 @@ WHERE {
 """
 
 QUERY_CONDITIONS = [
-    "{ ?human wdt:P27 wd:Q884. } "
-    "UNION { ?human wdt:P27 wd:Q28233. } "
-    "UNION { ?human wdt:P27 wd:Q28179. } "
-    "UNION { ?human wdt:P27 wd:Q18097. } ",
-
-    "?human wdt:P26 ?spouse. "
-    "{ ?spouse wdt:P27 wd:Q884. } "
-    "UNION { ?spouse wdt:P27 wd:Q28233. } "
-    "UNION { ?spouse wdt:P27 wd:Q28179. } "
-    "UNION { ?spouse wdt:P27 wd:Q18097. } ",
-
-    "?human wdt:P25 ?mother. "
-    "{ ?mother wdt:P27 wd:Q884. } "
-    "UNION { ?mother wdt:P27 wd:Q28233. } "
-    "UNION { ?mother wdt:P27 wd:Q28179. } "
-    "UNION { ?mother wdt:P27 wd:Q18097. } ",
-
-    "?human wdt:P22 ?father. "
-    "{ ?father wdt:P27 wd:Q884. } "
-    "UNION { ?father wdt:P27 wd:Q28233. } "
-    "UNION { ?father wdt:P27 wd:Q28179. } "
-    "UNION { ?father wdt:P27 wd:Q18097. } ",
-
-    "?human wdt:P40 ?child. "
-    "{ ?child wdt:P27 wd:Q884. } "
-    "UNION { ?child wdt:P27 wd:Q28233. } "
-    "UNION { ?child wdt:P27 wd:Q28179. } "
-    "UNION { ?child wdt:P27 wd:Q18097. } ",
+    (
+        "Korean",
+        "{ ?human wdt:P27 wd:Q884. } "
+        "UNION { ?human wdt:P27 wd:Q28233. } "
+        "UNION { ?human wdt:P27 wd:Q28179. } "
+        "UNION { ?human wdt:P27 wd:Q18097. } ",
+    ),
+    (
+        "who has Korean spouse",
+        "?human wdt:P26 ?spouse. "
+        "{ ?spouse wdt:P27 wd:Q884. } "
+        "UNION { ?spouse wdt:P27 wd:Q28233. } "
+        "UNION { ?spouse wdt:P27 wd:Q28179. } "
+        "UNION { ?spouse wdt:P27 wd:Q18097. } ",
+    ),
+    (
+        "who has Korean mother",
+        "?human wdt:P25 ?mother. "
+        "{ ?mother wdt:P27 wd:Q884. } "
+        "UNION { ?mother wdt:P27 wd:Q28233. } "
+        "UNION { ?mother wdt:P27 wd:Q28179. } "
+        "UNION { ?mother wdt:P27 wd:Q18097. } ",
+    ),
+    (
+        "who has Korean father",
+        "?human wdt:P22 ?father. "
+        "{ ?father wdt:P27 wd:Q884. } "
+        "UNION { ?father wdt:P27 wd:Q28233. } "
+        "UNION { ?father wdt:P27 wd:Q28179. } "
+        "UNION { ?father wdt:P27 wd:Q18097. } ",
+    ),
+    (
+        "who has Korean child",
+        "?human wdt:P40 ?child. "
+        "{ ?child wdt:P27 wd:Q884. } "
+        "UNION { ?child wdt:P27 wd:Q28233. } "
+        "UNION { ?child wdt:P27 wd:Q28179. } "
+        "UNION { ?child wdt:P27 wd:Q18097. } ",
+    ),
 ]
 
 NODES = {
@@ -121,32 +131,33 @@ LINKS = [
 
 def main():
     data = []
-    for condition in QUERY_CONDITIONS:
+    for label, condition in QUERY_CONDITIONS:
+        print(f'Collecting {label}...', end='', flush=True)
         query = QUERY_TEMPLATE % condition
-        print(f'Trying: {condition}')
         while True:
             try:
                 new_data = requests.get(
                     ENDPOINT,
                     {"query": query, "format": "json"}
                 ).json()["results"]["bindings"]
+                print(len(new_data))
 
                 data += new_data
-                print(f'{len(data)} (added {len(new_data)} records)')
                 break
             except JSONDecodeError:
-                print('Retrying...')
+                pass
 
     for k, v in NODES.items():
         with open(f"data/{k}.csv", "w", encoding="utf-8") as f:
-            extract_nodes(data, v, f)
+            extract_nodes(data, k, v, f)
     with open(f"data/links.csv", "w", encoding="utf-8") as f:
         extract_links(data, LINKS, f)
 
 
-def extract_nodes(data, fields, f):
+def extract_nodes(data, node_type, fields, f):
     rows = (tuple(get_value(row, f) for f, _ in fields) for row in data)
     unique_rows = {cols for cols in rows if any(c != "" for c in cols)}
+    print(f'Unique {node_type}: {len(unique_rows)}')
 
     w = csv.writer(f)
     w.writerow([f for _, f in fields])
@@ -163,6 +174,7 @@ def extract_links(data, links, f):
             if len(b) == 0:
                 continue
             unique_rows.add((link, a, b))
+    print(f'Unique links: {len(unique_rows)}')
 
     w = csv.writer(f)
     w.writerow(["rel", "a", "b"])
