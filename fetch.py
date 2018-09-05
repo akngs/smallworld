@@ -1,5 +1,6 @@
 import csv
 from json import JSONDecodeError
+import networkx as nx
 
 import requests
 
@@ -134,6 +135,8 @@ LINKS = [
     "position",
 ]
 
+KINSHIP = {'mother', 'father', 'child', 'spouse'}
+
 
 def main():
     data = []
@@ -156,8 +159,12 @@ def main():
     for k, v in NODES.items():
         with open(f"data/{k}.csv", "w", encoding="utf-8") as f:
             extract_nodes(data, k, v, f)
+
     with open(f"data/links.csv", "w", encoding="utf-8") as f:
-        extract_links(data, LINKS, f)
+        links = extract_links(data, LINKS, f)
+
+    with open(f"data/hubs.csv", "w", encoding="utf-8") as f:
+        extract_hubs(links, f)
 
 
 def extract_nodes(data, node_type, fields, f):
@@ -182,10 +189,41 @@ def extract_links(data, links, f):
             unique_rows.add((link, a, b))
     print(f'Unique links: {len(unique_rows)}')
 
+    sorted_rows = sorted(unique_rows)
     w = csv.writer(f)
     w.writerow(["rel", "a", "b"])
-    for row in sorted(unique_rows):
+    for row in sorted_rows:
         w.writerow(row)
+    return sorted_rows
+
+
+def extract_hubs(links, f):
+    print(f'Extract hubs...')
+    # build graph from kinship
+    g = nx.Graph()
+    g.add_edges_from((a, b) for rel, a, b in links if rel in KINSHIP)
+
+    hubs = []
+    for _ in range(50):
+        # find hub using betweenness centrality
+        top = sorted(
+            nx.betweenness_centrality(g).items(),
+            key=lambda x: x[1], reverse=True
+        )[0]
+        hubs.append(top[0])
+
+        # remove hub and neighbors, then repeat to find next hubs
+        g.remove_nodes_from(list(g.neighbors(top[0])))
+        g.remove_node(top[0])
+
+        print(f'- {top[0]}')
+    print()
+
+    w = csv.writer(f)
+    w.writerow(['key'])
+    for hub in hubs:
+        w.writerow([hub])
+    return hubs
 
 
 def get_value(row, key):

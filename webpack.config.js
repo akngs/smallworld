@@ -23,6 +23,7 @@ module.exports = {
     libraryTarget: 'window'
   },
   externals: {
-    d3: 'd3'
+    d3: 'd3',
+    jsnetworkx: 'jsnetworkx'
   }
 }

@@ -95,6 +95,7 @@ async function loadData() {
     'persons',
     'positions',
     'links',
+    'hubs',
   ]
 
   showMessage('Loading...')
@@ -104,7 +105,8 @@ async function loadData() {
   const result = {
     nodes: {},
     nodesMap: {},
-    links: data.pop()
+    hubs: data.pop(),
+    links: data.pop(),
   }
   data.forEach((datum, i) => {
     result.nodes[dataNames[i]] = datum
@@ -155,6 +157,15 @@ async function loadData() {
     p.info = {}
     d3.nest().key(d => d.rel).entries(p.outs).forEach(g => p.info[g.key] = g.values)
   })
+
+  // Process hubs
+  result.hubs = result.hubs.map(hub => result.nodesMap['persons'][hub.key])
+  console.log(result.hubs)
+
+  // Build a graph
+  result.graph = buildGraph(result.links)
+
+  // Done
   return result
 }
 
@@ -243,7 +254,9 @@ function isFullyExpanded(node) {
 
 
 function onInit() {
-  expandNode(data.nodesMap['persons']['Q445643'], 5)
+  // Select top 10 hubs
+  data['hubs'].slice(0, 10).forEach(hub => selectNode(hub))
+
   updateNodes()
 }
 
@@ -333,6 +346,13 @@ function deactivateNode() {
   delete activeNode.fy
   activeNode = null
   document.querySelector('.infobox').innerHTML = ''
+}
+
+
+function findShortestPath(person0, person1) {
+  return jsnx
+    .bidirectionalShortestPath(data.graph, person0.key, person1.key)
+    .map(d => data.nodesMap['persons'][d])
 }
 
 
@@ -535,6 +555,13 @@ function renderNodeBrief(node) {
   return `${name}`
 }
 
+function buildGraph(links) {
+  const graph = new jsnx.Graph()
+  links
+    .filter(link => isKinship(link))
+    .forEach(link => graph.addEdge(link.source.key, link.target.key))
+  return graph
+}
 
 window.addEventListener("DOMContentLoaded", function () {
   main().then()
