@@ -6,7 +6,7 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 
 
-const DATA_HASH = '69e4843'
+const DATA_HASH = '825665e'
 
 const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
@@ -255,7 +255,7 @@ function isFullyExpanded(node) {
 
 function onInit() {
   // Select top 10 hubs
-  data['hubs'].slice(0, 10).forEach(hub => selectNode(hub))
+  data['hubs'].slice(0, 10).forEach(hub => expandNode(hub, 0))
 
   updateNodes()
 }

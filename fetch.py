@@ -141,7 +141,7 @@ KINSHIP = {'mother', 'father', 'child', 'spouse'}
 def main():
     data = []
     for label, condition in QUERY_CONDITIONS:
-        print(f'Collecting {label}...', end='', flush=True)
+        print(f'Collecting {label}... ', end='', flush=True)
         query = QUERY_TEMPLATE % condition
         while True:
             try:
@@ -198,7 +198,7 @@ def extract_links(data, links, f):
 
 
 def extract_hubs(links, f):
-    print(f'Extract hubs...')
+    print(f'Extract hubs... ', end='', flush=True)
     # build graph from kinship
     g = nx.Graph()
     g.add_edges_from((a, b) for rel, a, b in links if rel in KINSHIP)
@@ -216,7 +216,7 @@ def extract_hubs(links, f):
         g.remove_nodes_from(list(g.neighbors(top[0])))
         g.remove_node(top[0])
 
-        print(f'- {top[0]}')
+        print(f'#', end='', flush=True)
     print()
 
     w = csv.writer(f)
