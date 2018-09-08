@@ -234,8 +234,16 @@ function hideMessage(): void {
 }
 
 function onInit(): void {
-  // Select top 10 hubs
-  data['hubs'].slice(0, 10).forEach(hub => expandPerson(hub, 0))
+  const query = parseQuery(location.href)
+  if (query['keys']) {
+    query['keys'].split(',').forEach(key => {
+      expandPerson(data.nodesMap.persons[key], 1)
+    })
+
+  } else {
+    // Select top 10 hubs
+    data['hubs'].slice(0, 10).forEach(hub => expandPerson(hub, 0))
+  }
 
   updatePersons()
 }
@@ -256,15 +264,15 @@ function onTick(): void {
 }
 
 function onPersonClick(person: PersonNode): void {
-  if (d3.event['shiftKey']) {
-    activatePerson(person)
-    expandPerson(person)
-  } else if (d3.event['altKey']) {
+  if (d3.event['altKey']) {
     deselectPerson(person)
   } else if (person === activePerson) {
     deactivateNode()
+  } else if (d3.event['shiftKey']) {
+    activatePerson(person)
   } else {
     activatePerson(person)
+    expandPerson(person)
   }
 
   updatePersons()
@@ -541,7 +549,7 @@ async function loadData(): Promise<DataSet> {
     d3.csv(urlPrefix + 'persons.csv', parsePerson),
     d3.csv(urlPrefix + 'positions.csv', parsePosition),
     d3.csv(urlPrefix + 'links.csv', parseLink),
-    d3.csv(urlPrefix + 'hubs.csv', parsePerson),
+    d3.csv(urlPrefix + 'hubs.csv'),
   ])
 
   const affiliations = data[0] as AffiliationNode[]
@@ -553,7 +561,7 @@ async function loadData(): Promise<DataSet> {
   const positions = data[6] as PositionNode[]
 
   const rawLinks = data[7] as any[]
-  const rawHubs = data[8] as PersonNode[]
+  const rawHubs = data[8] as any[]
 
   const nodes: Nodes = {
     affiliations,
@@ -703,6 +711,20 @@ function buildGraph(links: Link[]): Graph {
 
 function pushDataLayer(obj: any) {
   (window as any).dataLayer.push(obj)
+}
+
+function parseQuery(url: string): { [key: string]: string } {
+  const result: { [key: string]: string } = {}
+  const qs: string | undefined = url.split('?')[1]
+  if (!qs) return result
+
+  const pairs: string[] = qs.split('&')
+  pairs.forEach(pair => {
+    const tokens: string[] = pair.split('=')
+    result[tokens[0] || ''] = tokens[1] || ''
+  })
+
+  return result
 }
 
 window.addEventListener("DOMContentLoaded", function () {

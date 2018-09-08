@@ -1,7 +1,9 @@
 import csv
 import json
 import os
+import shutil
 from json import JSONDecodeError
+from os import rmdir
 
 import requests
 
@@ -150,11 +152,18 @@ def main():
             data = json.load(f)
 
     # Extract nodes
+    nodes = {}
     for key, fields in NODES.items():
         rows = extract_nodes(data, fields)
         print(f'Unique {key}: {len(rows)}')
+        header = [field for _, field in fields]
         with open(f"data/{key}.csv", "w", encoding="utf-8") as f:
-            to_csv(rows, [field for _, field in fields], f)
+            to_csv(rows, header, f)
+
+        nodes[key] = {}
+        for row in rows:
+            node = dict(zip(header, row))
+            nodes[key][node["key"]] = node
 
     # Extract links
     links = extract_links(data, LINKS)
@@ -163,9 +172,28 @@ def main():
         to_csv(links, ["rel", "source", "target"], f)
 
     # Extract hubs
-    hubs = extract_hubs(links, 2)
+    hubs = extract_hubs(links, 3)[:100]
     with open(f"data/hubs.csv", "w", encoding="utf-8") as f:
-        to_csv(hubs, ["key"], f)
+        to_csv(hubs, ["key", "score", "degree"], f)
+
+    # Generate markdowns for hubs
+    shutil.rmtree('docs/_hubs/', ignore_errors=True)
+    os.mkdir('docs/_hubs')
+
+    for key, score, degree in hubs:
+        person = nodes['persons'][key]
+        with open(f"docs/_hubs/{person['key']}.md", "w", encoding="utf-8") as f:
+            f.write("\n".join([
+                "---",
+                "layout: hubs",
+                f"key: {person['key']}",
+                f"title: {person['name']}",
+                f"name: {person['name']}",
+                f"description: {person['description']}",
+                f"score: {score}",
+                f"degree: {degree}",
+                "---",
+            ]))
 
 
 def fetch_data():

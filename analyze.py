@@ -38,8 +38,10 @@ def extract_hubs(links, min_degree):
             nx.betweenness_centrality(g).items(),
             key=lambda x: x[1], reverse=True
         )[0]
-        hubs.append([top[0]])
+
         neighbors = list(g.neighbors(top[0]))
+        hub = [top[0], top[1], len(neighbors)]
+        hubs.append(hub)
 
         # remove hub and neighbors, then repeat to find next hubs
         g.remove_nodes_from(neighbors)
