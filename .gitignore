@@ -1,5 +1,9 @@
+# Project
+data/raw.json
+
 # Python
 .venv/
+__pycache__/
 
 # JS
 node_modules/

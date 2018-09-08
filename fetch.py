@@ -1,8 +1,11 @@
 import csv
+import json
+import os
 from json import JSONDecodeError
-import networkx as nx
 
 import requests
+
+from analyze import extract_nodes, extract_links, extract_hubs
 
 ENDPOINT = "https://query.wikidata.org/bigdata/namespace/wdq/sparql"
 
@@ -134,10 +137,38 @@ LINKS = [
     "position",
 ]
 
-KINSHIP = {'mother', 'father', 'child', 'spouse'}
-
 
 def main():
+    # Load raw data
+    force_fetch = os.environ.get('FORCE_FETCH', '0') == '1'
+    if force_fetch or not os.path.exists('data/raw.json'):
+        data = fetch_data()
+        with open('data/raw.json', 'w', encoding="utf-8") as f:
+            json.dump(data, f)
+    else:
+        with open('data/raw.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+    # Extract nodes
+    for key, fields in NODES.items():
+        rows = extract_nodes(data, fields)
+        print(f'Unique {key}: {len(rows)}')
+        with open(f"data/{key}.csv", "w", encoding="utf-8") as f:
+            to_csv(rows, [field for _, field in fields], f)
+
+    # Extract links
+    links = extract_links(data, LINKS)
+    print(f'Unique links: {len(links)}')
+    with open(f"data/links.csv", "w", encoding="utf-8") as f:
+        to_csv(links, ["rel", "source", "target"], f)
+
+    # Extract hubs
+    hubs = extract_hubs(links, 2)
+    with open(f"data/hubs.csv", "w", encoding="utf-8") as f:
+        to_csv(hubs, ["key"], f)
+
+
+def fetch_data():
     data = []
     for label, condition in QUERY_CONDITIONS:
         print(f'Collecting {label}... ', end='', flush=True)
@@ -154,86 +185,13 @@ def main():
                 break
             except JSONDecodeError:
                 pass
-
-    for k, v in NODES.items():
-        with open(f"data/{k}.csv", "w", encoding="utf-8") as f:
-            extract_nodes(data, k, v, f)
-
-    with open(f"data/links.csv", "w", encoding="utf-8") as f:
-        links = extract_links(data, LINKS, f)
-
-    with open(f"data/hubs.csv", "w", encoding="utf-8") as f:
-        extract_hubs(links, f)
+    return data
 
 
-def extract_nodes(data, node_type, fields, f):
-    rows = (tuple(get_value(row, f) for f, _ in fields) for row in data)
-    unique_rows = {cols for cols in rows if any(c != "" for c in cols)}
-    print(f'Unique {node_type}: {len(unique_rows)}')
-
+def to_csv(rows, fields, f):
     w = csv.writer(f)
-    w.writerow([f for _, f in fields])
-    for row in sorted(unique_rows, key=lambda r: (r[1:], r[0])):
-        w.writerow(row)
-
-
-def extract_links(data, links, f):
-    unique_rows = set()
-    for row in data:
-        source = get_value(row, "human")
-        for link in links:
-            target = get_value(row, link)
-            if len(target) == 0:
-                continue
-            unique_rows.add((link, source, target))
-    print(f'Unique links: {len(unique_rows)}')
-
-    sorted_rows = sorted(unique_rows)
-    w = csv.writer(f)
-    w.writerow(["rel", "source", "target"])
-    for row in sorted_rows:
-        w.writerow(row)
-    return sorted_rows
-
-
-def extract_hubs(links, f):
-    print(f'Extract hubs... ', end='', flush=True)
-    # build graph from kinship
-    g = nx.Graph()
-    g.add_edges_from(
-        (source, target)
-        for rel, source, target in links
-        if rel in KINSHIP
-    )
-
-    hubs = []
-    for _ in range(50):
-        # find hub using betweenness centrality
-        top = sorted(
-            nx.betweenness_centrality(g).items(),
-            key=lambda x: x[1], reverse=True
-        )[0]
-        hubs.append(top[0])
-
-        # remove hub and neighbors, then repeat to find next hubs
-        g.remove_nodes_from(list(g.neighbors(top[0])))
-        g.remove_node(top[0])
-
-        print(f'#', end='', flush=True)
-    print()
-
-    w = csv.writer(f)
-    w.writerow(['key'])
-    for hub in hubs:
-        w.writerow([hub])
-    return hubs
-
-
-def get_value(row, key):
-    value = row.get(key, {"value": ""})["value"]
-    if value.startswith("http://www.wikidata.org/entity/"):
-        value = value[len("http://www.wikidata.org/entity/"):]
-    return value
+    w.writerow(fields)
+    w.writerows(rows)
 
 
 if __name__ == '__main__':

@@ -6,6 +6,10 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 import Promise from "promise-polyfill";
 
+const DATA_HASH = 'f35990d'
+const PARSE_TIME = d3.timeParse('%Y-%m-%dT%H:%M:%SZ')
+const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
+
 export interface Node {
   key: string
   name: string
@@ -524,10 +528,6 @@ function renderPersonBrief(person: PersonNode) {
   // Use name as fallback
   return `${name}`
 }
-
-const DATA_HASH = '825665e'
-const PARSE_TIME = d3.timeParse('%Y-%m-%dT%H:%M:%SZ')
-const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
 async function loadData(): Promise<DataSet> {
   const urlPrefix = location.hostname === 'localhost' ?
