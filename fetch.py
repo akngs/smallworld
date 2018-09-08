@@ -4,7 +4,6 @@ import networkx as nx
 
 import requests
 
-
 ENDPOINT = "https://query.wikidata.org/bigdata/namespace/wdq/sparql"
 
 QUERY_TEMPLATE = """
@@ -93,8 +92,8 @@ NODES = {
         ("humanLabel", "name"),
         ("humanDescription", "description"),
         ("image", "image"),
-        ("birthdate", "birth_date"),
-        ("deathdate", "death_date"),
+        ("birthdate", "birthdate"),
+        ("deathdate", "deathdate"),
     ),
     "birthplaces": (
         ("birthplace", "key"),
@@ -181,17 +180,17 @@ def extract_nodes(data, node_type, fields, f):
 def extract_links(data, links, f):
     unique_rows = set()
     for row in data:
-        a = get_value(row, "human")
+        source = get_value(row, "human")
         for link in links:
-            b = get_value(row, link)
-            if len(b) == 0:
+            target = get_value(row, link)
+            if len(target) == 0:
                 continue
-            unique_rows.add((link, a, b))
+            unique_rows.add((link, source, target))
     print(f'Unique links: {len(unique_rows)}')
 
     sorted_rows = sorted(unique_rows)
     w = csv.writer(f)
-    w.writerow(["rel", "a", "b"])
+    w.writerow(["rel", "source", "target"])
     for row in sorted_rows:
         w.writerow(row)
     return sorted_rows
@@ -201,7 +200,11 @@ def extract_hubs(links, f):
     print(f'Extract hubs... ', end='', flush=True)
     # build graph from kinship
     g = nx.Graph()
-    g.add_edges_from((a, b) for rel, a, b in links if rel in KINSHIP)
+    g.add_edges_from(
+        (source, target)
+        for rel, source, target in links
+        if rel in KINSHIP
+    )
 
     hubs = []
     for _ in range(50):

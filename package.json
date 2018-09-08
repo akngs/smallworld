@@ -21,7 +21,10 @@
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
+    "@babel/preset-typescript": "^7.0.0",
+    "@types/awesomplete": "^1.1.8",
     "@types/d3": "^5.0.0",
+    "@types/promise-polyfill": "^6.0.0",
     "babel-loader": "^8.0.0",
     "babel-preset-env": "^1.7.0",
     "jsnetworkx": "^0.3.4",

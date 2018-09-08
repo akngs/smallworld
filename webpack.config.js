@@ -1,18 +1,13 @@
 const path = require('path')
 
 module.exports = {
-  entry: './js/index.js',
+  entry: './js/index.ts',
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|ts)$/,
         exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+        loader: 'babel-loader',
       }
     ]
   },
