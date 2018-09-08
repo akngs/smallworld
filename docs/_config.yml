@@ -25,8 +25,19 @@ github_username:  akngs
 
 # Build settings
 markdown: kramdown
+theme: minima
 plugins:
   - jekyll-feed
+
+# minima specifics
+header_pages:
+- about.md
+
+minima:
+  date_format: "%Y-%m-%d"
+
+gtm: "GTM-52FMCWR"
+google-analytics: "dummy"
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list

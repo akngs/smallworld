@@ -6,7 +6,9 @@
   "scripts": {
     "watch": "webpack --mode=development --watch",
     "build": "webpack --mode=production",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "jekyll": "cd docs && jekyll serve --watch",
+    "start": "concurrently \"npm:watch\" \"npm:jekyll\""
   },
   "repository": {
     "type": "git",
@@ -27,6 +29,7 @@
     "@types/promise-polyfill": "^6.0.0",
     "babel-loader": "^8.0.0",
     "babel-preset-env": "^1.7.0",
+    "concurrently": "^4.0.1",
     "jsnetworkx": "^0.3.4",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"

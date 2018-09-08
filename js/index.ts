@@ -530,9 +530,7 @@ function renderPersonBrief(person: PersonNode) {
 }
 
 async function loadData(): Promise<DataSet> {
-  const urlPrefix = location.hostname === 'localhost' ?
-    '../data/' :
-    `//cdn.rawgit.com/akngs/smallworld/${DATA_HASH}/data/`
+  const urlPrefix = `//cdn.rawgit.com/akngs/smallworld/${DATA_HASH}/data/`
 
   const data: any[][] = await Promise.all([
     d3.csv(urlPrefix + 'affiliations.csv', parseAffiliation),
