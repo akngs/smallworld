@@ -6,7 +6,7 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 import Promise from "promise-polyfill";
 
-const DATA_HASH = 'f35990d'
+const DATA_HASH = '1e3b395'
 const PARSE_TIME = d3.timeParse('%Y-%m-%dT%H:%M:%SZ')
 const KINSHIP_RELS = ['child', 'mother', 'father', 'spouse']
 
@@ -239,7 +239,15 @@ function onInit(): void {
     query['keys'].split(',').forEach(key => {
       expandPerson(data.nodesMap.persons[key], 1)
     })
-
+  } else if(query['paths']) {
+    query['paths'].split(',').forEach(path => {
+      const keys = path.split('-')
+      const persons = findShortestPath(
+        data.nodesMap.persons[keys[0]],
+        data.nodesMap.persons[keys[1]]
+      )
+      persons.forEach(p => expandPerson(p, 0))
+    })
   } else {
     // Select top 10 hubs
     data['hubs'].slice(0, 10).forEach(hub => expandPerson(hub, 0))
@@ -331,11 +339,11 @@ function deactivateNode(): void {
   infobox.innerHTML = ''
 }
 
-// function findShortestPath(person0: PersonNode, person1: PersonNode): PersonNode[] {
-//   return jsnx
-//     .bidirectionalShortestPath(data.graph, person0.key, person1.key)
-//     .map((key: string) => data.nodesMap.persons[key])
-// }
+function findShortestPath(person0: PersonNode, person1: PersonNode): PersonNode[] {
+  return jsnx
+    .bidirectionalShortestPath(data.graph, person0.key, person1.key)
+    .map((key: string) => data.nodesMap.persons[key])
+}
 
 /**
  * Apply changes in selected nodes
