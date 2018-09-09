@@ -4,9 +4,9 @@ import "babel-polyfill"
 import 'whatwg-fetch'
 import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
-import Promise from "promise-polyfill";
+import Promise from "promise-polyfill"
 
-const DATA_HASH = 'ede822c'
+const DATA_HASH = '46242eb'
 
 let renderer: Renderer
 
@@ -20,15 +20,15 @@ export async function explorerMain() {
   hideMessage()
 
   const network = new Network(data, {
-    onActivated: (network, person) => {
-      renderInfobox(network, person)
+    onActivated: (network, node) => {
+      renderInfobox(network, node)
       pushDataLayer({
         'event': 'activateNode',
-        'key': person.key,
-        'name': person.name
+        'key': node.key,
+        'name': node.name
       })
     },
-    onDeactivate: person => {
+    onDeactivate: node => {
       const infobox = document.querySelector('.infobox')
       if (!infobox) throw new Error('Not found: ".infobox"')
       infobox.innerHTML = ''
@@ -38,14 +38,14 @@ export async function explorerMain() {
   window.addEventListener('resize', () => renderer.resize())
 
   // Init autocomplete
-  const q = document.querySelector('.query input') as HTMLInputElement | null
+  const q = document.querySelector<HTMLInputElement>('.query input')
   if (!q) throw new Error('Not found: ".query input"')
   if (!q.form) throw new Error('Not found: "q.form')
   q.disabled = false
 
   new Awesomplete(q, {
-    list: network.getPersons().map(person => {
-      return {label: network.getPersonBrief(person), value: person.key}
+    list: network.getNodes().map(node => {
+      return {label: network.getPersonBrief(node.key), value: node.key}
     }),
     minChars: 1,
     autoFirst: true
@@ -55,10 +55,10 @@ export async function explorerMain() {
     q.value = ''
   })
   q.addEventListener('awesomplete-selectcomplete', (e: any) => {
-    const person = network.getPerson(e.text.value)
-    if (person) {
-      network.select(person)
-      network.activate(person)
+    const node = network.getNode(e.text.value)
+    if (node) {
+      network.select(node)
+      network.activate(node)
       renderer.rerender()
     }
     q.value = ''
@@ -68,25 +68,20 @@ export async function explorerMain() {
   const query = parseQuery(location.href)
   if (query['keys']) {
     query['keys'].split(',').forEach(key => {
-      const person = network.getPerson(key)
-      if (person) network.expand(person, 1)
+      const node = network.getNode(key)
+      network.expand(node, 1)
     })
   } else if (query['paths']) {
     query['paths'].split(',').forEach(path => {
       const keys = path.split('-')
-      const person0 = network.getPerson(keys[0])
-      const person1 = network.getPerson(keys[1])
-      if (person0 && person1) {
-        network
-          .findShortestPath(person0, person1)
-          .forEach(p => network.expand(p, 0))
-      }
+      const node1 = network.getNode(keys[0])
+      const node2 = network.getNode(keys[1])
+      network
+        .findShortestPath(node1, node2)
+        .forEach(key => network.expand(key, 0))
     })
   } else {
-    // Select top 10 hubs
-    network.getHubs()
-      .splice(0, 10)
-      .forEach(hub => network.expand(hub, 0))
+    // Do nothing
   }
 
   // Done
@@ -108,10 +103,10 @@ function hideMessage(): void {
   element.classList.remove('show')
 }
 
-function renderInfobox(network: Network, person: PersonNode): void {
-  const info = person.info
+function renderInfobox(network: Network, node: NetworkNode): void {
+  const info = node.info
   const infobox = d3.select('.infobox').html(
-    `<h2>${network.getPersonBrief(person)}</h2>` +
+    `<h2>${network.getPersonBrief(node.key)}</h2>` +
     `<img class="item image" src="#" alt="profile">` +
     '<div class="item occupation"><h3>직업</h3><ul></ul></div>' +
     '<div class="item affiliation"><h3>소속</h3><ul></ul></div>' +
@@ -133,78 +128,80 @@ function renderInfobox(network: Network, person: PersonNode): void {
 
   // Occupation
   infobox.select('.occupation').classed('show', !!info.occupation)
-  infobox.select('.occupation ul').selectAll<HTMLLIElement, Link>('li').data(info.occupation || []).enter()
+  infobox.select('.occupation ul').selectAll('li').data(info.occupation || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => d.name)
 
   // Affiliation
   infobox.select('.affiliation').classed('show', !!info.affiliation)
   infobox.select('.affiliation ul').selectAll('li').data(info.affiliation || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => d.name)
 
   // Position
   infobox.select('.position').classed('show', !!info.position)
   infobox.select('.position ul').selectAll('li').data(info.position || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => d.name)
 
   // Membership
   infobox.select('.membership').classed('show', !!info.membership)
   infobox.select('.membership ul').selectAll('li').data(info.membership || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => d.name)
 
   // Education
   infobox.select('.education').classed('show', !!info.education)
   infobox.select('.education ul').selectAll('li').data(info.education || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => d.name)
 
   // Birthplace
   infobox.select('.birthplace').classed('show', !!info.birthplace)
   infobox.select('.birthplace ul').selectAll('li').data(info.birthplace || []).enter()
     .append('li')
-    .text(d => d.target.name)
+    .text(d => d.name)
 
   // Mother
   infobox.select('.mother').classed('show', !!info.mother)
   infobox.select('.mother ul').selectAll('li').data(info.mother || []).enter()
     .append('li')
-    .text(d => network.getPersonBrief(d.target as PersonNode))
+    .text(d => network.getPersonBrief(d.key))
 
   // Father
   infobox.select('.father').classed('show', !!info.father)
   infobox.select('.father ul').selectAll('li').data(info.father || []).enter()
     .append('li')
-    .text(d => network.getPersonBrief(d.target as PersonNode))
+    .text(d => network.getPersonBrief(d.key))
 
   // Spouse
   infobox.select('.spouse').classed('show', !!info.spouse)
   infobox.select('.spouse ul').selectAll('li').data(info.spouse || []).enter()
     .append('li')
-    .text(d => network.getPersonBrief(d.target as PersonNode))
+    .text(d => network.getPersonBrief(d.key))
 
   // Child
   infobox.select('.child').classed('show', !!info.child)
   infobox.select('.child ul').selectAll('li').data(info.child || []).enter()
     .append('li')
-    .text(d => network.getPersonBrief(d.target as PersonNode))
+    .text(d => network.getPersonBrief(d.key))
 
   // Image
-  infobox.select('.image').classed('show', !!person.image)
-  if (person.image) {
-    infobox.select('.image').attr('src', person.image.replace('http:', 'https:'))
+  infobox.select('.image').classed('show', !!node.image)
+  if (node.image) {
+    infobox.select('.image').attr('src', node.image.replace('http:', 'https:'))
   }
 
   // Actions
-  infobox.select('.actions .edit a').attr('href', `https://www.wikidata.org/entity/${person.key}`)
+  infobox.select('.actions .edit a').attr('href', `https://www.wikidata.org/entity/${node.key}`)
   infobox.select('.actions .expand a').on('click', () => {
-    network.expand(person)
+    d3.event.preventDefault()
+    network.expand(node)
     renderer.rerender()
   })
   infobox.select('.actions .hide a').on('click', () => {
-    network.deselect(person)
+    d3.event.preventDefault()
+    network.deselect(node)
     renderer.rerender()
   })
 }
@@ -230,90 +227,51 @@ function parseQuery(url: string): { [key: string]: string } {
 
 
 export interface Node {
+  type: string
   key: string
   name: string
-  ins: Link[]
-  outs: Link[]
-  links: Link[]
+  ins: Link<Node, Node>[]
+  outs: Link<Node, Node>[]
+  links: Link<Node, Node>[]
 }
 
-export interface AffiliationNode extends Node {
-}
-
-export interface BirthplaceNode extends Node {
-}
-
-export interface EducationNode extends Node {
-}
-
-export interface MembershipNode extends Node {
-}
-
-export interface OccupationNode extends Node {
-}
-
-export interface PositionNode extends Node {
-}
-
-export interface PersonNode extends Node, d3.SimulationNodeDatum {
-  ins: PersonLink[]
-  outs: PersonLink[]
-  links: PersonLink[]
-
+export interface PersonNode extends Node {
+  ins: Link<Node, PersonNode>[]
+  outs: Link<PersonNode, Node>[]
   description?: string
   birthdate?: Date
   deathdate?: Date
   image?: string
-
-  info: { [key: string]: Link[] }
-
-  selected: boolean
-  fullyExpanded: boolean
+  info: { [key: string]: Node[] }
 }
 
-export interface Link {
-  source: Node
-  target: Node
+export interface Link<S extends Node, T extends Node> {
+  source: S
+  target: T
   rel: string
-  kinship: boolean
 }
 
-export interface PersonLink extends d3.SimulationLinkDatum<PersonNode> {
-  source: PersonNode
-  target: PersonNode
-  rel: string
-  kinship: boolean
+export interface GraphStats {
+  nNodes: number
+  nEdges: number
+  subgraphs: {
+    nodes: PersonNode[],
+    nNodes: number,
+    nEdges: number,
+    avgShortestPath: number,
+  }[]
 }
 
 export interface JsnxGraph {
-}
-
-export interface Nodes {
-  affiliations: AffiliationNode[]
-  birthplaces: BirthplaceNode[]
-  educations: EducationNode[]
-  memberships: MembershipNode[]
-  occupations: OccupationNode[]
-  persons: PersonNode[]
-  positions: PositionNode[]
-}
-
-export interface NodesMap {
-  affiliations: { [key: string]: AffiliationNode }
-  birthplaces: { [key: string]: BirthplaceNode }
-  educations: { [key: string]: EducationNode }
-  memberships: { [key: string]: MembershipNode }
-  occupations: { [key: string]: OccupationNode }
-  persons: { [key: string]: PersonNode }
-  positions: { [key: string]: PositionNode }
+  addEdge: (a: string, b: string) => void
 }
 
 export interface DataSet {
-  nodes: Nodes
-  nodesMap: NodesMap
+  nodes: Node[]
+  nodeMap: Map<string, Node>
   hubs: PersonNode[]
-  links: PersonLink[]
-  graph: JsnxGraph
+  links: Link<Node, Node>[]
+  stats: GraphStats
 }
 
 const parseTime = d3.timeParse('%Y-%m-%dT%H:%M:%SZ')
@@ -322,24 +280,26 @@ class Loader {
   async loadData(): Promise<DataSet> {
     const urlPrefix = `//cdn.rawgit.com/akngs/smallworld/${DATA_HASH}/data/`
 
-    const data = await Promise.all<AffiliationNode[],
-      BirthplaceNode[],
-      EducationNode[],
-      MembershipNode[],
-      OccupationNode[],
+    const data = await Promise.all<Node[],
+      Node[],
+      Node[],
+      Node[],
+      Node[],
       PersonNode[],
-      PositionNode[],
+      Node[],
       any[],
-      any[]>([
-      d3.csv(urlPrefix + 'affiliations.csv', this.parseNode),
-      d3.csv(urlPrefix + 'birthplaces.csv', this.parseNode),
-      d3.csv(urlPrefix + 'educations.csv', this.parseNode),
-      d3.csv(urlPrefix + 'memberships.csv', this.parseNode),
-      d3.csv(urlPrefix + 'occupations.csv', this.parseNode),
-      d3.csv(urlPrefix + 'persons.csv', this.parsePerson),
-      d3.csv(urlPrefix + 'positions.csv', this.parseNode),
+      any[],
+      any>([
+      d3.csv(urlPrefix + 'affiliations.csv', raw => this.parseNode(raw, 'affiliation')),
+      d3.csv(urlPrefix + 'birthplaces.csv', raw => this.parseNode(raw, 'birthplaces')),
+      d3.csv(urlPrefix + 'educations.csv', raw => this.parseNode(raw, 'education')),
+      d3.csv(urlPrefix + 'memberships.csv', raw => this.parseNode(raw, 'membership')),
+      d3.csv(urlPrefix + 'occupations.csv', raw => this.parseNode(raw, 'occupation')),
+      d3.csv(urlPrefix + 'persons.csv', raw => this.parsePerson(raw)),
+      d3.csv(urlPrefix + 'positions.csv', raw => this.parseNode(raw, 'position')),
       d3.csv(urlPrefix + 'links.csv', this.parseLink),
       d3.csv(urlPrefix + 'hubs.csv'),
+      d3.json(urlPrefix + 'stats.json'),
     ])
 
     const affiliations = data[0]
@@ -352,54 +312,35 @@ class Loader {
 
     const rawLinks = data[7]
     const rawHubs = data[8]
+    const rawStats = data[9]
 
-    const nodes: Nodes = {
-      affiliations,
-      birthplaces,
-      educations,
-      memberships,
-      occupations,
-      persons,
-      positions,
-    }
+    // Generate concatenated node list
+    const nodes: Node[] = [
+      ...affiliations,
+      ...birthplaces,
+      ...educations,
+      ...memberships,
+      ...occupations,
+      ...persons,
+      ...positions,
+    ]
 
     // Generate key-value maps for nodes
-    const affiliationsMap: { [key: string]: AffiliationNode } = {}
-    affiliations.forEach(n => affiliationsMap[n.key] = n)
-    const birthplacesMap: { [key: string]: BirthplaceNode } = {}
-    birthplaces.forEach(n => birthplacesMap[n.key] = n)
-    const educationsMap: { [key: string]: EducationNode } = {}
-    educations.forEach(n => educationsMap[n.key] = n)
-    const membershipsMap: { [key: string]: MembershipNode } = {}
-    memberships.forEach(n => membershipsMap[n.key] = n)
-    const occupationsMap: { [key: string]: OccupationNode } = {}
-    occupations.forEach(n => occupationsMap[n.key] = n)
-    const personsMap: { [key: string]: PersonNode } = {}
-    persons.forEach(n => personsMap[n.key] = n)
-    const positionsMap: { [key: string]: PositionNode } = {}
-    positions.forEach(n => positionsMap[n.key] = n)
-
-    const nodesMap: NodesMap = {
-      affiliations: affiliationsMap,
-      birthplaces: birthplacesMap,
-      educations: educationsMap,
-      memberships: membershipsMap,
-      occupations: occupationsMap,
-      persons: personsMap,
-      positions: positionsMap,
-    }
+    const nodeMap: Map<string, Node> = new Map()
+    nodes.forEach(node => nodeMap.set(node.key, node))
 
     // Process links
-    const links: PersonLink[] = rawLinks
+    const links = rawLinks
       .map((raw: any) => {
         return {
-          source: nodesMap.persons[raw.source],
-          target: nodesMap.persons[raw.target],
+          source: nodeMap.get(raw.source),
+          target: nodeMap.get(raw.target),
           rel: raw.rel,
-          kinship: true,
         }
       })
-      .filter((link: any) => link.source && link.target)
+      .filter((raw: any) => {
+        return raw.source && raw.target
+      }) as Link<Node, Node>[]
 
     links.forEach(link => {
       link.source.outs.push(link)
@@ -409,28 +350,37 @@ class Loader {
     })
 
     // Generate brief info for persons
-    nodes.persons.forEach(person => {
+    const personNodes = nodes.filter(node => node.type === 'person') as PersonNode[]
+    personNodes.forEach(person => {
       person.info = {}
-      d3.nest<Link>()
+      d3.nest<Link<Node, Node>>()
         .key(link => link.rel)
         .entries(person.outs)
-        .forEach(g => person.info[g.key] = g.values)
+        .forEach(g => {
+          person.info[g.key] = g.values.map((link: Link<Node, Node>) => link.target)
+        })
     })
 
-    const hubs: PersonNode[] = rawHubs.map(raw => nodesMap.persons[raw.key])
-    const graph: JsnxGraph = this.buildGraph(links)
+    const hubs = rawHubs.map(raw => nodeMap.get(raw.key)) as PersonNode[]
+
+    // Process stats
+    rawStats.subgraphs.forEach((g: any) => {
+      g.nodes = g.nodes.map((key: string) => nodeMap.get(key))
+    })
+    const stats = rawStats as GraphStats
 
     return {
       nodes,
       links,
-      nodesMap,
+      nodeMap,
       hubs,
-      graph,
+      stats,
     }
   }
 
-  private parseNode(raw: any): Node {
+  private parseNode(raw: any, type: string): Node {
     return {
+      type: type,
       key: raw.key,
       name: raw.name,
       ins: [],
@@ -441,6 +391,7 @@ class Loader {
 
   private parsePerson(raw: any): PersonNode {
     return {
+      type: 'person',
       key: raw.key,
       name: raw.name,
       description: raw.description,
@@ -453,8 +404,6 @@ class Loader {
       links: [],
 
       info: {},
-      selected: false,
-      fullyExpanded: false,
     }
   }
 
@@ -463,135 +412,166 @@ class Loader {
       source: raw.source,
       target: raw.target,
       rel: raw.rel,
-      kinship: ['child', 'mother', 'father', 'spouse'].indexOf(raw.rel) !== -1
     }
-  }
-
-  private buildGraph(links: Link[]): JsnxGraph {
-    const graph = new jsnx.Graph()
-    links
-      .filter(link => link.kinship)
-      .forEach(link => graph.addEdge(link.source.key, link.target.key))
-    return graph
   }
 }
 
 interface NetworkStateListener {
-  onActivated?: (network: Network, person: PersonNode) => void
-  onDeactivate?: (network: Network, person: PersonNode) => void
+  onActivated?: (network: Network, node: NetworkNode) => void
+  onDeactivate?: (network: Network, node: NetworkNode) => void
+}
+
+interface NetworkNode extends PersonNode, d3.SimulationNodeDatum {
+  selected: boolean
+  fullyExpanded: boolean
 }
 
 class Network {
-  private readonly data: DataSet
-  private activatedPerson: PersonNode | null
+  private readonly kinship: Set<string>
+  private readonly nodeMap: Map<string, NetworkNode>
+  private readonly nodes: NetworkNode[]
+  private readonly links: Link<NetworkNode, NetworkNode>[]
+  private readonly graph: JsnxGraph
+  private activatedNode: NetworkNode | null
   private readonly listener: NetworkStateListener
 
   constructor(data: DataSet, listener?: NetworkStateListener) {
-    this.data = data
-    this.activatedPerson = null
+    this.kinship = new Set(['mother', 'father', 'child', 'spouse'])
+
+    // Convert Nodes into NetworkNodes
+    this.nodes = data.nodes
+      .filter(node => node.type === 'person')
+      .map(node => {
+        return {
+          ...node,
+          selected: false,
+          fullyExpanded: false,
+        }
+      }) as NetworkNode[]
+
+    // Build map for fast lookup
+    this.nodeMap = new Map()
+    this.nodes.forEach(node => this.nodeMap.set(node.key, node))
+
+    // Replace links in nodes
+    this.nodes.forEach(node => {
+      node.links = node.links
+        .filter(link => this.isKinship(link))
+        .map(link => {
+          return {
+            source: this.nodeMap.get(link.source.key),
+            target: this.nodeMap.get(link.target.key),
+            rel: link.rel,
+          }
+        }) as Link<NetworkNode, NetworkNode>[]
+    })
+
+    // Convert links
+    this.links = data.links
+      .filter(link => this.isKinship(link))
+      .map(link => {
+        return {
+          source: this.getNode(link.source.key),
+          target: this.getNode(link.target.key),
+          rel: link.rel,
+        }
+      }) as Link<NetworkNode, NetworkNode>[]
+
+    this.graph = new jsnx.Graph()
+    this.links.forEach(link => this.graph.addEdge(link.source.key, link.target.key))
+
+    this.activatedNode = null
     this.listener = listener || {}
   }
 
-  select(person: PersonNode): void {
-    if (person.selected) return
+  select(node: NetworkNode): void {
+    if (node.selected) return
 
-    person.selected = true
-    person.x = person.x || Math.random() - 0.5
-    person.y = person.y || Math.random() - 0.5
-    this.updateFullyExpandedFlag(person)
+    node.selected = true
+    this.updateFullyExpandedFlag(node)
   }
 
-  deselect(person: PersonNode): void {
-    if (!person.selected) return
+  deselect(node: NetworkNode): void {
+    if (!node.selected) return
 
-    person.selected = false
-    delete person.x
-    delete person.y
+    node.selected = false
+    node.x = undefined
+    node.y = undefined
 
-    if (person === this.activatedPerson) this.deactivate()
-
-    this.updateFullyExpandedFlag(person)
+    if (this.isActivated(node)) this.deactivate()
+    this.updateFullyExpandedFlag(node)
   }
 
-  expand(person: PersonNode, depth: number = 1): void {
-    this.select(person)
+  expand(node: NetworkNode, depth: number = 1): void {
+    this.select(node)
 
     if (depth === 0) return
-    if (!person.links) return
+    if (!node.links) return
 
-    person.links.forEach(link => {
-      if (this.data.nodesMap.persons[link.source.key]) {
-        if (!link.source.selected) {
-          link.source.x = person.x
-          link.source.y = person.y
-        }
-        this.expand(link.source, depth - 1)
-      }
-      if (this.data.nodesMap.persons[link.target.key]) {
-        if (!link.target.selected) {
-          link.target.x = person.x
-          link.target.y = person.y
-        }
-        this.expand(link.target, depth - 1)
-      }
-    })
+    node.links
+      .filter(link => this.isKinship(link))
+      .forEach(link => {
+        this.expand(link.source as NetworkNode, depth - 1)
+        this.expand(link.target as NetworkNode, depth - 1)
+      })
   }
 
-  activate(person: PersonNode) {
-    if (this.activatedPerson === person) return
-    if (this.activatedPerson) this.deactivate()
+  activate(node: NetworkNode) {
+    if (this.activatedNode === node) return
+    if (this.activatedNode) this.deactivate()
 
-    this.activatedPerson = person
-    this.activatedPerson.fx = person.x
-    this.activatedPerson.fy = person.y
+    node.fx = node.x
+    node.fy = node.y
+    this.activatedNode = node
 
-    this.select(person)
+    this.select(node)
     if (this.listener.onActivated) {
-      this.listener.onActivated(this, person)
+      this.listener.onActivated(this, node)
     }
   }
 
   deactivate(): void {
-    if (!this.activatedPerson) return
+    if (!this.activatedNode) return
 
-    const person = this.activatedPerson
+    const node = this.activatedNode
 
-    delete this.activatedPerson.fx
-    delete this.activatedPerson.fy
-    this.activatedPerson = null
+    delete this.activatedNode.fx
+    delete this.activatedNode.fy
+    this.activatedNode = null
 
     if (this.listener.onDeactivate) {
-      this.listener.onDeactivate(this, person)
+      this.listener.onDeactivate(this, node)
     }
   }
 
-  isActivated(person: PersonNode): boolean {
-    return this.activatedPerson === person
+  isActivated(node: NetworkNode): boolean {
+    return this.activatedNode === node
   }
 
-  findShortestPath(person0: PersonNode, person1: PersonNode): PersonNode[] {
-    return jsnx
-      .bidirectionalShortestPath(this.data.graph, person0.key, person1.key)
-      .map((key: string) => this.data.nodesMap.persons[key])
+  findShortestPath(node1: NetworkNode, node2: NetworkNode): NetworkNode[] {
+    return jsnx.bidirectionalShortestPath(this.graph, node1.key, node2.key).map((key: string) => this.nodeMap.get(key))
   }
 
-  getPerson(key: string): PersonNode | null {
-    return this.data.nodesMap.persons[key]
+  getNode(key: string): NetworkNode {
+    const node = this.nodeMap.get(key)
+    if (!node) throw new Error(`Node not found: ${key}`)
+    return node
   }
 
-  getPersonBrief(person: PersonNode): string {
-    const name = person['name']
+  getPersonBrief(key: string): string {
+    const node = this.getNode(key)
+    const name = node.name
 
     // Try description
-    const description = person['description']
+    const description = node.description
     if (description) {
       const short = description.replace(/(한국의|대한민국의) /, '')
       return `${name} (${short})`
     }
 
     // Try birthdate and deathdate
-    const birthdate = person['birthdate'] || null
-    const deathdate = person['deathdate'] || null
+    const birthdate = node.birthdate || null
+    const deathdate = node.deathdate || null
     let birth
     if (birthdate) {
       birth = `${birthdate.getFullYear()}`
@@ -604,36 +584,42 @@ class Network {
     return `${name}`
   }
 
-  getPersons(): PersonNode[] {
-    return this.data.nodes.persons
+  getNodes(): NetworkNode[] {
+    return Array.from(this.nodes.values())
   }
 
-  getHubs(): PersonNode[] {
-    return this.data.hubs
+  getSelectedNodes(): NetworkNode[] {
+    return this.nodes.filter(node => node.selected)
   }
 
-  getSelectedPersons(): PersonNode[] {
-    return this.data.nodes.persons.filter((person: PersonNode) => person.selected)
+  getSelectedLinks(): Link<NetworkNode, NetworkNode>[] {
+    return this.links.filter(link => link.source.selected && link.target.selected)
   }
 
-  getSelectedLinks(): PersonLink[] {
-    return this.data.links.filter(d => d.source.selected && d.target.selected)
+  private isKinship(link: Link<Node, Node>): boolean {
+    return this.kinship.has(link.rel)
   }
 
-  private updateFullyExpandedFlag(person: PersonNode): void {
-    person.fullyExpanded = Network.isFullyExpanded(person)
-    person.links
-      .filter(link => link.kinship)
+  private updateFullyExpandedFlag(node: NetworkNode): void {
+    node.fullyExpanded = this.checkIfFullyExpanded(node)
+    node.links
+      .filter(link => this.isKinship(link))
       .forEach(link => {
-        link.source.fullyExpanded = Network.isFullyExpanded(link.source)
-        link.target.fullyExpanded = Network.isFullyExpanded(link.target)
+        const source = link.source as NetworkNode
+        const target = link.target as NetworkNode
+        source.fullyExpanded = this.checkIfFullyExpanded(source)
+        target.fullyExpanded = this.checkIfFullyExpanded(target)
       })
   }
 
-  private static isFullyExpanded(person: PersonNode): boolean {
-    return person.links
-      .filter(link => link.kinship)
-      .filter(link => !link.source.selected || !link.target.selected)
+  private checkIfFullyExpanded(node: NetworkNode): boolean {
+    return node.links
+      .filter(link => this.isKinship(link))
+      .filter(link => {
+        const source = link.source as NetworkNode
+        const target = link.target as NetworkNode
+        return !source.selected || !target.selected
+      })
       .length === 0
   }
 }
@@ -642,13 +628,13 @@ class Renderer {
   private readonly network: Network
 
   private svg: SVGElement
-  private linksSel: d3.Selection<SVGLineElement, PersonLink, SVGGElement, undefined>
-  private personsSel: d3.Selection<SVGGElement, PersonNode, SVGGElement, undefined>
-  private readonly forceSim: d3.Simulation<PersonNode, PersonLink>
-  private readonly forceLink: d3.ForceLink<PersonNode, PersonLink>
+  private linksSel: d3.Selection<SVGLineElement, Link<NetworkNode, NetworkNode>, SVGGElement, undefined>
+  private nodesSel: d3.Selection<SVGGElement, NetworkNode, SVGGElement, undefined>
+  private readonly forceSim: d3.Simulation<NetworkNode, Link<NetworkNode, NetworkNode>>
+  private readonly forceLink: d3.ForceLink<NetworkNode, Link<NetworkNode, NetworkNode>>
 
-  private readonly clickHandler: (this: SVGGElement, person: PersonNode) => void
-  private readonly dragHandler: d3.DragBehavior<SVGGElement, PersonNode, any>
+  private readonly clickHandler: (this: SVGGElement, node: NetworkNode) => void
+  private readonly dragHandler: d3.DragBehavior<SVGGElement, NetworkNode, any>
 
   constructor(network: Network, svg: SVGElement) {
     this.network = network
@@ -677,16 +663,16 @@ class Renderer {
       .attr('class', 'root')
     this.linksSel = root
       .append<SVGGElement>('g').attr('class', 'links')
-      .selectAll<SVGLineElement, PersonLink>('.link')
+      .selectAll<SVGLineElement, Link<NetworkNode, NetworkNode>>('.link')
       .data(network.getSelectedLinks())
-    this.personsSel = root.append<SVGGElement>('g').attr('class', 'nodes')
-      .selectAll<SVGGElement, PersonNode>('.node')
-      .data(network.getSelectedPersons())
+    this.nodesSel = root.append<SVGGElement>('g').attr('class', 'nodes')
+      .selectAll<SVGGElement, NetworkNode>('.node')
+      .data(network.getSelectedNodes())
 
     // Initialize layout simulation
-    this.forceLink = d3.forceLink<PersonNode, PersonLink>(this.linksSel.data())
+    this.forceLink = d3.forceLink<NetworkNode, Link<NetworkNode, NetworkNode>>(this.linksSel.data())
       .distance(50)
-    this.forceSim = d3.forceSimulation<PersonNode, PersonLink>(this.personsSel.data())
+    this.forceSim = d3.forceSimulation<NetworkNode, Link<NetworkNode, NetworkNode>>(this.nodesSel.data())
       .force("link", this.forceLink)
       .force("x", d3.forceX(0).strength(0.05))
       .force("y", d3.forceY(0).strength(0.05))
@@ -696,46 +682,46 @@ class Renderer {
 
     // Click and drag handler
     const self = this
-    this.clickHandler = function (this: SVGGElement, person: PersonNode) {
-      self.onPersonClick(this, person)
+    this.clickHandler = function (this: SVGGElement, node: NetworkNode) {
+      self.onNodeClick(this, node)
     }
-    this.dragHandler = d3.drag<SVGGElement, PersonNode>()
-      .on('start', function (person) {
-        self.onPersonDragStart(this, person)
+    this.dragHandler = d3.drag<SVGGElement, NetworkNode>()
+      .on('start', function (node) {
+        self.onNodeDragStart(this, node)
       })
-      .on('drag', function (person) {
-        self.onPersonDrag(this, person)
+      .on('drag', function (node) {
+        self.onNodeDrag(this, node)
       })
-      .on('end', function (person) {
-        self.onPersonDragEnd(this, person)
+      .on('end', function (node) {
+        self.onNodeDragEnd(this, node)
       })
 
     this.resize()
   }
 
   rerender(): void {
-    // Update persons
+    // Update nodes
     // 1. Join new data
-    this.personsSel = this.personsSel
-      .data(this.network.getSelectedPersons(), person => person.key)
+    this.nodesSel = this.nodesSel
+      .data(this.network.getSelectedNodes(), node => node.key)
 
     // 2. Exit
-    this.personsSel.exit().remove()
+    this.nodesSel.exit().remove()
 
     // 3. Enter and update
-    this.personsSel = this.personsSel.enter()
+    this.nodesSel = this.nodesSel.enter()
       .append<SVGGElement>('g')
       .attr('class', 'node person')
-      .each(function (person) {
+      .each(function (node) {
         d3.select(this).append('circle')
         d3.select(this).append('text')
           .attr('class', 'name')
           .attr('transform', 'translate(8, 8)')
-          .text(person.name)
+          .text(node.name)
       })
       .on('click', this.clickHandler)
       .call(this.dragHandler)
-      .merge(this.personsSel)
+      .merge(this.nodesSel)
 
     // Update links
     // 1. Join new data
@@ -753,7 +739,7 @@ class Renderer {
       .attr('marker-end', d => d.rel === 'child' ? 'url(#arrowMarker)' : '')
 
     // Trigger layout
-    this.forceSim.nodes(this.personsSel.data())
+    this.forceSim.nodes(this.nodesSel.data())
     this.forceLink.links(this.linksSel.data())
     this.forceSim.alpha(1.0)
     this.forceSim.restart()
@@ -787,65 +773,63 @@ class Renderer {
     const yMin = height * -0.5 + margin
     const gyMax = height * +0.5 - margin
 
-    // Update persons
-    this.personsSel
-      .classed('active', person => this.network.isActivated(person))
-      .classed('fully-expanded', person => person.fullyExpanded)
-      .attr('transform', person => {
+    // Update nodes
+    this.nodesSel
+      .classed('active', node => this.network.isActivated(node))
+      .classed('fully-expanded', node => node.fullyExpanded)
+      .attr('transform', node => {
         // Make nodes to respect bounding box
-        person.x = Math.max(xMin, Math.min(xMax, person.x || 0))
-        person.y = Math.max(yMin, Math.min(gyMax, person.y || 0))
+        node.x = Math.max(xMin, Math.min(xMax, node.x || 0))
+        node.y = Math.max(yMin, Math.min(gyMax, node.y || 0))
 
-        return `translate(${person.x}, ${person.y})`
+        return `translate(${node.x}, ${node.y})`
       })
       .select('circle')
-      .attr('r', person => person.fullyExpanded ? 5 : 7)
-      .attr('filter', person => this.network.isActivated(person) ? 'url(#dropShadow)' : '')
+      .attr('r', node => node.fullyExpanded ? 5 : 7)
+      .attr('filter', node => this.network.isActivated(node) ? 'url(#dropShadow)' : '')
 
     // Update links
     this.linksSel
-      .attr('x1', person => person.source.x || 0)
-      .attr('y1', person => person.source.y || 0)
-      .attr('x2', person => person.target.x || 0)
-      .attr('y2', person => person.target.y || 0)
+      .attr('x1', node => node.source.x || 0)
+      .attr('y1', node => node.source.y || 0)
+      .attr('x2', node => node.target.x || 0)
+      .attr('y2', node => node.target.y || 0)
   }
 
-  private onPersonClick(element: SVGGElement, person: PersonNode): void {
-    const network = this.network
-
+  private onNodeClick(element: SVGGElement, node: NetworkNode): void {
     if (d3.event['altKey']) {
-      network.deselect(person)
-    } else if (network.isActivated(person)) {
-      network.deactivate()
+      this.network.deselect(node)
+    } else if (this.network.isActivated(node)) {
+      this.network.deactivate()
     } else if (d3.event['shiftKey']) {
-      network.activate(person)
+      this.network.activate(node)
     } else {
-      network.activate(person)
-      network.expand(person)
+      this.network.activate(node)
+      this.network.expand(node)
     }
     this.rerender()
   }
 
-  private onPersonDragStart(element: SVGGElement, person: PersonNode): void {
+  private onNodeDragStart(element: SVGGElement, node: NetworkNode): void {
     d3.select(element).classed('drag', true)
-    person.x = person.fx = d3.event.x
-    person.y = person.fy = d3.event.y
+    node.x = node.fx = d3.event.x
+    node.y = node.fy = d3.event.y
     this.forceSim.alphaTarget(0.3).restart()
   }
 
-  private onPersonDrag(element: SVGGElement, person: PersonNode): void {
-    person.x = person.fx = d3.event.x
-    person.y = person.fy = d3.event.y
+  private onNodeDrag(element: SVGGElement, node: NetworkNode): void {
+    node.x = node.fx = d3.event.x
+    node.y = node.fy = d3.event.y
 
     d3.select<SVGGElement, Node>(element)
-      .attr("transform", `translate(${person.x}, ${person.y})`)
+      .attr("transform", `translate(${node.x}, ${node.y})`)
   }
 
-  private onPersonDragEnd(element: SVGGElement, person: PersonNode): void {
+  private onNodeDragEnd(element: SVGGElement, node: NetworkNode): void {
     d3.select(element).classed('drag', false)
-    if (!this.network.isActivated(person)) {
-      delete person.fx
-      delete person.fy
+    if (!this.network.isActivated(node)) {
+      delete node.fx
+      delete node.fy
     }
     this.forceSim.alphaTarget(0)
   }

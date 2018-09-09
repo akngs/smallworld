@@ -1,3 +1,7 @@
+---
+title: 탐색기
+permalink: /explorer/
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,11 +17,11 @@
     <!-- End Google Tag Manager -->
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="explorer.css">
-    <link rel="stylesheet" href="awesomplete.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/explorer.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/awesomplete.css">
     <script src="//d3js.org/d3.v5.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jsnetworkx/0.3.4/jsnetworkx.js"></script>
-    <script src="bundle.js"></script>
+    <script src="{{ site.baseurl }}/bundle.js"></script>
     <script>
     window.addEventListener("DOMContentLoaded", sw.explorerMain)
     </script>
@@ -29,7 +33,7 @@
 </div>
 
 <div class="help">
-    <h2><a href="index">대한민국 인맥지도</a> / 탐색기</h2>
+    <h2><a href="{{ site.baseurl }}/">대한민국 인맥지도</a> / 탐색기</h2>
     <ul>
         <li>펼치지 않고 선택: shift+click</li>
         <li>숨기기: alt+click</li>

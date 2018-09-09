@@ -69,7 +69,7 @@ def calc_stats(links):
     subgraphs = (g.subgraph(c) for c in nx.connected_components(g))
     subgraphs = sorted([
         {
-            "nodes": list(subg.nodes()),
+            "nodes": sorted(list(subg.nodes())),
             "nNodes": subg.number_of_nodes(),
             "nEdges": subg.number_of_edges(),
             "avgShortestPath": nx.average_shortest_path_length(subg),

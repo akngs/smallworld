@@ -35,8 +35,10 @@ plugins:
 
 # minima specifics
 header_pages:
-- about.md
+- explorer.html
+- stats.html
 - hubs.md
+- about.md
 
 minima:
   date_format: "%Y-%m-%d"
