@@ -6,9 +6,10 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 import Promise from "promise-polyfill"
 
+
 const DATA_HASH = '46242eb'
 
-let renderer: Renderer
+let renderer: GraphRenderer
 
 export async function explorerMain() {
   const rootEl = document.querySelector<SVGElement>('svg')
@@ -19,8 +20,8 @@ export async function explorerMain() {
   const data = await loader.loadData()
   hideMessage()
 
-  const network = new Network(data, {
-    onActivated: (network, node) => {
+  const network = new Graph(data, {
+    onSelect: (network, node) => {
       renderInfobox(network, node)
       pushDataLayer({
         'event': 'activateNode',
@@ -28,13 +29,13 @@ export async function explorerMain() {
         'name': node.name
       })
     },
-    onDeactivate: node => {
+    onDeselect: node => {
       const infobox = document.querySelector('.infobox')
       if (!infobox) throw new Error('Not found: ".infobox"')
       infobox.innerHTML = ''
     }
   })
-  renderer = new Renderer(network, rootEl)
+  renderer = new GraphRenderer(rootEl, network, network)
   window.addEventListener('resize', () => renderer.resize())
 
   // Init autocomplete
@@ -44,8 +45,8 @@ export async function explorerMain() {
   q.disabled = false
 
   new Awesomplete(q, {
-    list: network.getNodes().map(node => {
-      return {label: network.getPersonBrief(node.key), value: node.key}
+    list: network.allNodes.map(node => {
+      return {label: network.getPersonBrief(node), value: node.key}
     }),
     minChars: 1,
     autoFirst: true
@@ -55,13 +56,12 @@ export async function explorerMain() {
     q.value = ''
   })
   q.addEventListener('awesomplete-selectcomplete', (e: any) => {
-    const node = network.getNode(e.text.value)
-    if (node) {
-      network.select(node)
-      network.activate(node)
-      renderer.rerender()
-    }
     q.value = ''
+
+    const node = network.getNode(e.text.value)
+    network.expand(node, 1)
+    network.select(node)
+    renderer.rerender()
   })
 
   // Apply querystring
@@ -103,10 +103,10 @@ function hideMessage(): void {
   element.classList.remove('show')
 }
 
-function renderInfobox(network: Network, node: NetworkNode): void {
+function renderInfobox(network: Graph, node: GraphNode): void {
   const info = node.info
   const infobox = d3.select('.infobox').html(
-    `<h2>${network.getPersonBrief(node.key)}</h2>` +
+    `<h2>${network.getPersonBrief(node)}</h2>` +
     `<img class="item image" src="#" alt="profile">` +
     '<div class="item occupation"><h3>직업</h3><ul></ul></div>' +
     '<div class="item affiliation"><h3>소속</h3><ul></ul></div>' +
@@ -130,61 +130,61 @@ function renderInfobox(network: Network, node: NetworkNode): void {
   infobox.select('.occupation').classed('show', !!info.occupation)
   infobox.select('.occupation ul').selectAll('li').data(info.occupation || []).enter()
     .append('li')
-    .text(d => d.name)
+    .text(node => node.name)
 
   // Affiliation
   infobox.select('.affiliation').classed('show', !!info.affiliation)
   infobox.select('.affiliation ul').selectAll('li').data(info.affiliation || []).enter()
     .append('li')
-    .text(d => d.name)
+    .text(node => node.name)
 
   // Position
   infobox.select('.position').classed('show', !!info.position)
   infobox.select('.position ul').selectAll('li').data(info.position || []).enter()
     .append('li')
-    .text(d => d.name)
+    .text(node => node.name)
 
   // Membership
   infobox.select('.membership').classed('show', !!info.membership)
   infobox.select('.membership ul').selectAll('li').data(info.membership || []).enter()
     .append('li')
-    .text(d => d.name)
+    .text(node => node.name)
 
   // Education
   infobox.select('.education').classed('show', !!info.education)
   infobox.select('.education ul').selectAll('li').data(info.education || []).enter()
     .append('li')
-    .text(d => d.name)
+    .text(node => node.name)
 
   // Birthplace
   infobox.select('.birthplace').classed('show', !!info.birthplace)
   infobox.select('.birthplace ul').selectAll('li').data(info.birthplace || []).enter()
     .append('li')
-    .text(d => d.name)
+    .text(node => node.name)
 
   // Mother
   infobox.select('.mother').classed('show', !!info.mother)
   infobox.select('.mother ul').selectAll('li').data(info.mother || []).enter()
     .append('li')
-    .text(d => network.getPersonBrief(d.key))
+    .text(node => network.getPersonBrief(node as PersonNode))
 
   // Father
   infobox.select('.father').classed('show', !!info.father)
   infobox.select('.father ul').selectAll('li').data(info.father || []).enter()
     .append('li')
-    .text(d => network.getPersonBrief(d.key))
+    .text(node => network.getPersonBrief(node as PersonNode))
 
   // Spouse
   infobox.select('.spouse').classed('show', !!info.spouse)
   infobox.select('.spouse ul').selectAll('li').data(info.spouse || []).enter()
     .append('li')
-    .text(d => network.getPersonBrief(d.key))
+    .text(node => network.getPersonBrief(node as PersonNode))
 
   // Child
   infobox.select('.child').classed('show', !!info.child)
   infobox.select('.child ul').selectAll('li').data(info.child || []).enter()
     .append('li')
-    .text(d => network.getPersonBrief(d.key))
+    .text(node => network.getPersonBrief(node as PersonNode))
 
   // Image
   infobox.select('.image').classed('show', !!node.image)
@@ -201,7 +201,7 @@ function renderInfobox(network: Network, node: NetworkNode): void {
   })
   infobox.select('.actions .hide a').on('click', () => {
     d3.event.preventDefault()
-    network.deselect(node)
+    network.hide(node)
     renderer.rerender()
   })
 }
@@ -226,18 +226,14 @@ function parseQuery(url: string): { [key: string]: string } {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-export interface Node {
+interface Node {
   type: string
   key: string
   name: string
-  ins: Link<Node, Node>[]
-  outs: Link<Node, Node>[]
   links: Link<Node, Node>[]
 }
 
-export interface PersonNode extends Node {
-  ins: Link<Node, PersonNode>[]
-  outs: Link<PersonNode, Node>[]
+interface PersonNode extends Node {
   description?: string
   birthdate?: Date
   deathdate?: Date
@@ -245,13 +241,13 @@ export interface PersonNode extends Node {
   info: { [key: string]: Node[] }
 }
 
-export interface Link<S extends Node, T extends Node> {
+interface Link<S extends Node, T extends Node> {
   source: S
   target: T
   rel: string
 }
 
-export interface GraphStats {
+interface GraphStats {
   nNodes: number
   nEdges: number
   subgraphs: {
@@ -262,16 +258,40 @@ export interface GraphStats {
   }[]
 }
 
-export interface JsnxGraph {
+interface JsnxGraph {
   addEdge: (a: string, b: string) => void
 }
 
-export interface DataSet {
+interface DataSet {
   nodes: Node[]
   nodeMap: Map<string, Node>
-  hubs: PersonNode[]
   links: Link<Node, Node>[]
   stats: GraphStats
+}
+
+interface GraphNode extends PersonNode, d3.SimulationNodeDatum {
+  selected: boolean
+  shown: boolean
+  fullyExpanded: boolean
+}
+
+interface GraphManipulation {
+  show: (node: GraphNode) => void
+  hide: (node: GraphNode) => void
+  expand: (node: GraphNode, depth?: number) => void
+  select: (node: GraphNode) => void
+  deselect: () => void
+}
+
+interface GraphDataSource {
+  allNodes: GraphNode[]
+  visibleNodes: GraphNode[]
+  visibleLinks: Link<GraphNode, GraphNode>[]
+}
+
+interface GraphListener {
+  onSelect?: (network: Graph, node: GraphNode) => void
+  onDeselect?: (network: Graph, node: GraphNode) => void
 }
 
 const parseTime = d3.timeParse('%Y-%m-%dT%H:%M:%SZ')
@@ -280,49 +300,22 @@ class Loader {
   async loadData(): Promise<DataSet> {
     const urlPrefix = `//cdn.rawgit.com/akngs/smallworld/${DATA_HASH}/data/`
 
-    const data = await Promise.all<Node[],
-      Node[],
-      Node[],
-      Node[],
-      Node[],
-      PersonNode[],
-      Node[],
-      any[],
-      any[],
-      any>([
+    const data = await Promise.all([
       d3.csv(urlPrefix + 'affiliations.csv', raw => this.parseNode(raw, 'affiliation')),
       d3.csv(urlPrefix + 'birthplaces.csv', raw => this.parseNode(raw, 'birthplaces')),
       d3.csv(urlPrefix + 'educations.csv', raw => this.parseNode(raw, 'education')),
       d3.csv(urlPrefix + 'memberships.csv', raw => this.parseNode(raw, 'membership')),
       d3.csv(urlPrefix + 'occupations.csv', raw => this.parseNode(raw, 'occupation')),
-      d3.csv(urlPrefix + 'persons.csv', raw => this.parsePerson(raw)),
       d3.csv(urlPrefix + 'positions.csv', raw => this.parseNode(raw, 'position')),
-      d3.csv(urlPrefix + 'links.csv', this.parseLink),
-      d3.csv(urlPrefix + 'hubs.csv'),
+      d3.csv(urlPrefix + 'persons.csv', raw => this.parsePerson(raw)),
+      d3.csv(urlPrefix + 'links.csv'),
       d3.json(urlPrefix + 'stats.json'),
     ])
 
-    const affiliations = data[0]
-    const birthplaces = data[1]
-    const educations = data[2]
-    const memberships = data[3]
-    const occupations = data[4]
-    const persons = data[5]
-    const positions = data[6]
-
-    const rawLinks = data[7]
-    const rawHubs = data[8]
-    const rawStats = data[9]
-
     // Generate concatenated node list
     const nodes: Node[] = [
-      ...affiliations,
-      ...birthplaces,
-      ...educations,
-      ...memberships,
-      ...occupations,
-      ...persons,
-      ...positions,
+      ...data[0], ...data[1], ...data[2], ...data[3], ...data[4], ...data[5],
+      ...data[6],
     ]
 
     // Generate key-value maps for nodes
@@ -330,7 +323,7 @@ class Loader {
     nodes.forEach(node => nodeMap.set(node.key, node))
 
     // Process links
-    const links = rawLinks
+    const links = data[7]
       .map((raw: any) => {
         return {
           source: nodeMap.get(raw.source),
@@ -343,9 +336,7 @@ class Loader {
       }) as Link<Node, Node>[]
 
     links.forEach(link => {
-      link.source.outs.push(link)
       link.source.links.push(link)
-      link.target.ins.push(link)
       link.target.links.push(link)
     })
 
@@ -355,36 +346,26 @@ class Loader {
       person.info = {}
       d3.nest<Link<Node, Node>>()
         .key(link => link.rel)
-        .entries(person.outs)
+        .entries(person.links.filter(link => link.source === person))
         .forEach(g => {
           person.info[g.key] = g.values.map((link: Link<Node, Node>) => link.target)
         })
     })
 
-    const hubs = rawHubs.map(raw => nodeMap.get(raw.key)) as PersonNode[]
-
     // Process stats
-    rawStats.subgraphs.forEach((g: any) => {
+    const stats = data[8] as any
+    stats.subgraphs.forEach((g: any) => {
       g.nodes = g.nodes.map((key: string) => nodeMap.get(key))
     })
-    const stats = rawStats as GraphStats
 
-    return {
-      nodes,
-      links,
-      nodeMap,
-      hubs,
-      stats,
-    }
+    return {nodes, links, nodeMap, stats}
   }
 
   private parseNode(raw: any, type: string): Node {
     return {
-      type: type,
+      type,
       key: raw.key,
       name: raw.name,
-      ins: [],
-      outs: [],
       links: []
     }
   }
@@ -398,56 +379,35 @@ class Loader {
       image: raw.image,
       birthdate: raw['birthdate'] ? parseTime(raw['birthdate']) as Date : undefined,
       deathdate: raw['deathdate'] ? parseTime(raw['deathdate']) as Date : undefined,
-
-      ins: [],
-      outs: [],
       links: [],
-
       info: {},
     }
   }
-
-  private parseLink(raw: any): any {
-    return {
-      source: raw.source,
-      target: raw.target,
-      rel: raw.rel,
-    }
-  }
 }
 
-interface NetworkStateListener {
-  onActivated?: (network: Network, node: NetworkNode) => void
-  onDeactivate?: (network: Network, node: NetworkNode) => void
-}
+class Graph implements GraphManipulation, GraphDataSource {
+  private readonly kinships: Set<string>
+  private readonly nodeMap: Map<string, GraphNode>
+  private readonly nodes: GraphNode[]
+  private readonly links: Link<GraphNode, GraphNode>[]
+  private readonly jsnxGraph: JsnxGraph
+  private activatedNode: GraphNode | null
+  private readonly listener: GraphListener
 
-interface NetworkNode extends PersonNode, d3.SimulationNodeDatum {
-  selected: boolean
-  fullyExpanded: boolean
-}
-
-class Network {
-  private readonly kinship: Set<string>
-  private readonly nodeMap: Map<string, NetworkNode>
-  private readonly nodes: NetworkNode[]
-  private readonly links: Link<NetworkNode, NetworkNode>[]
-  private readonly graph: JsnxGraph
-  private activatedNode: NetworkNode | null
-  private readonly listener: NetworkStateListener
-
-  constructor(data: DataSet, listener?: NetworkStateListener) {
-    this.kinship = new Set(['mother', 'father', 'child', 'spouse'])
+  constructor(dataSet: DataSet, listener?: GraphListener) {
+    this.kinships = new Set(['mother', 'father', 'child', 'spouse'])
 
     // Convert Nodes into NetworkNodes
-    this.nodes = data.nodes
+    this.nodes = dataSet.nodes
       .filter(node => node.type === 'person')
       .map(node => {
         return {
           ...node,
           selected: false,
+          shown: false,
           fullyExpanded: false,
         }
-      }) as NetworkNode[]
+      }) as GraphNode[]
 
     // Build map for fast lookup
     this.nodeMap = new Map()
@@ -463,11 +423,11 @@ class Network {
             target: this.nodeMap.get(link.target.key),
             rel: link.rel,
           }
-        }) as Link<NetworkNode, NetworkNode>[]
+        }) as Link<GraphNode, GraphNode>[]
     })
 
     // Convert links
-    this.links = data.links
+    this.links = dataSet.links
       .filter(link => this.isKinship(link))
       .map(link => {
         return {
@@ -475,35 +435,35 @@ class Network {
           target: this.getNode(link.target.key),
           rel: link.rel,
         }
-      }) as Link<NetworkNode, NetworkNode>[]
+      }) as Link<GraphNode, GraphNode>[]
 
-    this.graph = new jsnx.Graph()
-    this.links.forEach(link => this.graph.addEdge(link.source.key, link.target.key))
+    this.jsnxGraph = new jsnx.Graph()
+    this.links.forEach(link => this.jsnxGraph.addEdge(link.source.key, link.target.key))
 
     this.activatedNode = null
     this.listener = listener || {}
   }
 
-  select(node: NetworkNode): void {
-    if (node.selected) return
+  show(node: GraphNode): void {
+    if (node.shown) return
 
-    node.selected = true
+    node.shown = true
     this.updateFullyExpandedFlag(node)
   }
 
-  deselect(node: NetworkNode): void {
-    if (!node.selected) return
+  hide(node: GraphNode): void {
+    if (!node.shown) return
 
-    node.selected = false
+    node.shown = false
     node.x = undefined
     node.y = undefined
 
-    if (this.isActivated(node)) this.deactivate()
+    if (node.selected) this.deselect()
     this.updateFullyExpandedFlag(node)
   }
 
-  expand(node: NetworkNode, depth: number = 1): void {
-    this.select(node)
+  expand(node: GraphNode, depth: number = 1): void {
+    this.show(node)
 
     if (depth === 0) return
     if (!node.links) return
@@ -511,62 +471,51 @@ class Network {
     node.links
       .filter(link => this.isKinship(link))
       .forEach(link => {
-        this.expand(link.source as NetworkNode, depth - 1)
-        this.expand(link.target as NetworkNode, depth - 1)
+        this.expand(link.source as GraphNode, depth - 1)
+        this.expand(link.target as GraphNode, depth - 1)
       })
   }
 
-  activate(node: NetworkNode) {
+  select(node: GraphNode) {
     if (this.activatedNode === node) return
-    if (this.activatedNode) this.deactivate()
+    if (this.activatedNode) this.deselect()
 
     node.fx = node.x
     node.fy = node.y
+    node.selected = true
     this.activatedNode = node
 
-    this.select(node)
-    if (this.listener.onActivated) {
-      this.listener.onActivated(this, node)
+    this.show(node)
+    if (this.listener.onSelect) {
+      this.listener.onSelect(this, node)
     }
   }
 
-  deactivate(): void {
+  deselect(): void {
     if (!this.activatedNode) return
 
     const node = this.activatedNode
 
     delete this.activatedNode.fx
     delete this.activatedNode.fy
+    this.activatedNode.selected = false
     this.activatedNode = null
 
-    if (this.listener.onDeactivate) {
-      this.listener.onDeactivate(this, node)
+    if (this.listener.onDeselect) {
+      this.listener.onDeselect(this, node)
     }
   }
 
-  isActivated(node: NetworkNode): boolean {
-    return this.activatedNode === node
+  findShortestPath(node1: GraphNode, node2: GraphNode): GraphNode[] {
+    return jsnx.bidirectionalShortestPath(this.jsnxGraph, node1.key, node2.key).map((key: string) => this.nodeMap.get(key))
   }
 
-  findShortestPath(node1: NetworkNode, node2: NetworkNode): NetworkNode[] {
-    return jsnx.bidirectionalShortestPath(this.graph, node1.key, node2.key).map((key: string) => this.nodeMap.get(key))
-  }
-
-  getNode(key: string): NetworkNode {
-    const node = this.nodeMap.get(key)
-    if (!node) throw new Error(`Node not found: ${key}`)
-    return node
-  }
-
-  getPersonBrief(key: string): string {
-    const node = this.getNode(key)
-    const name = node.name
-
+  getPersonBrief(node: PersonNode): string {
     // Try description
     const description = node.description
     if (description) {
       const short = description.replace(/(한국의|대한민국의) /, '')
-      return `${name} (${short})`
+      return `${node.name} (${short})`
     }
 
     // Try birthdate and deathdate
@@ -578,69 +527,77 @@ class Network {
     } else if (deathdate) {
       birth = `?-${deathdate.getFullYear()}`
     }
-    if (birth) return `${name} (${birth})`
+    if (birth) return `${node.name} (${birth})`
 
     // Use name as fallback
-    return `${name}`
+    return `${node.name}`
   }
 
-  getNodes(): NetworkNode[] {
+  getNode(key: string): GraphNode {
+    const node = this.nodeMap.get(key)
+    if (!node) throw new Error(`Node not found: ${key}`)
+    return node
+  }
+
+  get allNodes(): GraphNode[] {
     return Array.from(this.nodes.values())
   }
 
-  getSelectedNodes(): NetworkNode[] {
-    return this.nodes.filter(node => node.selected)
+  get visibleNodes(): GraphNode[] {
+    return this.nodes.filter(node => node.shown)
   }
 
-  getSelectedLinks(): Link<NetworkNode, NetworkNode>[] {
-    return this.links.filter(link => link.source.selected && link.target.selected)
+  get visibleLinks(): Link<GraphNode, GraphNode>[] {
+    return this.links.filter(link => link.source.shown && link.target.shown)
   }
 
   private isKinship(link: Link<Node, Node>): boolean {
-    return this.kinship.has(link.rel)
+    return this.kinships.has(link.rel)
   }
 
-  private updateFullyExpandedFlag(node: NetworkNode): void {
+  private updateFullyExpandedFlag(node: GraphNode): void {
     node.fullyExpanded = this.checkIfFullyExpanded(node)
     node.links
       .filter(link => this.isKinship(link))
       .forEach(link => {
-        const source = link.source as NetworkNode
-        const target = link.target as NetworkNode
+        const source = link.source as GraphNode
+        const target = link.target as GraphNode
         source.fullyExpanded = this.checkIfFullyExpanded(source)
         target.fullyExpanded = this.checkIfFullyExpanded(target)
       })
   }
 
-  private checkIfFullyExpanded(node: NetworkNode): boolean {
+  private checkIfFullyExpanded(node: GraphNode): boolean {
     return node.links
       .filter(link => this.isKinship(link))
       .filter(link => {
-        const source = link.source as NetworkNode
-        const target = link.target as NetworkNode
-        return !source.selected || !target.selected
+        const source = link.source as GraphNode
+        const target = link.target as GraphNode
+        return !source.shown || !target.shown
       })
       .length === 0
   }
 }
 
-class Renderer {
-  private readonly network: Network
+class GraphRenderer {
+  private readonly svg: SVGElement
+  private readonly graphDs: GraphDataSource
+  private readonly graphMan?: GraphManipulation
 
-  private svg: SVGElement
-  private linksSel: d3.Selection<SVGLineElement, Link<NetworkNode, NetworkNode>, SVGGElement, undefined>
-  private nodesSel: d3.Selection<SVGGElement, NetworkNode, SVGGElement, undefined>
-  private readonly forceSim: d3.Simulation<NetworkNode, Link<NetworkNode, NetworkNode>>
-  private readonly forceLink: d3.ForceLink<NetworkNode, Link<NetworkNode, NetworkNode>>
+  private linksSel: d3.Selection<SVGLineElement, Link<GraphNode, GraphNode>, SVGGElement, undefined>
+  private nodesSel: d3.Selection<SVGGElement, GraphNode, SVGGElement, undefined>
+  private readonly forceSim: d3.Simulation<GraphNode, Link<GraphNode, GraphNode>>
+  private readonly forceLink: d3.ForceLink<GraphNode, Link<GraphNode, GraphNode>>
 
-  private readonly clickHandler: (this: SVGGElement, node: NetworkNode) => void
-  private readonly dragHandler: d3.DragBehavior<SVGGElement, NetworkNode, any>
+  private readonly clickHandler: (this: SVGGElement, node: GraphNode) => void
+  private readonly dragHandler: d3.DragBehavior<SVGGElement, GraphNode, any>
 
-  constructor(network: Network, svg: SVGElement) {
-    this.network = network
+  constructor(svg: SVGElement, graphDs: GraphDataSource, graphMan?: GraphManipulation) {
+    this.svg = svg
+    this.graphDs = graphDs
+    this.graphMan = graphMan
 
     // Initialize SVG
-    this.svg = svg
     this.svg.innerHTML = `
       <defs>
           <marker id="arrowMarker" viewBox="0 -5 10 10" refX="23" refY="0" markerWidth="5" markerHeight="5" orient="auto">
@@ -663,16 +620,16 @@ class Renderer {
       .attr('class', 'root')
     this.linksSel = root
       .append<SVGGElement>('g').attr('class', 'links')
-      .selectAll<SVGLineElement, Link<NetworkNode, NetworkNode>>('.link')
-      .data(network.getSelectedLinks())
+      .selectAll<SVGLineElement, Link<GraphNode, GraphNode>>('.link')
+      .data(this.graphDs.visibleLinks)
     this.nodesSel = root.append<SVGGElement>('g').attr('class', 'nodes')
-      .selectAll<SVGGElement, NetworkNode>('.node')
-      .data(network.getSelectedNodes())
+      .selectAll<SVGGElement, GraphNode>('.node')
+      .data(this.graphDs.visibleNodes)
 
     // Initialize layout simulation
-    this.forceLink = d3.forceLink<NetworkNode, Link<NetworkNode, NetworkNode>>(this.linksSel.data())
+    this.forceLink = d3.forceLink<GraphNode, Link<GraphNode, GraphNode>>(this.linksSel.data())
       .distance(50)
-    this.forceSim = d3.forceSimulation<NetworkNode, Link<NetworkNode, NetworkNode>>(this.nodesSel.data())
+    this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
       .force("link", this.forceLink)
       .force("x", d3.forceX(0).strength(0.05))
       .force("y", d3.forceY(0).strength(0.05))
@@ -682,10 +639,10 @@ class Renderer {
 
     // Click and drag handler
     const self = this
-    this.clickHandler = function (this: SVGGElement, node: NetworkNode) {
+    this.clickHandler = function (this: SVGGElement, node: GraphNode) {
       self.onNodeClick(this, node)
     }
-    this.dragHandler = d3.drag<SVGGElement, NetworkNode>()
+    this.dragHandler = d3.drag<SVGGElement, GraphNode>()
       .on('start', function (node) {
         self.onNodeDragStart(this, node)
       })
@@ -703,7 +660,7 @@ class Renderer {
     // Update nodes
     // 1. Join new data
     this.nodesSel = this.nodesSel
-      .data(this.network.getSelectedNodes(), node => node.key)
+      .data(this.graphDs.visibleNodes, node => node.key)
 
     // 2. Exit
     this.nodesSel.exit().remove()
@@ -726,7 +683,7 @@ class Renderer {
     // Update links
     // 1. Join new data
     this.linksSel = this.linksSel
-      .data(this.network.getSelectedLinks())
+      .data(this.graphDs.visibleLinks)
 
     // 2. Exit
     this.linksSel.exit().remove()
@@ -775,7 +732,7 @@ class Renderer {
 
     // Update nodes
     this.nodesSel
-      .classed('active', node => this.network.isActivated(node))
+      .classed('active', node => node.selected)
       .classed('fully-expanded', node => node.fullyExpanded)
       .attr('transform', node => {
         // Make nodes to respect bounding box
@@ -786,7 +743,7 @@ class Renderer {
       })
       .select('circle')
       .attr('r', node => node.fullyExpanded ? 5 : 7)
-      .attr('filter', node => this.network.isActivated(node) ? 'url(#dropShadow)' : '')
+      .attr('filter', node => node.selected ? 'url(#dropShadow)' : '')
 
     // Update links
     this.linksSel
@@ -796,28 +753,30 @@ class Renderer {
       .attr('y2', node => node.target.y || 0)
   }
 
-  private onNodeClick(element: SVGGElement, node: NetworkNode): void {
+  private onNodeClick(element: SVGGElement, node: GraphNode): void {
+    if (!this.graphMan) return
+
     if (d3.event['altKey']) {
-      this.network.deselect(node)
-    } else if (this.network.isActivated(node)) {
-      this.network.deactivate()
+      this.graphMan.hide(node)
+    } else if (node.selected) {
+      this.graphMan.deselect()
     } else if (d3.event['shiftKey']) {
-      this.network.activate(node)
+      this.graphMan.select(node)
     } else {
-      this.network.activate(node)
-      this.network.expand(node)
+      this.graphMan.select(node)
+      this.graphMan.expand(node)
     }
     this.rerender()
   }
 
-  private onNodeDragStart(element: SVGGElement, node: NetworkNode): void {
+  private onNodeDragStart(element: SVGGElement, node: GraphNode): void {
     d3.select(element).classed('drag', true)
     node.x = node.fx = d3.event.x
     node.y = node.fy = d3.event.y
     this.forceSim.alphaTarget(0.3).restart()
   }
 
-  private onNodeDrag(element: SVGGElement, node: NetworkNode): void {
+  private onNodeDrag(element: SVGGElement, node: GraphNode): void {
     node.x = node.fx = d3.event.x
     node.y = node.fy = d3.event.y
 
@@ -825,9 +784,9 @@ class Renderer {
       .attr("transform", `translate(${node.x}, ${node.y})`)
   }
 
-  private onNodeDragEnd(element: SVGGElement, node: NetworkNode): void {
+  private onNodeDragEnd(element: SVGGElement, node: GraphNode): void {
     d3.select(element).classed('drag', false)
-    if (!this.network.isActivated(node)) {
+    if (!node.selected) {
       delete node.fx
       delete node.fy
     }
