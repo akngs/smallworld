@@ -55,6 +55,35 @@ def extract_hubs(links, min_degree):
     return hubs
 
 
+def calc_stats(links):
+    g = nx.Graph()
+    g.add_edges_from(
+        (source, target)
+        for rel, source, target in links
+        if rel in KINSHIP
+    )
+
+    n_nodes = g.number_of_nodes()
+    n_edges = g.number_of_edges()
+
+    subgraphs = (g.subgraph(c) for c in nx.connected_components(g))
+    subgraphs = sorted([
+        {
+            "nodes": list(subg.nodes()),
+            "nNodes": subg.number_of_nodes(),
+            "nEdges": subg.number_of_edges(),
+            "avgShortestPath": nx.average_shortest_path_length(subg),
+        }
+        for subg in subgraphs
+    ], key=lambda subg: subg["nNodes"], reverse=True)
+
+    return {
+        "nNodes": n_nodes,
+        "nEdges": n_edges,
+        "subgraphs": subgraphs,
+    }
+
+
 def get_value(row, key):
     value = row.get(key, {"value": ""})["value"]
     if value.startswith("http://www.wikidata.org/entity/"):

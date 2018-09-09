@@ -7,7 +7,7 @@ from os import rmdir
 
 import requests
 
-from analyze import extract_nodes, extract_links, extract_hubs
+from analyze import extract_nodes, extract_links, extract_hubs, calc_stats
 
 ENDPOINT = "https://query.wikidata.org/bigdata/namespace/wdq/sparql"
 
@@ -194,6 +194,19 @@ def main():
                 f"degree: {degree}",
                 "---",
             ]))
+
+    # Calculate statistics
+    print(f'Calculate statistics...', end='', flush=True)
+    stats = calc_stats(links)
+    subg = stats['subgraphs'][0]
+    print()
+    print(f'- n_nodes: {stats["nNodes"]}')
+    print(f'- n_edges: {stats["nEdges"]}')
+    print(f'- n_subgraphs: {len(stats["subgraphs"])}')
+    print(f'- max subgraph n_nodes: {subg["nNodes"]}')
+    print(f'- max subgraph avg. shortest path: {subg["avgShortestPath"]}')
+    with open(f"data/stats.json", "w", encoding="utf-8") as f:
+        json.dump(stats, f, indent=2)
 
 
 def fetch_data():
