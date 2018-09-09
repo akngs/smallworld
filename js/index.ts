@@ -1,11 +1,7 @@
 declare var jsnx: any
 
-import "babel-polyfill"
-import 'whatwg-fetch'
 import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
-import Promise from "promise-polyfill"
-
 
 const DATA_HASH = '46242eb'
 
@@ -386,7 +382,8 @@ class Loader {
 }
 
 class Graph implements GraphManipulation, GraphDataSource {
-  private readonly kinships: Set<string>
+  private static readonly KINSHIP = new Set(['mother', 'father', 'child', 'spouse'])
+
   private readonly nodeMap: Map<string, GraphNode>
   private readonly nodes: GraphNode[]
   private readonly links: Link<GraphNode, GraphNode>[]
@@ -395,7 +392,6 @@ class Graph implements GraphManipulation, GraphDataSource {
   private readonly listener: GraphListener
 
   constructor(dataSet: DataSet, listener?: GraphListener) {
-    this.kinships = new Set(['mother', 'father', 'child', 'spouse'])
 
     // Convert Nodes into NetworkNodes
     this.nodes = dataSet.nodes
@@ -552,7 +548,7 @@ class Graph implements GraphManipulation, GraphDataSource {
   }
 
   private isKinship(link: Link<Node, Node>): boolean {
-    return this.kinships.has(link.rel)
+    return Graph.KINSHIP.has(link.rel)
   }
 
   private updateFullyExpandedFlag(node: GraphNode): void {

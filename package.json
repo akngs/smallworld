@@ -26,20 +26,32 @@
     "@babel/preset-typescript": "^7.0.0",
     "@types/awesomplete": "^1.1.8",
     "@types/d3": "^5.0.0",
-    "@types/promise-polyfill": "^6.0.0",
     "babel-loader": "^8.0.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "concurrently": "^4.0.1",
     "jsnetworkx": "^0.3.4",
-    "tslint": "^5.11.0",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "awesomplete": "^1.1.2",
-    "babel-polyfill": "^6.26.0",
-    "d3": "^5.7.0",
-    "promise-polyfill": "8.1.0",
-    "whatwg-fetch": "^2.0.4"
+    "d3": "^5.7.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-typescript",
+      [
+        "@babel/env",
+        {
+          "targets": "> 0.25%, not dead",
+          "useBuiltIns": "usage"
+        }
+      ]
+    ],
+    "plugins": [
+      "transform-class-properties"
+    ]
   }
 }

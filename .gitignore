@@ -1,5 +1,6 @@
 # Project
 data/raw.json
+docs/bundle.js.map
 
 # Python
 .venv/

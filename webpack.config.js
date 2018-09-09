@@ -1,15 +1,19 @@
 const path = require('path')
 
 module.exports = {
-  entry: './js/index.ts',
+  entry: ['@babel/polyfill', './js/index.ts'],
+  devtool: 'source-map',
   module: {
     rules: [
       {
-        test: /\.(js|ts)$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: 'babel-loader',
+        test: /\.tsx?$/,
+        use: 'babel-loader',
+        exclude: /node_modules/
       }
     ]
+  },
+  resolve: {
+    extensions: [ '.tsx', '.ts', '.js' ]
   },
   output: {
     path: path.resolve(__dirname, 'docs'),
