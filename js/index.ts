@@ -1,5 +1,6 @@
 declare var jsnx: any
 
+import 'whatwg-fetch'
 import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 
