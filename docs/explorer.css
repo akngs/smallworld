@@ -94,16 +94,32 @@ input[type="submit"],
     margin-bottom: 0;
 }
 
-.infobox h3 {
+.infobox .item {
+    position: relative;
+    margin: 0.4rem 0;
+}
+
+.infobox .item > h3 {
+    position: absolute;
     font-size: 1rem;
-    margin-bottom: 0;
+    margin: 0;
+}
+
+.infobox .item > ul {
+    margin: 0 0 0 3rem;
 }
 
 .infobox .image {
-    width: 10rem;
+    width: 12rem;
     min-height: 1rem;
     margin-bottom: 1rem;
     background-color: #DDDDDD;
+}
+
+@media (max-width: 1000px) {
+    .infobox .image {
+        width: 6rem;
+    }
 }
 
 .infobox .actions {
@@ -116,12 +132,6 @@ input[type="submit"],
     display: inline-block;
     padding: 0;
     margin-right: 0.5rem;
-}
-
-@media (max-width: 1000px) {
-    .infobox .image {
-        width: 6rem;
-    }
 }
 
 .infobox .item {

@@ -18,33 +18,14 @@
     <script src="//d3js.org/d3.v5.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jsnetworkx/0.3.4/jsnetworkx.js"></script>
     <script src="bundle.js"></script>
+    <script>
+    window.addEventListener("DOMContentLoaded", sw.explorerMain)
+    </script>
 </head>
 <body>
 
-<div class="graph">
-    <svg>
-        <defs>
-            <marker id="arrowMarker" viewBox="0 -5 10 10" refX="23" refY="0" markerWidth="5" markerHeight="5" orient="auto">
-                <path d="M0,-5L10,0L0,5" class="arrow"></path>
-            </marker>
-            <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur in="SourceAlpha" stdDeviation="1" />
-                <feOffset dx="1" dy="1" result="offsetblur" />
-                <feFlood flood-color="#000" />
-                <feComposite in2="offsetblur" operator="in" />
-                <feMerge>
-                    <feMergeNode />
-                    <feMergeNode in="SourceGraphic" />
-                </feMerge>
-            </filter>
-        </defs>
-        </defs>
-
-        <g class="root">
-            <g class="links"></g>
-            <g class="nodes"></g>
-        </g>
-    </svg>
+<div class="graph" style="overflow: hidden">
+    <svg></svg>
 </div>
 
 <div class="help">
