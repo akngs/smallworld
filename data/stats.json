@@ -1,6 +1,6 @@
 {
-  "nNodes": 1049,
-  "nEdges": 953,
+  "nNodes": 1054,
+  "nEdges": 956,
   "subgraphs": [
     {
       "nodes": [
@@ -485,6 +485,7 @@
         "Q4991790",
         "Q54868073",
         "Q56226",
+        "Q56605053",
         "Q702565",
         "Q705212",
         "Q705218",
@@ -494,9 +495,9 @@
         "Q714658",
         "Q840719"
       ],
-      "nNodes": 25,
-      "nEdges": 36,
-      "avgShortestPath": 2.7333333333333334
+      "nNodes": 26,
+      "nEdges": 37,
+      "avgShortestPath": 2.8430769230769233
     },
     {
       "nodes": [
@@ -2139,6 +2140,15 @@
     },
     {
       "nodes": [
+        "Q16688282",
+        "Q17500887"
+      ],
+      "nNodes": 2,
+      "nEdges": 1,
+      "avgShortestPath": 1.0
+    },
+    {
+      "nodes": [
         "Q16865202",
         "Q488600"
       ],
@@ -2159,6 +2169,15 @@
       "nodes": [
         "Q17486965",
         "Q20091438"
+      ],
+      "nNodes": 2,
+      "nEdges": 1,
+      "avgShortestPath": 1.0
+    },
+    {
+      "nodes": [
+        "Q17500581",
+        "Q491048"
       ],
       "nNodes": 2,
       "nEdges": 1,

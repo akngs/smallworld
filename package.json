@@ -6,6 +6,7 @@
   "scripts": {
     "watch": "webpack --mode=development --watch",
     "build": "webpack --mode=production",
+    "fetch": "FORCE_FETCH=1 pipenv run python fetch.py",
     "test": "echo \"Error: no test specified\" && exit 1",
     "jekyll": "cd docs && jekyll serve --watch",
     "start": "concurrently \"npm:watch\" \"npm:jekyll\""
