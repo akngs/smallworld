@@ -3,7 +3,6 @@ import json
 import os
 import shutil
 from json import JSONDecodeError
-from os import rmdir
 
 import requests
 
@@ -51,7 +50,8 @@ QUERY_CONDITIONS = [
         "UNION { ?human wdt:P27 wd:Q423. } "
         "UNION { ?human wdt:P27 wd:Q28233. } "
         "UNION { ?human wdt:P27 wd:Q28179. } "
-        "UNION { ?human wdt:P27 wd:Q18097. } ",
+        "UNION { ?human wdt:P27 wd:Q18097. } "
+        "UNION { ?human wdt:P27 wd:Q503585. } "
     ),
     (
         "who has Korean spouse",
@@ -60,7 +60,8 @@ QUERY_CONDITIONS = [
         "UNION { ?spouse wdt:P27 wd:Q423. } "
         "UNION { ?spouse wdt:P27 wd:Q28233. } "
         "UNION { ?spouse wdt:P27 wd:Q28179. } "
-        "UNION { ?spouse wdt:P27 wd:Q18097. } ",
+        "UNION { ?spouse wdt:P27 wd:Q18097. } "
+        "UNION { ?spouse wdt:P27 wd:Q503585. } "
     ),
     (
         "who has Korean mother",
@@ -69,7 +70,8 @@ QUERY_CONDITIONS = [
         "UNION { ?mother wdt:P27 wd:Q423. } "
         "UNION { ?mother wdt:P27 wd:Q28233. } "
         "UNION { ?mother wdt:P27 wd:Q28179. } "
-        "UNION { ?mother wdt:P27 wd:Q18097. } ",
+        "UNION { ?mother wdt:P27 wd:Q18097. } "
+        "UNION { ?mother wdt:P27 wd:Q503585. } "
     ),
     (
         "who has Korean father",
@@ -78,7 +80,8 @@ QUERY_CONDITIONS = [
         "UNION { ?father wdt:P27 wd:Q423. } "
         "UNION { ?father wdt:P27 wd:Q28233. } "
         "UNION { ?father wdt:P27 wd:Q28179. } "
-        "UNION { ?father wdt:P27 wd:Q18097. } ",
+        "UNION { ?father wdt:P27 wd:Q18097. } "
+        "UNION { ?father wdt:P27 wd:Q503585. } "
     ),
     (
         "who has Korean child",
@@ -87,7 +90,8 @@ QUERY_CONDITIONS = [
         "UNION { ?child wdt:P27 wd:Q423. } "
         "UNION { ?child wdt:P27 wd:Q28233. } "
         "UNION { ?child wdt:P27 wd:Q28179. } "
-        "UNION { ?child wdt:P27 wd:Q18097. } ",
+        "UNION { ?child wdt:P27 wd:Q18097. } "
+        "UNION { ?child wdt:P27 wd:Q503585. } "
     ),
 ]
 
