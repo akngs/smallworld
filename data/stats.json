@@ -1,6 +1,6 @@
 {
-  "nNodes": 1076,
-  "nEdges": 984,
+  "nNodes": 1078,
+  "nEdges": 985,
   "subgraphs": [
     {
       "nodes": [
@@ -2227,6 +2227,15 @@
       "nodes": [
         "Q18998869",
         "Q9210578"
+      ],
+      "nNodes": 2,
+      "nEdges": 1,
+      "avgShortestPath": 1.0
+    },
+    {
+      "nodes": [
+        "Q20688219",
+        "Q23012146"
       ],
       "nNodes": 2,
       "nEdges": 1,
