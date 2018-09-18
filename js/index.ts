@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 import {Graph, GraphNode, GraphRenderer, Loader, PersonNode} from './graph'
 
-const DATA_HASH = '4f1ab59'
+const DATA_HASH = '55e2498'
 
 let renderer: GraphRenderer
 
