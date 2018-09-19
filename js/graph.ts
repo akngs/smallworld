@@ -244,8 +244,12 @@ export class Graph implements GraphManipulation, GraphDataSource {
     this.updateFullyExpandedFlag(node)
   }
 
-  expand(node: GraphNode, depth: number = 1): void {
+  expand(node: GraphNode, depth: number = 1, visits?: Set<GraphNode>): void {
+    if (!visits) visits = new Set()
+    if(visits.has(node)) return
+
     this.show(node)
+    visits.add(node)
 
     if (depth === 0) return
     if (!node.links) return
@@ -253,8 +257,8 @@ export class Graph implements GraphManipulation, GraphDataSource {
     node.links
       .filter(link => this.isKinship(link))
       .forEach(link => {
-        this.expand(link.source as GraphNode, depth - 1)
-        this.expand(link.target as GraphNode, depth - 1)
+        this.expand(link.source as GraphNode, depth - 1, visits)
+        this.expand(link.target as GraphNode, depth - 1, visits)
       })
   }
 
