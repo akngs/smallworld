@@ -65,7 +65,7 @@ export async function explorerMain() {
   if (query['keys']) {
     query['keys'].split(',').forEach(key => {
       const node = network.getNode(key)
-      network.expand(node, 1)
+      network.expand(node, +query['expands'] || 1)
     })
   } else if (query['paths']) {
     query['paths'].split(',').forEach(path => {
@@ -74,7 +74,7 @@ export async function explorerMain() {
       const node2 = network.getNode(keys[1])
       network
         .findShortestPath(node1, node2)
-        .forEach(key => network.expand(key, 0))
+        .forEach(key => network.expand(key, +query['expands'] || 0))
     })
   } else {
     // Do nothing
