@@ -5,10 +5,10 @@
   "main": "js/index.js",
   "scripts": {
     "watch": "webpack --mode=development --watch",
-    "build": "webpack --mode=production",
-    "fetch": "rm docs/_hubs/*.md && FORCE_FETCH=1 pipenv run python fetch.py",
+    "build": "rm -rf docs/data && webpack --mode=production",
+    "fetch": "rm -f docs/_hubs/*.md && FORCE_FETCH=1 pipenv run python fetch.py",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "jekyll": "cd docs && jekyll serve --watch",
+    "jekyll": "cp -r data docs/ && cd docs && bundle exec jekyll serve --watch",
     "start": "concurrently \"npm:watch\" \"npm:jekyll\""
   },
   "repository": {
@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/akngs/smallworld#readme",
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-typescript": "^7.0.0",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.1.0",
     "@types/awesomplete": "^1.1.8",
     "@types/d3": "^5.0.0",
     "babel-loader": "^8.0.0",
@@ -32,14 +32,14 @@
     "babel-preset-env": "^1.7.0",
     "concurrently": "^4.0.1",
     "jsnetworkx": "^0.3.4",
-    "webpack": "^4.17.1",
+    "webpack": "^4.19.1",
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "awesomplete": "^1.1.2",
+    "awesomplete": "^1.1.3",
     "d3": "^5.7.0",
-    "whatwg-fetch": "^2.0.4"
+    "whatwg-fetch": "^3.0.0"
   },
   "babel": {
     "presets": [

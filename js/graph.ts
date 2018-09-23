@@ -80,7 +80,9 @@ export class Loader {
   }
 
   async loadData(): Promise<DataSet> {
-    const urlPrefix = `//cdn.rawgit.com/akngs/smallworld/${this.dataHash}/data/`
+    const urlPrefix = location.hostname === '127.0.0.1' || location.hostname === 'localhost' ?
+      `/smallworld/data/` :
+      `//cdn.rawgit.com/akngs/smallworld/${this.dataHash}/data/`
 
     const data = await Promise.all([
       d3.csv(urlPrefix + 'affiliations.csv', raw => this.parseNode(raw, 'affiliation')),

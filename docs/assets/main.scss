@@ -8,3 +8,13 @@
 html {
   word-break: keep-all;
 }
+
+
+.person {
+  & > p > img {
+    min-width: 4rem;
+    min-height: 4rem;
+    max-width: 100%;
+    border: 1px solid #666;
+  }
+}

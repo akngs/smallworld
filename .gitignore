@@ -1,6 +1,7 @@
 # Project
 data/raw.json
 docs/bundle.js.map
+docs/data/
 
 # Python
 .venv/
@@ -11,3 +12,6 @@ node_modules/
 
 # IDEs
 .idea/
+
+# OS
+.DS_Store

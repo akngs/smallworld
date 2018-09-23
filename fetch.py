@@ -193,6 +193,7 @@ def main():
                 f"key: {person['key']}",
                 f"title: {person['name']}",
                 f"name: {person['name']}",
+                f"image: {person['image']}",
                 f"description: {person['description']}",
                 f"score: {score}",
                 f"degree: {degree}",
