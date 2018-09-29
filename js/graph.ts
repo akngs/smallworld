@@ -172,17 +172,17 @@ export class Loader {
 export class Graph implements GraphManipulation, GraphDataSource {
   private static readonly KINSHIP = new Set(['mother', 'father', 'child', 'spouse'])
 
-  private readonly nodeMap: Map<string, GraphNode>
-  private readonly nodes: GraphNode[]
-  private readonly links: Link<GraphNode, GraphNode>[]
-  private readonly jsnxGraph: JsnxGraph
-  private activatedNode: GraphNode | null
-  private readonly listener: GraphListener
+  private readonly _nodeMap: Map<string, GraphNode>
+  private readonly _nodes: GraphNode[]
+  private readonly _links: Link<GraphNode, GraphNode>[]
+  private readonly _jsnxGraph: JsnxGraph
+  private readonly _listener: GraphListener
+  private _selectedNode: GraphNode | null
 
   constructor(dataSet: DataSet, listener?: GraphListener) {
 
     // Convert Nodes into NetworkNodes
-    this.nodes = dataSet.nodes
+    this._nodes = dataSet.nodes
       .filter(node => node.type === 'person')
       .map(node => {
         return {
@@ -194,24 +194,24 @@ export class Graph implements GraphManipulation, GraphDataSource {
       }) as GraphNode[]
 
     // Build map for fast lookup
-    this.nodeMap = new Map()
-    this.nodes.forEach(node => this.nodeMap.set(node.key, node))
+    this._nodeMap = new Map()
+    this._nodes.forEach(node => this._nodeMap.set(node.key, node))
 
     // Replace links in nodes
-    this.nodes.forEach(node => {
+    this._nodes.forEach(node => {
       node.links = node.links
         .filter(link => this.isKinship(link))
         .map(link => {
           return {
-            source: this.nodeMap.get(link.source.key),
-            target: this.nodeMap.get(link.target.key),
+            source: this._nodeMap.get(link.source.key),
+            target: this._nodeMap.get(link.target.key),
             rel: link.rel,
           }
         }) as Link<GraphNode, GraphNode>[]
     })
 
     // Convert links
-    this.links = dataSet.links
+    this._links = dataSet.links
       .filter(link => this.isKinship(link))
       .map(link => {
         return {
@@ -221,11 +221,11 @@ export class Graph implements GraphManipulation, GraphDataSource {
         }
       }) as Link<GraphNode, GraphNode>[]
 
-    this.jsnxGraph = new jsnx.Graph()
-    this.links.forEach(link => this.jsnxGraph.addEdge(link.source.key, link.target.key))
+    this._jsnxGraph = new jsnx.Graph()
+    this._links.forEach(link => this._jsnxGraph.addEdge(link.source.key, link.target.key))
 
-    this.activatedNode = null
-    this.listener = listener || {}
+    this._selectedNode = null
+    this._listener = listener || {}
   }
 
   show(node: GraphNode): void {
@@ -265,37 +265,37 @@ export class Graph implements GraphManipulation, GraphDataSource {
   }
 
   select(node: GraphNode) {
-    if (this.activatedNode === node) return
-    if (this.activatedNode) this.deselect()
+    if (this._selectedNode === node) return
+    if (this._selectedNode) this.deselect()
 
     node.fx = node.x
     node.fy = node.y
     node.selected = true
-    this.activatedNode = node
+    this._selectedNode = node
 
     this.show(node)
-    if (this.listener.onSelect) {
-      this.listener.onSelect(this, node)
+    if (this._listener.onSelect) {
+      this._listener.onSelect(this, node)
     }
   }
 
   deselect(): void {
-    if (!this.activatedNode) return
+    if (!this._selectedNode) return
 
-    const node = this.activatedNode
+    const node = this._selectedNode
 
-    delete this.activatedNode.fx
-    delete this.activatedNode.fy
-    this.activatedNode.selected = false
-    this.activatedNode = null
+    delete this._selectedNode.fx
+    delete this._selectedNode.fy
+    this._selectedNode.selected = false
+    this._selectedNode = null
 
-    if (this.listener.onDeselect) {
-      this.listener.onDeselect(this, node)
+    if (this._listener.onDeselect) {
+      this._listener.onDeselect(this, node)
     }
   }
 
   findShortestPath(node1: GraphNode, node2: GraphNode): GraphNode[] {
-    return jsnx.bidirectionalShortestPath(this.jsnxGraph, node1.key, node2.key).map((key: string) => this.nodeMap.get(key))
+    return jsnx.bidirectionalShortestPath(this._jsnxGraph, node1.key, node2.key).map((key: string) => this._nodeMap.get(key))
   }
 
   getPersonBrief(node: PersonNode): string {
@@ -322,21 +322,30 @@ export class Graph implements GraphManipulation, GraphDataSource {
   }
 
   getNode(key: string): GraphNode {
-    const node = this.nodeMap.get(key)
+    const node = this._nodeMap.get(key)
     if (!node) throw new Error(`Node not found: ${key}`)
     return node
   }
 
+  getNodesByName(name: string): GraphNode[] {
+    console.log(this._nodes)
+    return this._nodes.filter(n => n.name === name)
+  }
+
   get allNodes(): GraphNode[] {
-    return Array.from(this.nodes.values())
+    return Array.from(this._nodes.values())
   }
 
   get visibleNodes(): GraphNode[] {
-    return this.nodes.filter(node => node.shown)
+    return this._nodes.filter(node => node.shown)
+  }
+
+  get selectedNode(): GraphNode | null {
+    return this._selectedNode
   }
 
   get visibleLinks(): Link<GraphNode, GraphNode>[] {
-    return this.links.filter(link => link.source.shown && link.target.shown)
+    return this._links.filter(link => link.source.shown && link.target.shown)
   }
 
   private isKinship(link: Link<Node, Node>): boolean {
@@ -421,8 +430,8 @@ export class GraphRenderer {
       .force("link", this.forceLink)
       .force("x", d3.forceX(0).strength(0.05))
       .force("y", d3.forceY(0).strength(0.05))
-      .force("collide", d3.forceCollide(20))
       .force("charge", d3.forceManyBody().strength(-200))
+      .force("collide", d3.forceCollide(20))
       .on('tick', this.tick.bind(this))
 
     // Click and drag handler
@@ -458,8 +467,8 @@ export class GraphRenderer {
       .append<SVGGElement>('g')
       .attr('class', 'node person')
       .each(function (node) {
-        d3.select(this).append('circle')
-        d3.select(this).append('text')
+        d3.select<SVGGElement, GraphNode>(this).append('circle')
+        d3.select<SVGGElement, GraphNode>(this).append('text')
           .attr('class', 'name')
           .attr('transform', 'translate(8, 8)')
           .text(node.name)
@@ -467,6 +476,15 @@ export class GraphRenderer {
       .on('click', this.clickHandler)
       .call(this.dragHandler)
       .merge(this.nodesSel)
+    this.nodesSel
+      .each(function (node) {
+        d3.select<SVGGElement, GraphNode>(this).select('circle')
+          .transition()
+          .duration(1000)
+          .ease(d3.easeElastic)
+          .attr('r', node => node.fullyExpanded ? 5 : 7)
+          .attr('filter', node => node.selected ? 'url(#dropShadow)' : '')
+      })
 
     // Update links
     // 1. Join new data
@@ -520,7 +538,7 @@ export class GraphRenderer {
 
     // Update nodes
     this.nodesSel
-      .classed('active', node => node.selected)
+      .classed('selected', node => node.selected)
       .classed('fully-expanded', node => node.fullyExpanded)
       .attr('transform', node => {
         // Make nodes to respect bounding box
@@ -529,9 +547,6 @@ export class GraphRenderer {
 
         return `translate(${node.x}, ${node.y})`
       })
-      .select('circle')
-      .attr('r', node => node.fullyExpanded ? 5 : 7)
-      .attr('filter', node => node.selected ? 'url(#dropShadow)' : '')
 
     // Update links
     this.linksSel

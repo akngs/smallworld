@@ -11,6 +11,10 @@ export async function explorerMain() {
   const rootEl = document.querySelector<SVGElement>('svg')
   if (!rootEl) throw new Error('Not found: "svg"')
 
+  const q = document.querySelector<HTMLInputElement>('.query input')
+  if (!q) throw new Error('Not found: ".query input"')
+  if (!q.form) throw new Error('Not found: "q.form')
+
   showMessage('Loading...')
   const loader = new Loader(DATA_HASH)
   const data = await loader.loadData()
@@ -18,6 +22,8 @@ export async function explorerMain() {
 
   const network = new Graph(data, {
     onSelect: (network, node) => {
+      q.setAttribute('placeholder', `${node.name} 관련 인물 검색`)
+
       renderInfobox(network, node)
       pushDataLayer({
         'event': 'activateNode',
@@ -26,6 +32,8 @@ export async function explorerMain() {
       })
     },
     onDeselect: node => {
+      q.setAttribute('placeholder', `찾을 이름을 입력하세요`)
+
       const infobox = document.querySelector('.infobox')
       if (!infobox) throw new Error('Not found: ".infobox"')
       infobox.innerHTML = ''
@@ -35,9 +43,6 @@ export async function explorerMain() {
   window.addEventListener('resize', () => renderer.resize())
 
   // Init autocomplete
-  const q = document.querySelector<HTMLInputElement>('.query input')
-  if (!q) throw new Error('Not found: ".query input"')
-  if (!q.form) throw new Error('Not found: "q.form')
   q.disabled = false
 
   new Awesomplete(q, {
@@ -55,6 +60,23 @@ export async function explorerMain() {
     q.value = ''
 
     const node = network.getNode(e.text.value)
+    const selectedNode = network.selectedNode
+    if (selectedNode) {
+      try {
+        network
+          .findShortestPath(node, selectedNode)
+          .reverse()
+          .forEach((node, i) => {
+            window.setTimeout(function () {
+              network.expand(node, 0)
+              renderer.rerender()
+            }, 100 * i)
+          })
+      } catch (e) {
+        //
+      }
+    }
+
     network.expand(node, 1)
     network.select(node)
     renderer.rerender()
@@ -62,26 +84,69 @@ export async function explorerMain() {
 
   // Apply querystring
   const query = parseQuery(location.href)
+
+  //// Show individuals by keys
   if (query['keys']) {
     query['keys'].split(',').forEach(key => {
       const node = network.getNode(key)
       network.expand(node, +query['expands'] || 1)
     })
-  } else if (query['paths']) {
+  }
+
+  //// Show shortest paths by keys
+  if (query['paths']) {
     query['paths'].split(',').forEach(path => {
       const keys = path.split('-')
       const node1 = network.getNode(keys[0])
       const node2 = network.getNode(keys[1])
-      network
-        .findShortestPath(node1, node2)
-        .forEach(key => network.expand(key, +query['expands'] || 0))
+      const shortest = network.findShortestPath(node1, node2)
+      if(shortest) expandPath(network, shortest, +query['expands'] || 0)
     })
-  } else {
-    // Do nothing
+  }
+
+  //// Show shortest paths by name
+  if (query['npaths']) {
+    query['npaths'].split(',').forEach(path => {
+      const names = path.split('-').map(token => decodeURIComponent(token))
+      const nodes1 = network.getNodesByName(names[0])
+      const nodes2 = network.getNodesByName(names[1])
+
+      // Get every possible pairs
+      const pairs: GraphNode[][] = []
+      nodes1.forEach(n1 => {
+        nodes2.forEach(n2 => {
+          pairs.push([n1, n2])
+        })
+      })
+
+      // Get paths for each pair
+      const paths = pairs
+        .map(pair => {
+          try {
+            return network.findShortestPath(pair[0], pair[1])
+          } catch (e) {
+            return null
+          }
+        })
+        .filter(path => !!path) as GraphNode[][]
+
+      // Expand the shortest one
+      const shortest = paths.sort((a, b) => d3.descending(a.length, b.length))[0]
+      if (shortest) expandPath(network, shortest, +query['expands'] || 0)
+    })
   }
 
   // Done
   renderer.rerender()
+}
+
+function expandPath(network: Graph, path: GraphNode[], expands: number) {
+  path.forEach((node, i) => {
+    window.setTimeout(function () {
+      network.expand(node, expands)
+      renderer.rerender()
+    }, 100 * i)
+  })
 }
 
 function showMessage(message: string): void {

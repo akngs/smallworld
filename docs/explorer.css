@@ -216,9 +216,9 @@ svg .node circle {
     fill: #888888;
 }
 
-svg .node.active circle {
+svg .node.selected circle {
     stroke: #bafc6a;
 }
 
-svg .node.active text {
+svg .node.selected text {
 }
