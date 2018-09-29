@@ -9,6 +9,37 @@ html {
   word-break: keep-all;
 }
 
+article.post {
+  img {
+    max-width: 100%;
+    box-shadow: 1px 1px 4px #888;
+  }
+
+  p > img:first-child {
+    margin-top: 1.5rem;
+  }
+
+  p > img:last-child {
+    margin-bottom: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    color: #FFF;
+    background-color: #007bff;
+  }
+  .btn:hover {
+    background-color: #0066D2;
+  }
+
+  .btn a {
+    color: #FFF;
+  }
+  .btn a:hover {
+    text-decoration: none;
+  }
+}
 
 .person {
   & > p > img {

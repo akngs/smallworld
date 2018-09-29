@@ -90,6 +90,7 @@ export async function explorerMain() {
     query['keys'].split(',').forEach(key => {
       const node = network.getNode(key)
       network.expand(node, +query['expands'] || 1)
+      network.select(node)
     })
   }
 
@@ -100,7 +101,10 @@ export async function explorerMain() {
       const node1 = network.getNode(keys[0])
       const node2 = network.getNode(keys[1])
       const shortest = network.findShortestPath(node1, node2)
-      if(shortest) expandPath(network, shortest, +query['expands'] || 0)
+      if(shortest) {
+        expandPath(network, shortest, +query['expands'] || 0)
+        network.select(node1)
+      }
     })
   }
 
@@ -132,7 +136,10 @@ export async function explorerMain() {
 
       // Expand the shortest one
       const shortest = paths.sort((a, b) => d3.descending(a.length, b.length))[0]
-      if (shortest) expandPath(network, shortest, +query['expands'] || 0)
+      if (shortest) {
+        expandPath(network, shortest, +query['expands'] || 0)
+        network.select(shortest[0])
+      }
     })
   }
 
