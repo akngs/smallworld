@@ -438,6 +438,7 @@ export class GraphRenderer {
     this.forceLink = d3.forceLink<GraphNode, Link<GraphNode, GraphNode>>(this.linksSel.data())
       .distance(50)
     this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
+      .alphaDecay(0.005)
       .force("link", this.forceLink)
       .force("x", d3.forceX(0).strength(0.05))
       .force("y", d3.forceY(0).strength(0.05))
@@ -542,21 +543,17 @@ export class GraphRenderer {
     const margin = 20
     const width = +(this.svg.getAttribute('width') || 0)
     const height = +(this.svg.getAttribute('height') || 0)
-    const xMin = width * -0.5 + margin
-    const xMax = width * +0.5 - margin
-    const yMin = height * -0.5 + margin
-    const gyMax = height * +0.5 - margin
+    const x0 = width * -0.5 + margin
+    const x1 = width * +0.5 - margin
+    const y0 = height * -0.5 + margin
+    const y1 = height * +0.5 - margin
 
     // Update nodes
     this.nodesSel
       .classed('selected', node => node.selected)
       .classed('fully-expanded', node => node.fullyExpanded)
       .attr('transform', node => {
-        // Make nodes to respect bounding box
-        node.x = Math.max(xMin, Math.min(xMax, node.x || 0))
-        node.y = Math.max(yMin, Math.min(gyMax, node.y || 0))
-
-        return `translate(${node.x}, ${node.y})`
+        return `translate(${node.x = Math.max(x0, Math.min(x1, node.x || 0))}, ${node.y = Math.max(y0, Math.min(y1, node.y || 0))})`
       })
 
     // Update links
