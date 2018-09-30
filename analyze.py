@@ -3,6 +3,7 @@ import networkx as nx
 KINSHIP = {'mother', 'father', 'child', 'spouse'}
 ITEM_URL_PREFIX = "http://www.wikidata.org/entity/"
 
+
 def extract_nodes(data, fields):
     rows = (tuple(get_value(row, f) for f, _ in fields) for row in data)
     unique_rows = {cols for cols in rows if any(c != "" for c in cols)}

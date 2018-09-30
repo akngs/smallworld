@@ -41,6 +41,8 @@ WHERE {
   OPTIONAL { ?human wdt:P106/wdt:P1647* ?occupation. }
   OPTIONAL { ?human wdt:P69 ?education. }
   OPTIONAL { ?human wdt:P39 ?position. }
+  
+  FILTER(BOUND(?spouse) || BOUND(?mother) || BOUND(?father) || BOUND(?child))
 }
 """
 
