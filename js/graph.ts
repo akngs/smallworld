@@ -350,7 +350,7 @@ export class Graph implements GraphManipulation, GraphDataSource {
       return (
         // Test if both source and target nodes are visible
         (link.source.shown && link.target.shown) &&
-        // Do not include reversed links
+        // Do not include reversed links since all relationships are symmetric
         (
           link.rel === 'child' ||
           link.rel === 'spouse' && link.source.gender === 'F'
