@@ -71,7 +71,7 @@ export async function explorerMain() {
           .forEach((node, i) => {
             window.setTimeout(function () {
               network.expand(node, 0)
-              renderer.rerender()
+              renderer.rerender(selectedNode)
             }, 100 * i)
           })
       } catch (e) {
@@ -81,7 +81,7 @@ export async function explorerMain() {
 
     network.expand(node, 1)
     network.select(node)
-    renderer.rerender()
+    renderer.rerender(node)
   })
 
   // Apply querystring
@@ -146,14 +146,14 @@ export async function explorerMain() {
   }
 
   // Done
-  renderer.rerender()
+  renderer.rerender(null)
 }
 
 function expandPath(network: Graph, path: GraphNode[], expands: number) {
   path.forEach((node, i) => {
     window.setTimeout(function () {
       network.expand(node, expands)
-      renderer.rerender()
+      renderer.rerender(node)
     }, 100 * i)
   })
 }
@@ -267,12 +267,12 @@ function renderInfobox(network: Graph, node: GraphNode): void {
   infobox.select('.actions .expand a').on('click', () => {
     d3.event.preventDefault()
     network.expand(node)
-    renderer.rerender()
+    renderer.rerender(node)
   })
   infobox.select('.actions .hide a').on('click', () => {
     d3.event.preventDefault()
     network.hide(node)
-    renderer.rerender()
+    renderer.rerender(node)
   })
 }
 

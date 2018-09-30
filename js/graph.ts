@@ -465,7 +465,7 @@ export class GraphRenderer {
     this.resize()
   }
 
-  rerender(): void {
+  rerender(selectedNode: GraphNode | null): void {
     // Update nodes
     // 1. Join new data
     this.nodesSel = this.nodesSel
@@ -484,6 +484,10 @@ export class GraphRenderer {
           .attr('class', 'name')
           .attr('transform', 'translate(8, 8)')
           .text(node.name)
+        if(selectedNode) {
+          node.x = (selectedNode.x || 0) + 10 * (Math.random() - 0.5)
+          node.y = (selectedNode.y || 0) + 10 * (Math.random() - 0.5)
+        }
       })
       .on('click', this.clickHandler)
       .call(this.dragHandler)
@@ -492,7 +496,7 @@ export class GraphRenderer {
       .each(function (node) {
         d3.select<SVGGElement, GraphNode>(this).select('circle')
           .transition()
-          .duration(1000)
+          .duration(1200)
           .ease(d3.easeElastic)
           .attr('r', node => node.fullyExpanded ? 5 : 7)
           .attr('filter', node => node.selected ? 'url(#dropShadow)' : '')
@@ -577,7 +581,7 @@ export class GraphRenderer {
       this.graphMan.select(node)
       this.graphMan.expand(node)
     }
-    this.rerender()
+    this.rerender(node)
   }
 
   private onNodeDragStart(element: SVGGElement, node: GraphNode): void {
