@@ -71,7 +71,7 @@ interface GraphListener {
   onDeselect?: (network: Graph, node: GraphNode) => void
 }
 
-const parseTime = d3.timeParse('%Y-%m-%dT%H:%M:%SZ')
+const parseTime = d3.timeParse('%Y-%m-%d')
 
 export class Loader {
   private readonly dataHash: string
@@ -438,7 +438,7 @@ export class GraphRenderer {
     this.forceLink = d3.forceLink<GraphNode, Link<GraphNode, GraphNode>>(this.linksSel.data())
       .distance(50)
     this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
-      .alphaDecay(0.005)
+      .alphaDecay(0.01)
       .force("link", this.forceLink)
       .force("x", d3.forceX(0).strength(0.05))
       .force("y", d3.forceY(0).strength(0.05))

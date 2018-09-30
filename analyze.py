@@ -1,7 +1,7 @@
 import networkx as nx
 
 KINSHIP = {'mother', 'father', 'child', 'spouse'}
-
+ITEM_URL_PREFIX = "http://www.wikidata.org/entity/"
 
 def extract_nodes(data, fields):
     rows = (tuple(get_value(row, f) for f, _ in fields) for row in data)
@@ -87,9 +87,9 @@ def calc_stats(links):
 def get_value(row, key):
     value = row.get(key, {"value": ""})["value"]
 
-    # Remove URL prefix
-    if value.startswith("http://www.wikidata.org/entity/"):
-        value = value[len("http://www.wikidata.org/entity/"):]
+    # Remove entity URL prefix
+    if value.startswith(ITEM_URL_PREFIX):
+        value = value[len(ITEM_URL_PREFIX):]
 
     # Convert gender values
     if key == 'gender':
@@ -100,5 +100,9 @@ def get_value(row, key):
         else:
             # Non-binaries
             return 'Q'
+
+    # Convert datetime values
+    if key in ["birthdate", "deathdate"] and len(value) == 20:
+        return value[0:4] + value[5:7] + value[8:10]
 
     return value

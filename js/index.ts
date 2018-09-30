@@ -3,7 +3,9 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 import {Graph, GraphNode, GraphRenderer, Loader, PersonNode} from './graph'
 
-const DATA_HASH = '2eeca8a'
+const DATA_HASH = 'ae6ee3d'
+const ITEM_URL_PREFIX = 'https://www.wikidata.org/entity/'
+
 
 let renderer: GraphRenderer
 
@@ -101,7 +103,7 @@ export async function explorerMain() {
       const node1 = network.getNode(keys[0])
       const node2 = network.getNode(keys[1])
       const shortest = network.findShortestPath(node1, node2)
-      if(shortest) {
+      if (shortest) {
         expandPath(network, shortest, +query['expands'] || 0)
         network.select(node1)
       }
@@ -261,7 +263,7 @@ function renderInfobox(network: Graph, node: GraphNode): void {
   }
 
   // Actions
-  infobox.select('.actions .edit a').attr('href', `https://www.wikidata.org/entity/${node.key}`)
+  infobox.select('.actions .edit a').attr('href', ITEM_URL_PREFIX + node.key)
   infobox.select('.actions .expand a').on('click', () => {
     d3.event.preventDefault()
     network.expand(node)
