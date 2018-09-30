@@ -9,9 +9,10 @@ def extract_nodes(data, fields):
     added_keys = set()
     unique_rows = []
     for cols in rows:
-        if cols[0] in added_keys:
+        key = cols[0]
+        if key == "" or key in added_keys:
             continue
-        added_keys.add(cols[0])
+        added_keys.add(key)
         unique_rows.append(cols)
     return sorted(unique_rows, key=lambda r: (r[1:], r[0]))
 
