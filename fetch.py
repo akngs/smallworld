@@ -12,7 +12,7 @@ ENDPOINT = "https://query.wikidata.org/bigdata/namespace/wdq/sparql"
 
 QUERY_TEMPLATE = """
 SELECT
-  ?human ?humanLabel ?humanDescription ?image ?birthdate ?deathdate
+  ?human ?humanLabel ?humanDescription ?gender ?image ?birthdate ?deathdate
   ?spouse ?mother ?father ?child
   ?birthplace ?birthplaceLabel
   ?membership ?membershipLabel
@@ -27,6 +27,7 @@ WHERE {
 
   %s
 
+  ?human wdt:P21 ?gender.
   OPTIONAL { ?human wdt:P18 ?image. }
   OPTIONAL { ?human wdt:P569 ?birthdate. }
   OPTIONAL { ?human wdt:P570 ?deathdate. }
@@ -100,6 +101,7 @@ NODES = {
         ("human", "key"),
         ("humanLabel", "name"),
         ("humanDescription", "description"),
+        ("gender", "gender"),
         ("image", "image"),
         ("birthdate", "birthdate"),
         ("deathdate", "deathdate"),

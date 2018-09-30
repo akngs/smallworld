@@ -86,6 +86,19 @@ def calc_stats(links):
 
 def get_value(row, key):
     value = row.get(key, {"value": ""})["value"]
+
+    # Remove URL prefix
     if value.startswith("http://www.wikidata.org/entity/"):
         value = value[len("http://www.wikidata.org/entity/"):]
+
+    # Convert gender values
+    if key == 'gender':
+        if value == 'Q6581072':
+            return 'F'
+        elif value == 'Q6581097':
+            return 'M'
+        else:
+            # Non-binaries
+            return 'Q'
+
     return value

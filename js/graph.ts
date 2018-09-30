@@ -14,6 +14,7 @@ export interface PersonNode extends Node {
   birthdate?: Date
   deathdate?: Date
   image?: string
+  gender?: string
   info: { [key: string]: Node[] }
 }
 
@@ -160,6 +161,7 @@ export class Loader {
       key: raw.key,
       name: raw.name,
       description: raw.description,
+      gender: raw.gender,
       image: raw.image,
       birthdate: raw['birthdate'] ? parseTime(raw['birthdate']) as Date : undefined,
       deathdate: raw['deathdate'] ? parseTime(raw['deathdate']) as Date : undefined,
@@ -248,7 +250,7 @@ export class Graph implements GraphManipulation, GraphDataSource {
 
   expand(node: GraphNode, depth: number = 1, visits?: Set<GraphNode>): void {
     if (!visits) visits = new Set()
-    if(visits.has(node)) return
+    if (visits.has(node)) return
 
     this.show(node)
     visits.add(node)
@@ -328,7 +330,6 @@ export class Graph implements GraphManipulation, GraphDataSource {
   }
 
   getNodesByName(name: string): GraphNode[] {
-    console.log(this._nodes)
     return this._nodes.filter(n => n.name === name)
   }
 
@@ -345,7 +346,17 @@ export class Graph implements GraphManipulation, GraphDataSource {
   }
 
   get visibleLinks(): Link<GraphNode, GraphNode>[] {
-    return this._links.filter(link => link.source.shown && link.target.shown)
+    return this._links.filter(link => {
+      return (
+        // Test if both source and target nodes are visible
+        (link.source.shown && link.target.shown) &&
+        // Do not include reversed links
+        (
+          link.rel === 'child' ||
+          link.rel === 'spouse' && link.source.gender === 'F'
+        )
+      )
+    })
   }
 
   private isKinship(link: Link<Node, Node>): boolean {
