@@ -6,7 +6,13 @@ ITEM_URL_PREFIX = "http://www.wikidata.org/entity/"
 
 def extract_nodes(data, fields):
     rows = (tuple(get_value(row, f) for f, _ in fields) for row in data)
-    unique_rows = {cols for cols in rows if any(c != "" for c in cols)}
+    added_keys = set()
+    unique_rows = []
+    for cols in rows:
+        if cols[0] in added_keys:
+            continue
+        added_keys.add(cols[0])
+        unique_rows.append(cols)
     return sorted(unique_rows, key=lambda r: (r[1:], r[0]))
 
 

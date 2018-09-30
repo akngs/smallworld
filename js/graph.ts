@@ -588,7 +588,7 @@ export class GraphRenderer {
     d3.select(element).classed('drag', true)
     node.x = node.fx = d3.event.x
     node.y = node.fy = d3.event.y
-    this.forceSim.alphaTarget(0.3).restart()
+    this.forceSim.alphaTarget(0.5).restart()
   }
 
   private onNodeDrag(element: SVGGElement, node: GraphNode): void {
