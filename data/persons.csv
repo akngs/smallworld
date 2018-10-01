@@ -1,6 +1,5 @@
 key,name,description,gender,image,birthdate,deathdate
 Q43763542,Billy Heung Ki Du,,M,,,
-Q41919430,Cho Seung-tae,Seung-Hui Cho's father,M,,,
 Q4713069,Daniel Bess,American actor,M,,19771008,
 Q1174767,David Horvath,artist,M,https://commons.wikimedia.org/wiki/Special:FilePath/Uglydolls%2C%20David%20Horvath%2C%202012%2C%20Free%20Comic%20Book%20Day.jpg,19710528,
 Q42418509,Go Woo-seok,,M,,19720101,20170821
@@ -11,7 +10,6 @@ Q24159,Jessica Pegula,American tennis player,F,https://commons.wikimedia.org/wik
 Q6204475,Jo Tongdal,South Korean singer,M,,19450101,
 Q489210,K,South Korean singer,M,,19831116,
 Q12966411,Kim Eun-seo,South Korean actress,F,,19980829,
-Q41919799,Kim Hyang-im,Seung-Hui Cho's mother,F,,,
 Q24049012,Kim Pegula,American businesswoman,F,,19690101,
 Q1092288,Kim Song-yong,North Korean footballer,M,https://commons.wikimedia.org/wiki/Special:FilePath/Kim%20Seng-Yong.jpg,19870226,
 Q1741580,Kim Sun-min,South Korean children's book author and character designer,F,,19760608,
@@ -31,6 +29,7 @@ Q16603639,Q16603639,,F,,16900101,17350101
 Q18653044,Q18653044,,F,,,
 Q18668815,Q18668815,,F,,,
 Q19854960,Q19854960,,F,,,
+Q56827444,Q56827444,교수 서희원의 아버지,M,,,
 Q6381789,Terrence Pegula,American businessman,M,https://commons.wikimedia.org/wiki/Special:FilePath/Terry%20Pegula%202015.jpg,19510327,
 Q9448583,가오쯔치,actor,M,,19810430,
 Q56668984,강대균,"기업가, 대한전자재료 회장",M,,19410101,
@@ -60,7 +59,7 @@ Q12584207,고명환,South Korean film actor and comedian,M,https://commons.wikim
 Q496356,고소영,South Korean actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/Ko%20So-young%2C%202011%20%28cropped%29.jpg,19721006,
 Q16630731,고영남,South Korean film director,M,,19350222,20030917
 Q263732,고용희,mother of Kim Jong-un,F,https://commons.wikimedia.org/wiki/Special:FilePath/Ko%20young-hee.jpg,19520626,20040813
-Q16177870,고윤,actor,M,,19880912,
+Q16177870,고윤,대한민국의 배우,M,,19880912,
 Q43110888,고은채,,F,,19800828,
 Q56434125,고정주,구한말 규장각의 학자,M,,,
 Q6424117,고창석,South Korean actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/Ko%20Chang-Seok.jpg,19701013,
@@ -265,6 +264,7 @@ Q710805,김평일,North Korean diplomat,M,https://commons.wikimedia.org/wiki/Spe
 Q10855915,김한길,대한민국의 정치인,M,https://commons.wikimedia.org/wiki/Special:FilePath/Kim%20Han-Gil%20%28cropped%29.jpg,19530917,
 Q1280778,김한솔,Korean student,M,,19950616,
 Q56668947,김향식,한학자 김원만의 자녀,F,,,
+Q41919799,김향임,조승희의 어머니,F,,,
 Q16080674,김혁,South Korean actor,M,,19821221,
 Q56533257,김형남,전 숭실대 총장,M,,19050101,19780101
 Q56664951,김형신,정치인 김익기의 자녀,F,,19530101,
@@ -442,11 +442,21 @@ Q11591972,복녕군,,M,,16390101,16701127
 Q6678012,삼축당 김씨,,F,,18900101,19700923
 Q7738364,상계군,조선의 왕자,M,,,
 Q11039371,상침 송씨,,F,,13960101,14630101
+Q56827418,서광효,조선말기의 동복군수,M,,18000822,18841219
+Q56827778,서동만,송재교육재단 이사장,M,,19500101,
+Q56827588,서동범,"대한민국의 기업가, 서양네트웍스 대표",M,,19580101,
+Q56827483,서동희,교수 서희원의 자녀,F,,19470101,
 Q56606167,서성환,"기업가, 태평양그룹 창업주",M,,19230101,20030101
+Q56830924,서애덕,에스플러스 인터네셔널 이사,F,,19830101,
 Q56606168,서영배,태평양개발 회장,M,,19560101,
+Q20444015,서재우,조선 후기의 문신,M,,18680101,19290101
+Q8766277,서재창,"조선 말기의 군인, 정치인",M,,18660101,18941213
+Q319934,서재필,"한국의 독립운동가, 정치인, 언론인",M,https://commons.wikimedia.org/wiki/Special:FilePath/Seo%20Jae-pil%201947.jpg,18640107,19510105
 Q368852,서태지,대한민국의 음악가,M,https://commons.wikimedia.org/wiki/Special:FilePath/Seo%20Taiji%20on%20October%2020%2C%202014%20%282%29.jpg,19720221,
 Q7952260,서향희,South Korean lawyer,F,,19740630,
+Q56830932,서현덕,서양네트웍스 이사,M,,19870101,
 Q16181216,서현철,South Korean actor,M,,19650519,
+Q16172178,서희원,대한민국의 교수,M,,19240221,20040407
 Q23994986,석동현,,M,,19600710,
 Q28698535,선두훈,,M,,19570924,
 Q10822153,선우은숙,South Korean actress,F,,19591224,
@@ -608,6 +618,8 @@ Q489475,유지태,South Korean actor and director,M,https://commons.wikimedia.or
 Q489952,유진,"South Korean singer, actress and MC",F,https://commons.wikimedia.org/wiki/Special:FilePath/2011%20Metrocity%20fashion%20show.jpg,19810303,
 Q94187,유호정,South Korean actress,F,,19690124,
 Q390099,육영수,대한민국의 대통령 부인,F,https://commons.wikimedia.org/wiki/Special:FilePath/%E5%B0%91%E5%B9%B4%E6%97%B6%E4%BB%A3%E7%9A%84%E9%99%86%E8%8B%B1%E4%BF%AE.jpg,19251129,19740815
+Q12610164,육인순,대한민국의 교육인,F,,19140101,19720101
+Q12610168,육종관,육영수의 아버지,M,,18930101,19651226
 Q12610202,윤노덕,일제 강점기의 기독교운동가,F,,19000919,19791023
 Q11485240,윤다훈,한국의 배우,M,,19641230,
 Q24861296,윤득실,조선 후기의 문신,M,,,
@@ -663,6 +675,7 @@ Q487728,의친왕,Korean prince,M,https://commons.wikimedia.org/wiki/Special:Fil
 Q12610810,의평군,,M,,,
 Q12610828,이갑,대한제국의 황손,M,,19380206,20141213
 Q482917,이건,Korean prince and cavalry officer in the Imperial Japanese Army,M,https://commons.wikimedia.org/wiki/Special:FilePath/Prince%20Yi%20Geon%2001.jpg,19091028,19901221
+Q56832490,이건영,"대한민국의 기업가, 유니온 회장",M,,19440101,
 Q494412,이건희,대한민국의 기업인,M,https://commons.wikimedia.org/wiki/Special:FilePath/Lee%20Kun-Hee.jpg,19420109,
 Q56669002,이경렬,전 재무장관 이정환의 자녀,F,,19500101,
 Q12610901,이경숙,대한민국의 정치인,F,,19530101,
@@ -732,6 +745,7 @@ Q56804639,이연희,정치인 이회창의 자녀,F,,19640101,
 Q12612052,이영범,South Korean actor,M,,19611020,
 Q12612075,이영은,"대한민국의 배우, 영화감독",M,,19710324,
 Q56606156,이영조,전 조선일보 이사,M,,,
+Q56831965,이영주,대한민국의 무역업자,M,,,
 Q12612098,이영하,대한민국의 배우,M,,19500117,
 Q56651426,이영학,이상실 전 상공은행장의 자녀,F,,19370101,
 Q12612110,이예춘,South Korean actor,M,,19190720,19771123
@@ -740,6 +754,7 @@ Q56804500,이용균,조선후기의 한학자,M,,,
 Q18605667,이용이,South Korean actress,F,,19580730,
 Q16180342,이용휘,,M,,19620220,
 Q51024,이우,"대한제국의 황족, 의친왕의 차남",M,https://commons.wikimedia.org/wiki/Special:FilePath/Prince%20Yi%20Wu%2001.jpg,19121115,19450807
+Q56832633,이우선,유니온 상무,M,,19820101,
 Q19161954,이웅범,,M,,19570210,
 Q487528,이원,Korean pretender,M,https://commons.wikimedia.org/wiki/Special:FilePath/Yiwon%2008JongmyoDaeje.jpg,19620923,
 Q56805362,이유경,기업인 이희상의 자녀,F,,19720101,
@@ -807,10 +822,14 @@ Q16091294,이혜훈,대한민국의 정치인,F,https://commons.wikimedia.org/wi
 Q8053456,이홍,대한민국의 모델,F,,19740101,
 Q16091306,이홍규,일제강점기 법조인,M,,19050510,20021031
 Q56429083,이홍석,조선시대의 유학자,M,,,
+Q56832838,이화영,"대한민국의 기업가, 유니드 사장",M,,19510101,
 Q12613250,이황 (폐세자),,M,,,
+Q56832144,이회림,전 동양제철화학그룹 회장,M,,19170101,
+Q56832175,이회삼,"대한민국의 기업가, 전 유니온 회장",M,,19190101,
 Q496509,이회창,대한민국의 전 정치인.,M,https://commons.wikimedia.org/wiki/Special:FilePath/Lee%20Hoi-chang%20%282010%29.jpg,19350602,
 Q12613263,이효린,"조선의 유학자, 의병장",M,,15400101,16220101
 Q56805103,이희상,"대한민국의 기업가, 운산그룹 회장",M,,19470101,
+Q56833651,이희현,기업가 이화영의 자녀,F,,19790101,
 Q11267083,이희호,전 대통령 영부인,F,https://commons.wikimedia.org/wiki/Special:FilePath/Leehiho2010.jpg,19220921,
 Q12613319,익양군,"성종, 조선의 왕족",M,,,
 Q6381135,인경왕후,Korean royal consort,F,,16610101,16800101
@@ -846,6 +865,7 @@ Q12614533,장성원,South Korean actor,M,,19760807,
 Q496004,장성택,North Korean government official,M,,19460122,20131212
 Q56668922,장세홍,"기업가, KISCO홀딩스 사장",M,,19660101,
 Q16170590,장유,는 조선의 문신이다,M,,15870101,16380101
+Q56827501,장윤성,전 이테크건설 임원,M,,19450101,
 Q492998,장조,"조선의 왕세자, 추존왕 그리고 추존황제",M,,17350213,17620712
 Q6153892,장준환,South Korean film director,M,,19700118,
 Q12614774,장항선,South Korean actor,M,,19470222,
@@ -971,6 +991,7 @@ Q626073,조성민,South Korean baseball player,M,,19730405,20130106
 Q18648496,조수호,전 한진해운 회장,M,,19540621,20061126
 Q12616878,조수훈,South Korean short track speed skater,M,,19890325,
 Q21060511,조슈아 캐럿,,M,https://commons.wikimedia.org/wiki/Special:FilePath/YouTube%20FanFest%20Korea%202015%20in%20KoreanEnglishman%28Joshua%20Carrott%29%205.png,19890514,
+Q41919430,조승태,조승희의 아버지,M,,,
 Q494431,조승희,살인자,M,,19840118,20070416
 Q56805535,조양래,"대한민국의 기업가, 한국타이어월드와이드 회장",M,,19370101,
 Q626113,조양호,"대한민국의 기업가, 대한항공 회장",M,https://commons.wikimedia.org/wiki/Special:FilePath/Cho%20Yang-ho%20in%20the%202015-2016%20of%20Korea-France%20Bilateral%20Exchanges%20%28cropped%29.jpg,19490308,
@@ -1016,7 +1037,7 @@ Q6305309,주주 장,American television journalist and news anchor,F,https://com
 Q16068617,주호성,South Korean actor,M,,19481022,
 Q12617992,지상욱,South Korean politician,M,,19650516,
 Q491763,지성,South Korean actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/180212%20%EC%A7%80%EC%84%B1.png,19770227,
-Q12618040,지윤,고려의 무신 (?~1377),M,,t1085478459,13770101
+Q12618040,지윤,고려의 무신 (?~1377),M,,t1085581414,13770101
 Q12618245,진산,대한민국의 작가,F,,,
 Q22975015,진송아,South Korean actor,F,,19660101,
 Q483467,진안대군,son of King Taejo of Joseon Korean state,M,,13540101,13930101
@@ -1053,6 +1074,7 @@ Q491143,최민수,South Korean actor,M,https://commons.wikimedia.org/wiki/Specia
 Q56669023,최성욱,변호사,M,,,
 Q493021,최수종,대한민국 배우 (1962~),M,,19621228,
 Q27514522,최순실,2016년 국정농단 사건의 주범 중 한 명,F,,19560623,
+Q56827643,최순천,종교인 최태민의 자녀,F,,19580101,
 Q12619640,최승경,South Korean actor and comedian,M,,19711227,
 Q18605825,최신원,"기업인, SKC 회장",M,,19521120,
 Q56701967,최양분,상인 최학배의 자녀,F,,,
@@ -1107,10 +1129,12 @@ Q56433228,한경록,법조인 한상호의 자녀,M,,,
 Q55735777,한대현,대한민국의 법조인,M,,19410101,
 Q12623986,한말숙,Korean writer,F,,19311227,
 Q5646649,한무숙,한국의 작가(소설가),F,,19181025,19930101
+Q56833518,한상준,"대한민국의 기업인, 유니드 부사장",M,,19720101,
 Q3703166,한상진,South Korean actor,M,,19771209,
 Q55735805,한상호,법조인,M,,,
 Q55735806,한성수,대한민국의 법조인,M,,19100101,19880506
 Q12624116,한성주,,F,,19740923,
+Q356675,한승수,"대한민국의 정치인, 외교관",M,https://commons.wikimedia.org/wiki/Special:FilePath/Han%20Seung-soo.jpg,19361228,
 Q11663968,한승원,대한민국의 소설가,M,,19391013,
 Q16875862,한승현,South Korean actor,M,,19821221,
 Q56804591,한인옥,법조인 한성수의 자녀,F,,19380101,
@@ -1145,6 +1169,7 @@ Q11286019,허준호,South Korean actor,M,,19640414,
 Q56668974,허지연,기업가 허경수의 자녀,F,,,
 Q12624909,허진규,"기업인, 일진그룹의 창업자",M,,19401210,
 Q624392,허헌,politician,M,https://commons.wikimedia.org/wiki/Special:FilePath/%ED%97%88%ED%97%8C%EC%84%A0%EC%83%9D.jpg,18850101,19510801
+Q24856057,허훈,South Korean basketball player,M,,19950816,
 Q484267,헌경왕후,Korean queen,F,,17350806,18160113
 Q12624994,현기봉,일제 강점기의 관료,M,,18550101,19240101
 Q624747,현덕왕후,Queen Consort of Munjong of Joseon and mother of Danjong of Joseon,F,,14180417,14410810
@@ -1166,6 +1191,8 @@ Q16179644,홍석조,South Korean businessman,M,,19530108,
 Q625257,홍석현,South Korean diplomat,M,,19491020,
 Q16179683,홍성기,South Korean film director,M,,19241111,20010203
 Q497270,홍성흔,South Korean baseball player,M,,19770228,
+Q56833272,홍소자,대한적십자 부총재,F,,19390101,
+Q56833187,홍순일,만주국 관리,M,,19100101,
 Q3724024,홍은희,South Korean actress,F,,19800217,
 Q23939885,홍정도,,M,,19771111,
 Q5894111,홍정욱,South Korean politician,M,,19700413,
