@@ -64,19 +64,16 @@ def extract_hubs(links, min_degree):
 
 
 def calc_stats(links):
-    g = nx.Graph()
-    g.add_edges_from(
-        (source, target)
-        for rel, source, target in links
-        if rel in KINSHIP
-    )
-
+    g = build_kinship_graph(links)
     n_nodes = g.number_of_nodes()
     n_edges = g.number_of_edges()
 
     subgraphs = (g.subgraph(c) for c in nx.connected_components(g))
     subgraphs = sorted([
         {
+            "hub": sorted(nx.betweenness_centrality(subg).items(),
+                          key=lambda x: x[1],
+                          reverse=True)[0][0],
             "nodes": sorted(list(subg.nodes())),
             "nNodes": subg.number_of_nodes(),
             "nEdges": subg.number_of_edges(),
@@ -88,8 +85,19 @@ def calc_stats(links):
     return {
         "nNodes": n_nodes,
         "nEdges": n_edges,
+        "nSubgraphs": len(subgraphs),
         "subgraphs": subgraphs,
     }
+
+
+def build_kinship_graph(links):
+    g = nx.Graph()
+    g.add_edges_from(
+        (source, target)
+        for rel, source, target in links
+        if rel in KINSHIP
+    )
+    return g
 
 
 def get_value(row, key):

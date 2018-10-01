@@ -149,6 +149,23 @@ export async function explorerMain() {
   renderer.rerender(null)
 }
 
+export async function statsMain() {
+  const loader = new Loader(DATA_HASH)
+  const data = await loader.loadData()
+  const network = new Graph(data)
+
+  const nodeMap = data.nodeMap
+  const links = document.querySelectorAll('.person')
+  for(let i = 0; i < links.length; i++) {
+    const link = links[i] as HTMLAnchorElement
+    const key = link.textContent
+    if(!key) continue
+
+    const person = data.nodeMap.get(key) as GraphNode
+    link.innerHTML = network.getPersonBrief(person)
+  }
+}
+
 function expandPath(network: Graph, path: GraphNode[], expands: number) {
   path.forEach((node, i) => {
     window.setTimeout(function () {

@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "webpack --mode=development --watch",
     "build": "rm -rf docs/data && webpack --mode=production",
-    "fetch": "rm -f docs/_hubs/*.md && FORCE_FETCH=1 pipenv run python fetch.py",
+    "fetch": "rm -f docs/_hubs/*.md && FORCE_FETCH=1 pipenv run python fetch.py && cp data/stats.json docs/_data/stats.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "jekyll": "cp -r data docs/ && cd docs && bundle exec jekyll serve --watch",
     "start": "concurrently \"npm:watch\" \"npm:jekyll\""

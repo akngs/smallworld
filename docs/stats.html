@@ -3,11 +3,34 @@ layout: page
 title: 통계
 permalink: /stats/
 ---
-<ol id="graphStats"></div>
+<h2>데이터 요약</h2>
+{% assign stats = site.data.stats %}
+<ul class="summary">
+    <li><span class="label">인물:</span> <span class="data">{{ stats.nNodes }}명</span></li>
+    <li><span class="label">인물 간 관계:</span> <span class="data">{{ stats.nEdges }}개</span></li>
+    <li><span class="label">분리된 혼맥:</span> <span class="data">{{ stats.nSubgraphs }}개</span></li>
+</ul>
+
+<h2>분리된 혼맥</h2>
+
+<p>
+    서로 연결되지 못하고 단절된 혼맥 덩어리들의 상위 10개 목록입니다. 데이터를 추가하여 단절된
+    혼맥들을 서로 연결시켜주세요.
+</p>
+
+<ol id="subgraphs">
+    {% assign subgraphs = stats.subgraphs | sort: 'nNodes' | reverse | slice:0,10 %}
+    {% for graph in subgraphs %}
+    <li>
+        <a href="{{ site.baseurl }}/explorer/?keys={{ graph.hub }}&&expands=5" class="person">{{ graph.hub }}</a>
+        외 {{ graph.nNodes }}명
+    </li>
+    {% endfor %}
+</ol>
 
 <script src="//d3js.org/d3.v5.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jsnetworkx/0.3.4/jsnetworkx.js"></script>
 <script src="{{ site.baseurl }}/bundle.js"></script>
 <script>
-    // window.addEventListener("DOMContentLoaded", sw.statsMain)
+    window.addEventListener("DOMContentLoaded", sw.statsMain)
 </script>

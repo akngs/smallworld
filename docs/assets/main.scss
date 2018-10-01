@@ -9,6 +9,12 @@ html {
   word-break: keep-all;
 }
 
+.page-content {
+  h2 {
+    margin-top: 2rem;
+  }
+}
+
 article.post {
   img {
     max-width: 100%;
