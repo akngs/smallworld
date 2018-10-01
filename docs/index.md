@@ -5,4 +5,4 @@ permalink: /
 ---
 {{ site.description }}
 
-[인맥 탐색기](explorer)로 원하는 인물의 인맥도를 검색해보세요.
+[인맥 탐색기]({{ site.baseurl }}/explorer/)로 원하는 인물의 인맥도를 검색해보세요.

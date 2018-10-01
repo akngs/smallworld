@@ -2,7 +2,7 @@ import networkx as nx
 
 KINSHIP = {'mother', 'father', 'child', 'spouse'}
 ITEM_URL_PREFIX = "http://www.wikidata.org/entity/"
-
+IMAGE_URL_PREFIX = 'http://commons.wikimedia.org/'
 
 def extract_nodes(data, fields):
     rows = (tuple(get_value(row, f) for f, _ in fields) for row in data)
@@ -106,6 +106,10 @@ def get_value(row, key):
     # Remove entity URL prefix
     if value.startswith(ITEM_URL_PREFIX):
         value = value[len(ITEM_URL_PREFIX):]
+
+    # Replace http image url to https
+    if key == 'image' and value.startswith(IMAGE_URL_PREFIX):
+        value = 'https' + value[4:]
 
     # Convert gender values
     if key == 'gender':

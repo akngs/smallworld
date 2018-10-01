@@ -184,26 +184,6 @@ def main():
     with open(f"data/hubs.csv", "w", encoding="utf-8") as f:
         to_csv(hubs, ["key", "score", "degree"], f)
 
-    # Generate markdowns for hubs
-    shutil.rmtree('docs/_hubs/', ignore_errors=True)
-    os.mkdir('docs/_hubs')
-
-    for key, score, degree in hubs:
-        person = nodes['persons'][key]
-        with open(f"docs/_hubs/{person['key']}.md", "w", encoding="utf-8") as f:
-            f.write("\n".join([
-                "---",
-                "layout: hubs",
-                f"key: {person['key']}",
-                f"title: {person['name']}",
-                f"name: {person['name']}",
-                f"image: {person['image']}",
-                f"description: {person['description']}",
-                f"score: {score}",
-                f"degree: {degree}",
-                "---",
-            ]))
-
     # Calculate statistics
     print(f'Calculate statistics...', end='', flush=True)
     stats = calc_stats(links)

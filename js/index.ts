@@ -276,7 +276,7 @@ function renderInfobox(network: Graph, node: GraphNode): void {
   // Image
   infobox.select('.image').classed('show', !!node.image)
   if (node.image) {
-    infobox.select('.image').attr('src', node.image.replace('http:', 'https:'))
+    infobox.select('.image').attr('src', node.image)
   }
 
   // Actions

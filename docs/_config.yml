@@ -23,10 +23,6 @@ url: "https://akngs.github.io"
 twitter_username: alankang
 github_username:  akngs
 
-collections:
-  hubs:
-    output: true
-
 # Build settings
 markdown: kramdown
 theme: minima
@@ -37,7 +33,7 @@ plugins:
 header_pages:
 - explorer.html
 - stats.html
-- hubs.md
+- people.md
 - about.md
 
 minima:
