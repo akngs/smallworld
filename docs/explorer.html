@@ -23,7 +23,9 @@ permalink: /explorer/
     <script src="//cdnjs.cloudflare.com/ajax/libs/jsnetworkx/0.3.4/jsnetworkx.js"></script>
     <script src="{{ site.baseurl }}/bundle.js"></script>
     <script>
-    window.addEventListener("DOMContentLoaded", sw.explorerMain)
+    window.addEventListener("DOMContentLoaded", function() {
+        sw.explorerMain("{{ site.datahash }}")
+    })
     </script>
 </head>
 <body>

@@ -3,13 +3,12 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 import {Graph, GraphNode, GraphRenderer, Loader, PersonNode} from './graph'
 
-const DATA_HASH = '7c9e621'
 const ITEM_URL_PREFIX = 'https://www.wikidata.org/entity/'
 
 
 let renderer: GraphRenderer
 
-export async function explorerMain() {
+export async function explorerMain(dataHash: string) {
   const rootEl = document.querySelector<SVGElement>('svg')
   if (!rootEl) throw new Error('Not found: "svg"')
 
@@ -18,7 +17,7 @@ export async function explorerMain() {
   if (!q.form) throw new Error('Not found: "q.form')
 
   showMessage('Loading...')
-  const loader = new Loader(DATA_HASH)
+  const loader = new Loader(dataHash)
   const data = await loader.loadData()
   hideMessage()
 
@@ -149,8 +148,8 @@ export async function explorerMain() {
   renderer.rerender(null)
 }
 
-export async function statsMain() {
-  const loader = new Loader(DATA_HASH)
+export async function statsMain(dataHash: string) {
+  const loader = new Loader(dataHash)
   const data = await loader.loadData()
   const network = new Graph(data)
 

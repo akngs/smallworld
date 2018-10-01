@@ -4,6 +4,7 @@ KINSHIP = {'mother', 'father', 'child', 'spouse'}
 ITEM_URL_PREFIX = "http://www.wikidata.org/entity/"
 IMAGE_URL_PREFIX = 'http://commons.wikimedia.org/'
 
+
 def extract_nodes(data, fields):
     rows = (tuple(get_value(row, f) for f, _ in fields) for row in data)
     added_keys = set()
