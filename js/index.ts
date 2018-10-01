@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 import Awesomplete from 'awesomplete'
 import {Graph, GraphNode, GraphRenderer, Loader, PersonNode} from './graph'
 
-const DATA_HASH = '1a8f5dd'
+const DATA_HASH = '7c9e621'
 const ITEM_URL_PREFIX = 'https://www.wikidata.org/entity/'
 
 
