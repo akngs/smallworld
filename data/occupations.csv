@@ -6,7 +6,6 @@ Q315247,University students
 Q3400985,academic
 Q13381572,artistic gymnast
 Q28143257,badminton coach
-Q13141064,badminton player
 Q5137571,basketball coach
 Q18581305,beauty pageant contestant
 Q2961975,business executive
@@ -19,7 +18,6 @@ Q811122,construction worker
 Q43373553,cult leader
 Q13381458,dressage rider
 Q41835716,faculty member
-Q13381863,fencer
 Q6665249,judoka
 Q15883433,mass murderer
 Q1906857,mechanical engineer
@@ -72,6 +70,7 @@ Q19598808,무신
 Q12039558,바둑 기사
 Q1259917,바이올리니스트
 Q15117302,배구 선수
+Q13141064,배드민턴 선수
 Q33999,배우
 Q333634,번역가
 Q15987302,법조인
@@ -143,6 +142,7 @@ Q11085831,통역사
 Q11051391,특명전권공사
 Q16533,판사
 Q203184,퍼스트 레이디
+Q13381863,펜싱 선수
 Q13474373,프로 레슬링 선수
 Q3186699,프로 바둑 기사
 Q486748,피아노 연주자
