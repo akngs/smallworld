@@ -1,5 +1,3 @@
-import {ScaleTime} from "d3";
-
 declare var jsnx: any
 
 import * as d3 from "d3"
@@ -14,6 +12,7 @@ interface Node {
 export interface PersonNode extends Node {
   description?: string
   birthdate?: Date
+  estimateBirthdate?: Date
   deathdate?: Date
   image?: string
   gender?: string
@@ -139,6 +138,11 @@ export class Loader {
         })
     })
 
+    // Estimate birth dates
+    personNodes.forEach(
+      node => node.estimateBirthdate = this.estimateBirthdate(node)
+    )
+
     // Process stats
     const stats = data[8] as any
     stats.subgraphs.forEach((g: any) => {
@@ -170,6 +174,51 @@ export class Loader {
       links: [],
       info: {},
     }
+  }
+
+  private estimateBirthdate(node: PersonNode): Date | undefined {
+    // If there's a birthday, use it
+    if (node.birthdate) return node.birthdate
+
+    // Try average of spouses' birthday
+    const spouses = node.links
+      .filter(link => link.rel === 'spouse')
+      .map(link => (link.target as PersonNode).birthdate)
+      .filter(date => !!date) as Date[]
+    const spouseAvg = spouses.length ? d3.mean(spouses) : undefined
+    if (spouseAvg) return new Date(+spouseAvg)
+
+    // Try average of siblings' birthday
+    const siblings = node.links
+      .filter(link => link.rel === 'father' || link.rel === 'mother')
+      .map(link => (link.target as PersonNode).links)
+      .reduce(
+        (flat, next) => flat.concat(next),
+        []
+      )
+      .filter(link => link.rel === 'child')
+      .map(link => (link.target as PersonNode).birthdate)
+      .filter(date => !!date) as Date[]
+    const siblingsAvg = siblings.length ? d3.mean(siblings) : undefined
+    if (siblingsAvg) return new Date(+siblingsAvg)
+
+    // Try average of parents' birthday
+    const parents = node.links
+      .filter(link => link.rel === 'father' || link.rel === 'mother')
+      .map(link => (link.target as PersonNode).birthdate)
+      .filter(date => !!date) as Date[]
+    const parentsMax = parents.length ? d3.max(parents) : undefined
+    if (parentsMax) return new Date(+parentsMax + 25 * 365 * 24 * 60 * 60 * 1000)
+
+    // Try average of children's birthday
+    const children = node.links
+      .filter(link => link.rel === 'child')
+      .map(link => (link.target as PersonNode).birthdate)
+      .filter(date => !!date) as Date[]
+    const childrenMin = children.length ? d3.min(children) : undefined
+    if (childrenMin) return new Date(+childrenMin - 25 * 365 * 24 * 60 * 60 * 1000)
+
+    return undefined
   }
 }
 
@@ -386,15 +435,22 @@ export class Graph implements GraphManipulation, GraphDataSource {
 }
 
 export class GraphRenderer {
+  private readonly MARGIN_T = 20
+  private readonly MARGIN_B = 20
+  private readonly MARGIN_L = 20
+  private readonly MARGIN_R = 60
+
   private readonly svg: SVGElement
   private readonly graphDs: GraphDataSource
   private readonly graphMan?: GraphManipulation
 
   private linksSel: d3.Selection<SVGLineElement, Link<GraphNode, GraphNode>, SVGGElement, undefined>
   private nodesSel: d3.Selection<SVGGElement, GraphNode, SVGGElement, undefined>
+  private readonly root: d3.Selection<SVGGElement, undefined, null, undefined>;
   private readonly forceSim: d3.Simulation<GraphNode, Link<GraphNode, GraphNode>>
   private readonly forceLink: d3.ForceLink<GraphNode, Link<GraphNode, GraphNode>>
   private readonly timeScale: d3.ScaleTime<number, number>
+  private readonly timeAxis: d3.Axis<number>
   private useTimeScale: boolean
 
   private readonly clickHandler: (this: SVGGElement, node: GraphNode) => void
@@ -426,15 +482,19 @@ export class GraphRenderer {
     // Initialize scales
     this.useTimeScale = false
     this.timeScale = d3.scaleTime()
+    this.timeAxis = d3.axisBottom(this.timeScale)
+      .tickFormat(d => "" + new Date(+d).getFullYear()) as d3.Axis<number>
 
-    const root = d3.select<SVGElement, undefined>(this.svg)
-      .append('g')
+    this.root = d3.select<SVGElement, undefined>(this.svg)
+      .append<SVGGElement>('g')
       .attr('class', 'root')
-    this.linksSel = root
+    this.root.append<SVGGElement>('g').attr('class', 'axis')
+      .call(this.timeAxis)
+    this.linksSel = this.root
       .append<SVGGElement>('g').attr('class', 'links')
       .selectAll<SVGLineElement, Link<GraphNode, GraphNode>>('.link')
       .data(this.graphDs.visibleLinks)
-    this.nodesSel = root.append<SVGGElement>('g').attr('class', 'nodes')
+    this.nodesSel = this.root.append<SVGGElement>('g').attr('class', 'nodes')
       .selectAll<SVGGElement, GraphNode>('.node')
       .data(this.graphDs.visibleNodes)
 
@@ -444,11 +504,13 @@ export class GraphRenderer {
     this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
       .alphaDecay(0.01)
       .force("link", this.forceLink)
-      .force("x", d3.forceX((node: GraphNode) => {
-        return this.useTimeScale ?
-          this.timeScale(node.birthdate ? node.birthdate.getTime() : 0) :
-          0
-      }))
+      .force("x",
+        d3.forceX((node: GraphNode) => {
+          return this.useTimeScale ?
+            this.timeScale(node.estimateBirthdate ? node.estimateBirthdate.getTime() : 0) :
+            0
+        })
+      )
       .force("y", d3.forceY(0))
       .force("charge", d3.forceManyBody().strength(-200))
       .force("collide", d3.forceCollide(20))
@@ -483,7 +545,7 @@ export class GraphRenderer {
 
     // Update scales
     this.timeScale.domain(
-      d3.extent(visibleNodes.map(n => n.birthdate ? n.birthdate.getTime() : 0)) as number[]
+      d3.extent(visibleNodes.map(n => n.estimateBirthdate ? n.estimateBirthdate.getTime() : 0)) as number[]
     )
 
     // Update nodes
@@ -537,6 +599,12 @@ export class GraphRenderer {
       .attr('class', d => `link ${d.rel}`)
       .attr('marker-end', d => d.rel === 'child' ? 'url(#arrowMarker)' : '')
 
+    // 4. Update axis
+    this.root.select('g.axis')
+      .call(this.timeAxis as any)
+      .transition()
+      .attr('opacity', this.useTimeScale ? 1 : 0)
+
     // Trigger layout
     this.forceSim.nodes(this.nodesSel.data())
     this.forceLink.links(this.linksSel.data())
@@ -558,23 +626,26 @@ export class GraphRenderer {
       .select('.root')
       .attr('transform', `translate(${width * 0.5}, ${height * 0.5})`)
 
-    this.timeScale.range([
-      width * -0.5 - 30,
-      width * 0.5 + 30
-    ])
+    this.timeScale.range(
+      [width * -0.5 + this.MARGIN_L, width * 0.5 - this.MARGIN_R]
+    )
+    this.root.select('g.axis')
+      .call(this.timeAxis as any)
+      .transition()
+      .attr('opacity', this.useTimeScale ? 1 : 0)
+
     this.forceSim.alpha(1.0)
     this.forceSim.restart()
   }
 
   private tick(): void {
     // Calculate bounding box
-    const margin = 20
     const width = +(this.svg.getAttribute('width') || 0)
     const height = +(this.svg.getAttribute('height') || 0)
-    const x0 = width * -0.5 + margin
-    const x1 = width * +0.5 - margin
-    const y0 = height * -0.5 + margin
-    const y1 = height * +0.5 - margin
+    const x0 = width * -0.5 + this.MARGIN_L
+    const x1 = width * +0.5 - this.MARGIN_R
+    const y0 = height * -0.5 + this.MARGIN_T
+    const y1 = height * +0.5 - this.MARGIN_B
 
     // Update nodes
     this.nodesSel
