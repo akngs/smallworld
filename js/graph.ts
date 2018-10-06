@@ -488,7 +488,9 @@ export class GraphRenderer {
     this.root = d3.select<SVGElement, undefined>(this.svg)
       .append<SVGGElement>('g')
       .attr('class', 'root')
-    this.root.append<SVGGElement>('g').attr('class', 'axis')
+    this.root.append<SVGGElement>('g')
+      .attr('class', 'axis')
+      .attr('transform', 'translate(0, 30)')
       .call(this.timeAxis)
     this.linksSel = this.root
       .append<SVGGElement>('g').attr('class', 'links')
@@ -600,10 +602,7 @@ export class GraphRenderer {
       .attr('marker-end', d => d.rel === 'child' ? 'url(#arrowMarker)' : '')
 
     // 4. Update axis
-    this.root.select('g.axis')
-      .call(this.timeAxis as any)
-      .transition()
-      .attr('opacity', this.useTimeScale ? 1 : 0)
+    this.updateAxis()
 
     // Trigger layout
     this.forceSim.nodes(this.nodesSel.data())
@@ -629,10 +628,7 @@ export class GraphRenderer {
     this.timeScale.range(
       [width * -0.5 + this.MARGIN_L, width * 0.5 - this.MARGIN_R]
     )
-    this.root.select('g.axis')
-      .call(this.timeAxis as any)
-      .transition()
-      .attr('opacity', this.useTimeScale ? 1 : 0)
+    this.updateAxis()
 
     this.forceSim.alpha(1.0)
     this.forceSim.restart()
@@ -701,5 +697,15 @@ export class GraphRenderer {
       delete node.fy
     }
     this.forceSim.alphaTarget(0)
+  }
+
+  private updateAxis(): void {
+    const width = +(this.svg.getAttribute('width') || 0)
+    this.timeAxis.ticks(Math.floor(width / 150))
+
+    this.root.select('g.axis')
+      .call(this.timeAxis as any)
+      .transition()
+      .attr('opacity', this.useTimeScale ? 0.8 : 0)
   }
 }
