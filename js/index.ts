@@ -43,6 +43,13 @@ export async function explorerMain(dataHash: string) {
   renderer = new GraphRenderer(rootEl, network, network)
   window.addEventListener('resize', () => renderer.resize())
 
+  // Event handlers
+  const useTimeScale = document.querySelector<HTMLInputElement>('#useTimeScale')
+  if (!useTimeScale) throw new Error('Not found: "#useTimeScale"')
+  useTimeScale.addEventListener("change", function () {
+    renderer.setUseTimeScale(useTimeScale.checked)
+    renderer.rerender(null)
+  });
   // Init autocomplete
   q.disabled = false
 
@@ -155,10 +162,10 @@ export async function statsMain(dataHash: string) {
 
   const nodeMap = data.nodeMap
   const links = document.querySelectorAll('.person')
-  for(let i = 0; i < links.length; i++) {
+  for (let i = 0; i < links.length; i++) {
     const link = links[i] as HTMLAnchorElement
     const key = link.textContent
-    if(!key) continue
+    if (!key) continue
 
     const person = data.nodeMap.get(key) as GraphNode
     link.innerHTML = network.getPersonBrief(person)

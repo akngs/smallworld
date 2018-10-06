@@ -1,3 +1,5 @@
+import {ScaleTime} from "d3";
+
 declare var jsnx: any
 
 import * as d3 from "d3"
@@ -71,7 +73,7 @@ interface GraphListener {
   onDeselect?: (network: Graph, node: GraphNode) => void
 }
 
-const parseTime = d3.timeParse('%Y-%m-%d')
+const parseTime = d3.timeParse('%Y%m%d')
 
 export class Loader {
   private readonly dataHash: string
@@ -270,8 +272,6 @@ export class Graph implements GraphManipulation, GraphDataSource {
     if (this._selectedNode === node) return
     if (this._selectedNode) this.deselect()
 
-    node.fx = node.x
-    node.fy = node.y
     node.selected = true
     this._selectedNode = node
 
@@ -286,8 +286,6 @@ export class Graph implements GraphManipulation, GraphDataSource {
 
     const node = this._selectedNode
 
-    delete this._selectedNode.fx
-    delete this._selectedNode.fy
     this._selectedNode.selected = false
     this._selectedNode = null
 
@@ -396,6 +394,8 @@ export class GraphRenderer {
   private nodesSel: d3.Selection<SVGGElement, GraphNode, SVGGElement, undefined>
   private readonly forceSim: d3.Simulation<GraphNode, Link<GraphNode, GraphNode>>
   private readonly forceLink: d3.ForceLink<GraphNode, Link<GraphNode, GraphNode>>
+  private readonly timeScale: d3.ScaleTime<number, number>
+  private useTimeScale: boolean
 
   private readonly clickHandler: (this: SVGGElement, node: GraphNode) => void
   private readonly dragHandler: d3.DragBehavior<SVGGElement, GraphNode, any>
@@ -423,6 +423,10 @@ export class GraphRenderer {
           </filter>
       </defs>
     `
+    // Initialize scales
+    this.useTimeScale = false
+    this.timeScale = d3.scaleTime()
+
     const root = d3.select<SVGElement, undefined>(this.svg)
       .append('g')
       .attr('class', 'root')
@@ -440,8 +444,12 @@ export class GraphRenderer {
     this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
       .alphaDecay(0.01)
       .force("link", this.forceLink)
-      .force("x", d3.forceX(0).strength(0.05))
-      .force("y", d3.forceY(0).strength(0.05))
+      .force("x", d3.forceX((node: GraphNode) => {
+        return this.useTimeScale ?
+          this.timeScale(node.birthdate ? node.birthdate.getTime() : 0) :
+          0
+      }))
+      .force("y", d3.forceY(0))
       .force("charge", d3.forceManyBody().strength(-200))
       .force("collide", d3.forceCollide(20))
       .on('tick', this.tick.bind(this))
@@ -465,11 +473,23 @@ export class GraphRenderer {
     this.resize()
   }
 
+  setUseTimeScale(enable: boolean): void {
+    this.useTimeScale = enable
+  }
+
   rerender(selectedNode: GraphNode | null): void {
+    const visibleNodes = this.graphDs.visibleNodes
+    const visibleLinks = this.graphDs.visibleLinks
+
+    // Update scales
+    this.timeScale.domain(
+      d3.extent(visibleNodes.map(n => n.birthdate ? n.birthdate.getTime() : 0)) as number[]
+    )
+
     // Update nodes
     // 1. Join new data
     this.nodesSel = this.nodesSel
-      .data(this.graphDs.visibleNodes, node => node.key)
+      .data(visibleNodes, node => node.key)
 
     // 2. Exit
     this.nodesSel.exit().remove()
@@ -484,7 +504,7 @@ export class GraphRenderer {
           .attr('class', 'name')
           .attr('transform', 'translate(8, 8)')
           .text(node.name)
-        if(selectedNode) {
+        if (selectedNode) {
           node.x = (selectedNode.x || 0) + 10 * (Math.random() - 0.5)
           node.y = (selectedNode.y || 0) + 10 * (Math.random() - 0.5)
         }
@@ -505,7 +525,7 @@ export class GraphRenderer {
     // Update links
     // 1. Join new data
     this.linksSel = this.linksSel
-      .data(this.graphDs.visibleLinks)
+      .data(visibleLinks)
 
     // 2. Exit
     this.linksSel.exit().remove()
@@ -538,6 +558,10 @@ export class GraphRenderer {
       .select('.root')
       .attr('transform', `translate(${width * 0.5}, ${height * 0.5})`)
 
+    this.timeScale.range([
+      width * -0.5 - 30,
+      width * 0.5 + 30
+    ])
     this.forceSim.alpha(1.0)
     this.forceSim.restart()
   }
