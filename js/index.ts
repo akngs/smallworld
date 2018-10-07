@@ -48,7 +48,7 @@ export async function explorerMain(dataHash: string) {
   if (!useTimeScale) throw new Error('Not found: "#useTimeScale"')
   useTimeScale.addEventListener("change", function () {
     renderer.setUseTimeScale(useTimeScale.checked)
-    renderer.rerender(null)
+    renderer.rerender(null, true)
   });
   // Init autocomplete
   q.disabled = false
@@ -77,7 +77,7 @@ export async function explorerMain(dataHash: string) {
           .forEach((node, i) => {
             window.setTimeout(function () {
               network.expand(node, 0)
-              renderer.rerender(selectedNode)
+              renderer.rerender(selectedNode, true)
             }, 100 * i)
           })
       } catch (e) {
@@ -87,7 +87,7 @@ export async function explorerMain(dataHash: string) {
 
     network.expand(node, 1)
     network.select(node)
-    renderer.rerender(node)
+    renderer.rerender(node, true)
   })
 
   // Apply querystring
@@ -152,7 +152,7 @@ export async function explorerMain(dataHash: string) {
   }
 
   // Done
-  renderer.rerender(null)
+  renderer.rerender(null, true)
 }
 
 export async function statsMain(dataHash: string) {
@@ -176,7 +176,7 @@ function expandPath(network: Graph, path: GraphNode[], expands: number) {
   path.forEach((node, i) => {
     window.setTimeout(function () {
       network.expand(node, expands)
-      renderer.rerender(node)
+      renderer.rerender(node, true)
     }, 100 * i)
   })
 }
@@ -290,12 +290,12 @@ function renderInfobox(network: Graph, node: GraphNode): void {
   infobox.select('.actions .expand a').on('click', () => {
     d3.event.preventDefault()
     network.expand(node)
-    renderer.rerender(node)
+    renderer.rerender(node, true)
   })
   infobox.select('.actions .hide a').on('click', () => {
     d3.event.preventDefault()
     network.hide(node)
-    renderer.rerender(node)
+    renderer.rerender(node, true)
   })
 }
 

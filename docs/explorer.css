@@ -198,7 +198,11 @@ svg .arrow {
 
 svg .links .link.spouse {
     stroke-width: 1px;
-    stroke: #FF0000;
+    stroke: #FF8888;
+}
+
+svg .links .link.highlighted {
+    stroke: #005500;
 }
 
 svg .node {

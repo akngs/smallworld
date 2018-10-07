@@ -49,6 +49,7 @@ interface DataSet {
 
 export interface GraphNode extends PersonNode, d3.SimulationNodeDatum {
   selected: boolean
+  highlighted: boolean
   shown: boolean
   fullyExpanded: boolean
 }
@@ -454,6 +455,8 @@ export class GraphRenderer {
   private useTimeScale: boolean
 
   private readonly clickHandler: (this: SVGGElement, node: GraphNode) => void
+  private readonly mouseoverHandler: (this: SVGGElement, node: GraphNode) => void
+  private readonly mouseoutHandler: (this: SVGGElement, node: GraphNode) => void
   private readonly dragHandler: d3.DragBehavior<SVGGElement, GraphNode, any>
 
   constructor(svg: SVGElement, graphDs: GraphDataSource, graphMan?: GraphManipulation) {
@@ -508,10 +511,16 @@ export class GraphRenderer {
       .on('tick', this.tick.bind(this))
     this.setUseTimeScale(false)
 
-    // Click and drag handler
+    // Event handlers
     const self = this
     this.clickHandler = function (this: SVGGElement, node: GraphNode) {
       self.onNodeClick(this, node)
+    }
+    this.mouseoverHandler = function (this: SVGGElement, node: GraphNode) {
+      self.onNodeMouseover(this, node)
+    }
+    this.mouseoutHandler = function (this: SVGGElement, node: GraphNode) {
+      self.onNodeMouseout(this, node)
     }
     this.dragHandler = d3.drag<SVGGElement, GraphNode>()
       .on('start', function (node) {
@@ -531,17 +540,20 @@ export class GraphRenderer {
     this.useTimeScale = enable
 
     if (this.useTimeScale) {
+
       this.forceSim
         .force("center", null)
         .force("link", null)
         .force("x", d3.forceX((node: GraphNode) => {
-          const birthdate = node.estimateBirthdate
-          return this.timeScale(birthdate ? birthdate.getTime() : 0)
+          const date = node.estimateBirthdate
+          return this.timeScale(date ? date.getTime() : 0)
         }))
         .force("y", d3.forceY(0).strength(0.1))
         .force("charge", d3.forceManyBody().strength(-200))
         .force("collide", d3.forceCollide(30))
+
     } else {
+
       this.forceSim
         .force("center", d3.forceCenter(0, 0))
         .force("link", this.forceLink)
@@ -549,10 +561,11 @@ export class GraphRenderer {
         .force("y", d3.forceY(0).strength(0.1))
         .force("charge", d3.forceManyBody().strength(-200))
         .force("collide", d3.forceCollide(30))
+
     }
   }
 
-  rerender(selectedNode: GraphNode | null): void {
+  rerender(selectedNode: GraphNode | null, triggerLayout: boolean): void {
     const visibleNodes = this.graphDs.visibleNodes
     const visibleLinks = this.graphDs.visibleLinks
 
@@ -585,6 +598,8 @@ export class GraphRenderer {
         }
       })
       .on('click', this.clickHandler)
+      .on('mouseover', this.mouseoverHandler)
+      .on('mouseout', this.mouseoutHandler)
       .call(this.dragHandler)
       .merge(this.nodesSel)
     this.nodesSel
@@ -594,7 +609,7 @@ export class GraphRenderer {
           .duration(1500)
           .ease(d3.easeElastic)
           .attr('r', node => node.fullyExpanded ? 5 : 7)
-          .attr('filter', node => node.selected ? 'url(#dropShadow)' : '')
+          .attr('filter', node => node.selected || node.highlighted ? 'url(#dropShadow)' : '')
       })
 
     // Update links
@@ -609,7 +624,10 @@ export class GraphRenderer {
     this.linksSel = this.linksSel.enter()
       .append<SVGLineElement>('line')
       .merge(this.linksSel)
-      .attr('class', d => `link ${d.rel}`)
+      .attr('class', d => {
+        const highlighted = d.source.highlighted || d.target.highlighted
+        return `link ${d.rel} ${highlighted ? "highlighted" : ""}`
+      })
       .attr('marker-end', d => d.rel === 'child' ? 'url(#arrowMarker)' : '')
 
     // 4. Update axis
@@ -618,8 +636,10 @@ export class GraphRenderer {
     // Trigger layout
     this.forceSim.nodes(this.nodesSel.data())
     this.forceLink.links(this.linksSel.data())
-    this.forceSim.alpha(1.0)
-    this.forceSim.restart()
+    if (triggerLayout) {
+      this.forceSim.alpha(1.0)
+      this.forceSim.restart()
+    }
   }
 
   /**
@@ -683,7 +703,17 @@ export class GraphRenderer {
       this.graphMan.select(node)
       this.graphMan.expand(node)
     }
-    this.rerender(node)
+    this.rerender(node, true)
+  }
+
+  private onNodeMouseover(element: SVGGElement, node: GraphNode): void {
+    node.highlighted = true
+    this.rerender(null, false)
+  }
+
+  private onNodeMouseout(element: SVGGElement, node: GraphNode): void {
+    node.highlighted = false
+    this.rerender(null, false)
   }
 
   private onNodeDragStart(element: SVGGElement, node: GraphNode): void {
@@ -703,10 +733,8 @@ export class GraphRenderer {
 
   private onNodeDragEnd(element: SVGGElement, node: GraphNode): void {
     d3.select(element).classed('drag', false)
-    if (!node.selected) {
-      delete node.fx
-      delete node.fy
-    }
+    delete node.fx
+    delete node.fy
     this.forceSim.alphaTarget(0)
   }
 
