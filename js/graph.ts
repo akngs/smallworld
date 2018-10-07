@@ -490,7 +490,7 @@ export class GraphRenderer {
       .attr('class', 'root')
     this.root.append<SVGGElement>('g')
       .attr('class', 'axis')
-      .attr('transform', 'translate(0, 30)')
+      .attr('transform', 'translate(0, 50)')
       .call(this.timeAxis)
     this.linksSel = this.root
       .append<SVGGElement>('g').attr('class', 'links')
@@ -504,19 +504,9 @@ export class GraphRenderer {
     this.forceLink = d3.forceLink<GraphNode, Link<GraphNode, GraphNode>>(this.linksSel.data())
       .distance(50)
     this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
-      .alphaDecay(0.01)
-      .force("link", this.forceLink)
-      .force("x",
-        d3.forceX((node: GraphNode) => {
-          return this.useTimeScale ?
-            this.timeScale(node.estimateBirthdate ? node.estimateBirthdate.getTime() : 0) :
-            0
-        })
-      )
-      .force("y", d3.forceY(0))
-      .force("charge", d3.forceManyBody().strength(-200))
-      .force("collide", d3.forceCollide(20))
+      .alphaDecay(0.02)
       .on('tick', this.tick.bind(this))
+    this.setUseTimeScale(false)
 
     // Click and drag handler
     const self = this
@@ -539,6 +529,27 @@ export class GraphRenderer {
 
   setUseTimeScale(enable: boolean): void {
     this.useTimeScale = enable
+
+    if (this.useTimeScale) {
+      this.forceSim
+        .force("center", null)
+        .force("link", null)
+        .force("x", d3.forceX((node: GraphNode) => {
+          const birthdate = node.estimateBirthdate
+          return this.timeScale(birthdate ? birthdate.getTime() : 0)
+        }))
+        .force("y", d3.forceY(0).strength(0.1))
+        .force("charge", d3.forceManyBody().strength(-200))
+        .force("collide", d3.forceCollide(30))
+    } else {
+      this.forceSim
+        .force("center", d3.forceCenter(0, 0))
+        .force("link", this.forceLink)
+        .force("x", d3.forceX(0).strength(0.1))
+        .force("y", d3.forceY(0).strength(0.1))
+        .force("charge", d3.forceManyBody().strength(-200))
+        .force("collide", d3.forceCollide(30))
+    }
   }
 
   rerender(selectedNode: GraphNode | null): void {
@@ -580,7 +591,7 @@ export class GraphRenderer {
       .each(function (node) {
         d3.select<SVGGElement, GraphNode>(this).select('circle')
           .transition()
-          .duration(1200)
+          .duration(1500)
           .ease(d3.easeElastic)
           .attr('r', node => node.fullyExpanded ? 5 : 7)
           .attr('filter', node => node.selected ? 'url(#dropShadow)' : '')
@@ -679,7 +690,7 @@ export class GraphRenderer {
     d3.select(element).classed('drag', true)
     node.x = node.fx = d3.event.x
     node.y = node.fy = d3.event.y
-    this.forceSim.alphaTarget(0.5).restart()
+    this.forceSim.alphaTarget(0.3).restart()
   }
 
   private onNodeDrag(element: SVGGElement, node: GraphNode): void {
@@ -701,11 +712,12 @@ export class GraphRenderer {
 
   private updateAxis(): void {
     const width = +(this.svg.getAttribute('width') || 0)
-    this.timeAxis.ticks(Math.floor(width / 150))
+    this.timeAxis.ticks(Math.max(2, Math.floor(width / 150)))
 
     this.root.select('g.axis')
-      .call(this.timeAxis as any)
       .transition()
-      .attr('opacity', this.useTimeScale ? 0.8 : 0)
+      .duration(1000)
+      .call(this.timeAxis as any)
+      .attr('opacity', this.useTimeScale ? 0.6 : 0)
   }
 }
