@@ -636,10 +636,7 @@ export class GraphRenderer {
     // Trigger layout
     this.forceSim.nodes(this.nodesSel.data())
     this.forceLink.links(this.linksSel.data())
-    if (triggerLayout) {
-      this.forceSim.alpha(1.0)
-      this.forceSim.restart()
-    }
+    if (triggerLayout) this.restartForce()
   }
 
   /**
@@ -660,7 +657,10 @@ export class GraphRenderer {
       [width * -0.5 + this.MARGIN_L, width * 0.5 - this.MARGIN_R]
     )
     this.updateAxis()
+    this.restartForce()
+  }
 
+  private restartForce(): void {
     this.forceSim.alpha(1.0)
     this.forceSim.restart()
   }
