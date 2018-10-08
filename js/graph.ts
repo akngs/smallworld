@@ -655,6 +655,7 @@ export class GraphRenderer {
     this.timeScale.range(
       [width * -0.5 + this.MARGIN_L, width * 0.5 - this.MARGIN_R]
     )
+
     this.updateAxis()
     this.restartForce()
   }
@@ -746,7 +747,11 @@ export class GraphRenderer {
 
   private updateAxis(): void {
     const width = +(this.svg.getAttribute('width') || 0)
-    this.timeAxis.ticks(Math.max(2, Math.floor(width / 150)))
+    const ticks = Math.max(2, Math.floor(width / 150))
+
+    this.timeAxis
+      .ticks(ticks)
+      .tickValues(ticks == 2 ? this.timeScale.domain() as any : null)
 
     this.root.select('g.axis')
       .transition()
