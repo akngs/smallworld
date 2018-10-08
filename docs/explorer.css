@@ -262,6 +262,26 @@ svg .node.selected .description {
     visibility: visible;
 }
 
+svg .node .birthdate {
+    font-family: sans-serif;
+    font-size: 10px;
+    fill: #444444;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+    visibility: hidden;
+}
+
+svg .node.fixed .birthdate {
+    visibility: visible;
+}
+
+svg .node.highlighted .birthdate {
+    visibility: visible;
+}
+
+svg .node.selected .birthdate {
+    visibility: visible;
+}
+
 svg .node circle {
     stroke-width: 1px;
     stroke: #FFFFFF;
@@ -279,4 +299,13 @@ svg .node.highlighted circle {
 svg .node.selected circle {
     fill: #444444;
     stroke: #75fc31;
+}
+
+svg .grid line {
+    stroke: #EEEEEE;
+    opacity: 0.0;
+}
+
+svg .grid.visible line {
+    opacity: 1.0;
 }

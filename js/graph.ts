@@ -439,6 +439,7 @@ export class GraphRenderer {
   private readonly MARGIN_B = 20
   private readonly MARGIN_L = 20
   private readonly MARGIN_R = 60
+  private readonly GRID_UNIT = 25
 
   private readonly svg: SVGElement
   private readonly graphDs: GraphDataSource
@@ -494,6 +495,8 @@ export class GraphRenderer {
     this.root = d3.select<SVGElement, undefined>(this.svg)
       .append<SVGGElement>('g')
       .attr('class', 'root')
+    this.root.append<SVGGElement>('g')
+      .attr('class', 'grid')
     this.root.append<SVGGElement>('g')
       .attr('class', 'axis')
       .attr('transform', 'translate(0, 50)')
@@ -595,9 +598,14 @@ export class GraphRenderer {
           .attr('y', '0.4em')
           .text(node.name)
         d3.select<SVGGElement, GraphNode>(this).append('text')
+          .attr('class', 'birthdate')
+          .attr('x', 10)
+          .attr('y', '-1.0em')
+          .text(node.birthdate ? '' + node.birthdate.getFullYear() : '?')
+        d3.select<SVGGElement, GraphNode>(this).append('text')
           .attr('class', 'description')
           .attr('x', 10)
-          .attr('y', '-0.9em')
+          .attr('y', '1.8em')
           .text(node.description || '')
       })
       .on('click', this.clickHandler)
@@ -663,17 +671,53 @@ export class GraphRenderer {
     const width = parent.clientWidth
     const height = parent.clientHeight
 
+    // Resize SVG
     d3.select('svg')
       .attr('width', width)
       .attr('height', height)
       .select('.root')
       .attr('transform', `translate(${width * 0.5}, ${height * 0.5})`)
 
+    // Adjust time scale's range
     this.timeScale.range(
       [width * -0.5 + this.MARGIN_L, width * 0.5 - this.MARGIN_R]
     )
 
+    // Update grids
+    const gridXStart = Math.floor(width * -0.5 / this.GRID_UNIT) * this.GRID_UNIT
+    const gridXLen = Math.ceil(width / this.GRID_UNIT)
+    const gridX = this.root.select('.grid').selectAll('line.x')
+      .data(d3.range(gridXLen))
+    gridX.exit()
+      .remove()
+    gridX.enter()
+      .append('line')
+      .attr('class', 'x')
+      .merge(gridX)
+      .attr('x1', d => gridXStart + d * this.GRID_UNIT)
+      .attr('x2', d => gridXStart + d * this.GRID_UNIT)
+      .attr('y1', -height * 0.5)
+      .attr('y2', height * 0.5)
+
+    const gridYStart = Math.floor(height * -0.5 / this.GRID_UNIT) * this.GRID_UNIT
+    const gridYLen = Math.ceil(height / this.GRID_UNIT)
+    const gridY = this.root.select('.grid').selectAll('line.y')
+      .data(d3.range(gridYLen))
+    gridY.exit()
+      .remove()
+    gridY.enter()
+      .append('line')
+      .attr('class', 'y')
+      .merge(gridY)
+      .attr('x1', -width * 0.5)
+      .attr('x2', width * 0.5)
+      .attr('y1', d => gridYStart + d * this.GRID_UNIT)
+      .attr('y2', d => gridYStart + d * this.GRID_UNIT)
+
+    // Update axis
     this.updateAxis()
+
+    // Restart force-simulation
     this.restartForce()
   }
 
@@ -764,6 +808,9 @@ export class GraphRenderer {
     node.x = node.fx = d3.event.x
     node.y = node.fy = d3.event.y
 
+    this.root.select('g.grid')
+      .classed('visible', true)
+
     d3.select<SVGGElement, Node>(element)
       .classed('drag', true)
       .classed('fixed', true)
@@ -771,6 +818,12 @@ export class GraphRenderer {
   }
 
   private onNodeDragEnd(element: SVGGElement, node: GraphNode): void {
+    node.x = node.fx = Math.round(d3.event.x / this.GRID_UNIT) * this.GRID_UNIT
+    node.y = node.fy = Math.round(d3.event.y / this.GRID_UNIT) * this.GRID_UNIT
+
+    this.root.select('g.grid')
+      .classed('visible', false)
+
     d3.select(element)
       .classed('drag', false)
     this.forceSim.alphaTarget(0)
