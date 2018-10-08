@@ -690,7 +690,7 @@ export class GraphRenderer {
     const sy = (d.source as GraphNode).y as number
     const tx = (d.target as GraphNode).x as number
     const ty = (d.target as GraphNode).y as number
-    const dr = Math.sqrt((tx - sx) ** 2 + (ty - sx) ** 2)
+    const dr = Math.sqrt((tx - sx) ** 2 + (ty - sy) ** 2)
     return `M${sx},${sy}A${dr},${dr} 0 0,1 ${tx},${ty}`
   }
 
