@@ -229,7 +229,6 @@ svg .node {
 
 svg .node .name {
     font-family: sans-serif;
-    alignment-baseline: hanging;
     fill: #444444;
     text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
 }
@@ -246,7 +245,6 @@ svg .node.highlighted .name {
 svg .node .description {
     font-family: sans-serif;
     font-size: 10px;
-    alignment-baseline: baseline;
     fill: #444444;
     text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
     visibility: hidden;

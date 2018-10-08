@@ -508,7 +508,7 @@ export class GraphRenderer {
 
     // Initialize layout simulation
     this.forceLink = d3.forceLink<GraphNode, Link<GraphNode, GraphNode>>(this.linksSel.data())
-      .distance(50)
+      .distance(60)
     this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
       .alphaDecay(0.02)
       .on('tick', this.tick.bind(this))
@@ -553,7 +553,7 @@ export class GraphRenderer {
           return this.timeScale(date ? date.getTime() : 0)
         }))
         .force("y", d3.forceY(0).strength(0.1))
-        .force("charge", d3.forceManyBody().strength(-200))
+        .force("charge", d3.forceManyBody().strength(-300))
         .force("collide", d3.forceCollide(30))
 
     } else {
@@ -561,7 +561,7 @@ export class GraphRenderer {
         .force("link", this.forceLink)
         .force("x", d3.forceX(0).strength(0.1))
         .force("y", d3.forceY(0).strength(0.1))
-        .force("charge", d3.forceManyBody().strength(-200))
+        .force("charge", d3.forceManyBody().strength(-300))
         .force("collide", d3.forceCollide(30))
     }
   }
@@ -591,11 +591,13 @@ export class GraphRenderer {
         d3.select<SVGGElement, GraphNode>(this).append('circle')
         d3.select<SVGGElement, GraphNode>(this).append('text')
           .attr('class', 'name')
-          .attr('transform', 'translate(10, -4)')
+          .attr('x', 10)
+          .attr('y', '0.4em')
           .text(node.name)
         d3.select<SVGGElement, GraphNode>(this).append('text')
           .attr('class', 'description')
-          .attr('transform', 'translate(10, -8)')
+          .attr('x', 10)
+          .attr('y', '-0.9em')
           .text(node.description || '')
       })
       .on('click', this.clickHandler)
