@@ -57,10 +57,15 @@ input[type="submit"],
     opacity: 0.5;
 }
 
+.help,
 .help h2 {
-    margin: 0 0 0.5rem;
     font-size: 1rem;
 }
+
+.help h2 {
+    margin: 0 0 0.5rem;
+}
+
 .help ul {
     margin: 0;
     padding: 0;
@@ -85,12 +90,16 @@ input[type="submit"],
     padding: 1rem 1rem;
 }
 
+.infobox,
+.infobox * {
+    font-size: 0.85rem;
+}
+
 .infobox .actions {
     text-transform: uppercase;
 }
 
 .infobox h2 {
-    font-size: 1rem;
     margin-bottom: 0;
 }
 
@@ -101,7 +110,6 @@ input[type="submit"],
 
 .infobox .item > h3 {
     position: absolute;
-    font-size: 1rem;
     margin: 0;
 }
 
@@ -199,7 +207,8 @@ svg .links .link {
 
 svg .links .link.spouse {
     stroke-width: 1px;
-    stroke: #FF8888;
+    stroke: #FF6666;
+    stroke-dasharray: 2;
 }
 
 svg .arrow.highlighted {
@@ -207,7 +216,7 @@ svg .arrow.highlighted {
 }
 
 svg .links .link.highlighted {
-    stroke: #000000;
+    stroke: #333333;
 }
 
 svg .links .link.spouse.highlighted {
@@ -221,7 +230,38 @@ svg .node {
 svg .node .name {
     font-family: sans-serif;
     alignment-baseline: hanging;
+    fill: #444444;
     text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+svg .node.fixed .name {
+    fill: #000000;
+}
+
+svg .node.highlighted .name {
+    fill: #000000;
+    text-shadow: 0 1px 0 #75fc31, 1px 0 0 #75fc31, 0 -1px 0 #75fc31, -1px 0 0 #75fc31;
+}
+
+svg .node .description {
+    font-family: sans-serif;
+    font-size: 10px;
+    alignment-baseline: baseline;
+    fill: #444444;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+    visibility: hidden;
+}
+
+svg .node.fixed .description {
+    visibility: visible;
+}
+
+svg .node.highlighted .description {
+    visibility: visible;
+}
+
+svg .node.selected .description {
+    visibility: visible;
 }
 
 svg .node circle {
@@ -230,9 +270,15 @@ svg .node circle {
     fill: #999999;
 }
 
-svg .node.selected circle {
-    stroke: #bafc6a;
+svg .node.fixed circle {
+    fill: #444444;
 }
 
-svg .node.selected text {
+svg .node.highlighted circle {
+    fill: #444444;
+}
+
+svg .node.selected circle {
+    fill: #444444;
+    stroke: #75fc31;
 }

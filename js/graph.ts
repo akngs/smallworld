@@ -587,16 +587,16 @@ export class GraphRenderer {
     this.nodesSel = this.nodesSel.enter()
       .append<SVGGElement>('g')
       .attr('class', 'node person')
-      .each(function (node) {
+      .each(function (node: GraphNode) {
         d3.select<SVGGElement, GraphNode>(this).append('circle')
         d3.select<SVGGElement, GraphNode>(this).append('text')
           .attr('class', 'name')
           .attr('transform', 'translate(10, -4)')
           .text(node.name)
-        if (selectedNode) {
-          node.x = (selectedNode.x || 0) + 10 * (Math.random() - 0.5)
-          node.y = (selectedNode.y || 0) + 10 * (Math.random() - 0.5)
-        }
+        d3.select<SVGGElement, GraphNode>(this).append('text')
+          .attr('class', 'description')
+          .attr('transform', 'translate(10, -8)')
+          .text(node.description || '')
       })
       .on('click', this.clickHandler)
       .on('dblclick', this.doubleclickHandler)
@@ -604,6 +604,13 @@ export class GraphRenderer {
       .on('mouseout', this.mouseoutHandler)
       .call(this.dragHandler)
       .merge(this.nodesSel)
+      .classed('highlighted', node => {
+        for(let i = 0; i < node.links.length; i++) {
+          const link = node.links[i] as Link<GraphNode, GraphNode>
+          if(link.source.highlighted || link.target.highlighted) return true
+        }
+        return false
+      })
     this.nodesSel
       .each(function (node) {
         d3.select<SVGGElement, GraphNode>(this).select('circle')
@@ -617,7 +624,7 @@ export class GraphRenderer {
     // Update links
     // 1. Join new data
     this.linksSel = this.linksSel
-      .data(visibleLinks)
+      .data(visibleLinks, link => link.source.key + '-' + link.target.key)
 
     // 2. Exit
     this.linksSel.exit().remove()
@@ -625,11 +632,11 @@ export class GraphRenderer {
     // 3. Enter and update
     this.linksSel = this.linksSel.enter()
       .append<SVGLineElement>('path')
-      .merge(this.linksSel)
       .attr('class', d => {
-        const highlighted = d.source.highlighted || d.target.highlighted
-        return `link link-${d.source.key} link-${d.target.key} ${highlighted ? 'highlighted' : ''}`
+        return `link link-${d.source.key} link-${d.target.key} ${d.rel}`
       })
+      .merge(this.linksSel)
+      .classed('highlighted', d => d.source.highlighted || d.target.highlighted)
       .attr('marker-end', d => {
         if (d.rel === 'spouse') return ''
 
@@ -691,22 +698,28 @@ export class GraphRenderer {
       })
 
     // Update links
-    this.linksSel.attr("d", this.generateLinkArc)
+    this.linksSel.attr("d", this.generateLink)
   }
 
-  private generateLinkArc(d: Link<GraphNode, GraphNode>): string {
+  private generateLink(d: Link<GraphNode, GraphNode>): string {
     const sx = (d.source as GraphNode).x as number
     const sy = (d.source as GraphNode).y as number
     const tx = (d.target as GraphNode).x as number
     const ty = (d.target as GraphNode).y as number
-    const dr = Math.sqrt((tx - sx) ** 2 + (ty - sy) ** 2)
-    return `M${sx},${sy}A${dr},${dr} 0 0,1 ${tx},${ty}`
+
+    if(d.rel === 'spouse') {
+      return `M${sx},${sy} L${tx},${ty}`
+    } else {
+      const dr = Math.sqrt((tx - sx) ** 2 + (ty - sy) ** 2)
+      return `M${sx},${sy}A${dr},${dr} 0 0,1 ${tx},${ty}`
+    }
   }
 
   private onNodeClick(element: SVGGElement, node: GraphNode): void {
     if (!this.graphMan) return
 
     if (d3.event['altKey']) {
+      node.highlighted = false
       this.graphMan.hide(node)
     } else if (node.selected) {
       this.graphMan.deselect()
@@ -722,16 +735,18 @@ export class GraphRenderer {
   private onNodeDoubleclick(element: SVGGElement, node: GraphNode): void {
     delete node.fx
     delete node.fy
+
+    d3.select(element)
+      .classed('fixed', false)
+
     this.rerender(node, true)
   }
 
   private onNodeMouseover(element: SVGGElement, node: GraphNode): void {
     node.highlighted = true
-
+    this.rerender(null, false)
     d3.select(element).raise()
     d3.select(this.svg).selectAll(`.link-${node.key}`).raise()
-
-    this.rerender(null, false)
   }
 
   private onNodeMouseout(element: SVGGElement, node: GraphNode): void {
@@ -740,7 +755,6 @@ export class GraphRenderer {
   }
 
   private onNodeDragStart(element: SVGGElement, node: GraphNode): void {
-    d3.select(element).classed('drag', true)
     this.forceSim.alphaTarget(0.3).restart()
   }
 
@@ -749,11 +763,14 @@ export class GraphRenderer {
     node.y = node.fy = d3.event.y
 
     d3.select<SVGGElement, Node>(element)
+      .classed('drag', true)
+      .classed('fixed', true)
       .attr("transform", `translate(${node.x}, ${node.y})`)
   }
 
   private onNodeDragEnd(element: SVGGElement, node: GraphNode): void {
-    d3.select(element).classed('drag', false)
+    d3.select(element)
+      .classed('drag', false)
     this.forceSim.alphaTarget(0)
   }
 
