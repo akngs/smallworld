@@ -190,6 +190,7 @@ input[type="submit"],
 svg .links .link {
     stroke-width: 1px;
     stroke: #AAAAAA;
+    fill: none;
 }
 
 svg .arrow {

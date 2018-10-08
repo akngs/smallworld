@@ -234,7 +234,6 @@ export class Graph implements GraphManipulation, GraphDataSource {
   private _selectedNode: GraphNode | null
 
   constructor(dataSet: DataSet, listener?: GraphListener) {
-
     // Convert Nodes into NetworkNodes
     this._nodes = dataSet.nodes
       .filter(node => node.type === 'person')
@@ -401,7 +400,7 @@ export class Graph implements GraphManipulation, GraphDataSource {
         // Do not include reversed links since all relationships are symmetric
         (
           link.rel === 'child' ||
-          link.rel === 'spouse' && link.source.gender === 'F'
+          link.rel === 'spouse' && link.source.gender === 'M'
         )
       )
     })
@@ -455,6 +454,7 @@ export class GraphRenderer {
   private useTimeScale: boolean
 
   private readonly clickHandler: (this: SVGGElement, node: GraphNode) => void
+  private readonly doubleclickHandler: (this: SVGGElement, node: GraphNode) => void
   private readonly mouseoverHandler: (this: SVGGElement, node: GraphNode) => void
   private readonly mouseoutHandler: (this: SVGGElement, node: GraphNode) => void
   private readonly dragHandler: d3.DragBehavior<SVGGElement, GraphNode, any>
@@ -467,7 +467,7 @@ export class GraphRenderer {
     // Initialize SVG
     this.svg.innerHTML = `
       <defs>
-          <marker id="arrowMarker" viewBox="0 -5 10 10" refX="23" refY="0" markerWidth="5" markerHeight="5" orient="auto">
+          <marker id="arrowMarker" viewBox="0 -5 10 10" refX="20" refY="-1.5" markerWidth="6" markerHeight="6" orient="auto">
               <path d="M0,-5L10,0L0,5" class="arrow"></path>
           </marker>
           <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
@@ -516,6 +516,9 @@ export class GraphRenderer {
     this.clickHandler = function (this: SVGGElement, node: GraphNode) {
       self.onNodeClick(this, node)
     }
+    this.doubleclickHandler = function (this: SVGGElement, node: GraphNode) {
+      self.onNodeDoubleclick(this, node)
+    }
     this.mouseoverHandler = function (this: SVGGElement, node: GraphNode) {
       self.onNodeMouseover(this, node)
     }
@@ -540,9 +543,7 @@ export class GraphRenderer {
     this.useTimeScale = enable
 
     if (this.useTimeScale) {
-
       this.forceSim
-        .force("center", null)
         .force("link", null)
         .force("x", d3.forceX((node: GraphNode) => {
           const date = node.estimateBirthdate
@@ -553,15 +554,12 @@ export class GraphRenderer {
         .force("collide", d3.forceCollide(30))
 
     } else {
-
       this.forceSim
-        .force("center", d3.forceCenter(0, 0))
         .force("link", this.forceLink)
         .force("x", d3.forceX(0).strength(0.1))
         .force("y", d3.forceY(0).strength(0.1))
         .force("charge", d3.forceManyBody().strength(-200))
         .force("collide", d3.forceCollide(30))
-
     }
   }
 
@@ -598,6 +596,7 @@ export class GraphRenderer {
         }
       })
       .on('click', this.clickHandler)
+      .on('dblclick', this.doubleclickHandler)
       .on('mouseover', this.mouseoverHandler)
       .on('mouseout', this.mouseoutHandler)
       .call(this.dragHandler)
@@ -622,7 +621,7 @@ export class GraphRenderer {
 
     // 3. Enter and update
     this.linksSel = this.linksSel.enter()
-      .append<SVGLineElement>('line')
+      .append<SVGLineElement>('path')
       .merge(this.linksSel)
       .attr('class', d => {
         const highlighted = d.source.highlighted || d.target.highlighted
@@ -683,11 +682,16 @@ export class GraphRenderer {
       })
 
     // Update links
-    this.linksSel
-      .attr('x1', node => node.source.x || 0)
-      .attr('y1', node => node.source.y || 0)
-      .attr('x2', node => node.target.x || 0)
-      .attr('y2', node => node.target.y || 0)
+    this.linksSel.attr("d", this.generateLinkArc)
+  }
+
+  private generateLinkArc(d: Link<GraphNode, GraphNode>): string {
+    const sx = (d.source as GraphNode).x as number
+    const sy = (d.source as GraphNode).y as number
+    const tx = (d.target as GraphNode).x as number
+    const ty = (d.target as GraphNode).y as number
+    const dr = Math.sqrt((tx - sx) ** 2 + (ty - sx) ** 2)
+    return `M${sx},${sy}A${dr},${dr} 0 0,1 ${tx},${ty}`
   }
 
   private onNodeClick(element: SVGGElement, node: GraphNode): void {
@@ -706,6 +710,12 @@ export class GraphRenderer {
     this.rerender(node, true)
   }
 
+  private onNodeDoubleclick(element: SVGGElement, node: GraphNode): void {
+    delete node.fx
+    delete node.fy
+    this.rerender(node, true)
+  }
+
   private onNodeMouseover(element: SVGGElement, node: GraphNode): void {
     node.highlighted = true
     this.rerender(null, false)
@@ -718,8 +728,6 @@ export class GraphRenderer {
 
   private onNodeDragStart(element: SVGGElement, node: GraphNode): void {
     d3.select(element).classed('drag', true)
-    node.x = node.fx = d3.event.x
-    node.y = node.fy = d3.event.y
     this.forceSim.alphaTarget(0.3).restart()
   }
 
@@ -733,8 +741,6 @@ export class GraphRenderer {
 
   private onNodeDragEnd(element: SVGGElement, node: GraphNode): void {
     d3.select(element).classed('drag', false)
-    delete node.fx
-    delete node.fy
     this.forceSim.alphaTarget(0)
   }
 
