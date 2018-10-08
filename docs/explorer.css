@@ -187,14 +187,14 @@ input[type="submit"],
     }
 }
 
-svg .links .link {
-    stroke-width: 1px;
-    stroke: #AAAAAA;
-    fill: none;
+svg .arrow {
+    fill: #CCCCCC;
 }
 
-svg .arrow {
-    fill: #AAAAAA;
+svg .links .link {
+    stroke-width: 1px;
+    stroke: #CCCCCC;
+    fill: none;
 }
 
 svg .links .link.spouse {
@@ -202,8 +202,16 @@ svg .links .link.spouse {
     stroke: #FF8888;
 }
 
+svg .arrow.highlighted {
+    fill: #000000;
+}
+
 svg .links .link.highlighted {
-    stroke: #005500;
+    stroke: #000000;
+}
+
+svg .links .link.spouse.highlighted {
+    stroke: #CC0000;
 }
 
 svg .node {
@@ -213,12 +221,13 @@ svg .node {
 svg .node .name {
     font-family: sans-serif;
     alignment-baseline: hanging;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
 }
 
 svg .node circle {
-    stroke-width: 2px;
+    stroke-width: 1px;
     stroke: #FFFFFF;
-    fill: #888888;
+    fill: #999999;
 }
 
 svg .node.selected circle {

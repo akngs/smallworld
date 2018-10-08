@@ -470,6 +470,9 @@ export class GraphRenderer {
           <marker id="arrowMarker" viewBox="0 -5 10 10" refX="20" refY="-1.5" markerWidth="6" markerHeight="6" orient="auto">
               <path d="M0,-5L10,0L0,5" class="arrow"></path>
           </marker>
+          <marker id="arrowMarkerHighlighted" viewBox="0 -5 10 10" refX="20" refY="-1.5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,-5L10,0L0,5" class="arrow highlighted"></path>
+          </marker>
           <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1" />
               <feOffset dx="1" dy="1" result="offsetblur" />
@@ -588,7 +591,7 @@ export class GraphRenderer {
         d3.select<SVGGElement, GraphNode>(this).append('circle')
         d3.select<SVGGElement, GraphNode>(this).append('text')
           .attr('class', 'name')
-          .attr('transform', 'translate(8, 8)')
+          .attr('transform', 'translate(10, -4)')
           .text(node.name)
         if (selectedNode) {
           node.x = (selectedNode.x || 0) + 10 * (Math.random() - 0.5)
@@ -607,7 +610,7 @@ export class GraphRenderer {
           .transition()
           .duration(1500)
           .ease(d3.easeElastic)
-          .attr('r', node => node.fullyExpanded ? 5 : 7)
+          .attr('r', node => node.fullyExpanded ? 4 : 6)
           .attr('filter', node => node.selected || node.highlighted ? 'url(#dropShadow)' : '')
       })
 
@@ -625,9 +628,14 @@ export class GraphRenderer {
       .merge(this.linksSel)
       .attr('class', d => {
         const highlighted = d.source.highlighted || d.target.highlighted
-        return `link ${d.rel} ${highlighted ? "highlighted" : ""}`
+        return `link link-${d.source.key} link-${d.target.key} ${highlighted ? 'highlighted' : ''}`
       })
-      .attr('marker-end', d => d.rel === 'child' ? 'url(#arrowMarker)' : '')
+      .attr('marker-end', d => {
+        if (d.rel === 'spouse') return ''
+
+        const highlighted = d.source.highlighted || d.target.highlighted
+        return highlighted ? 'url(#arrowMarkerHighlighted)' : 'url(#arrowMarker)'
+      })
 
     // 4. Update axis
     this.updateAxis()
@@ -719,6 +727,10 @@ export class GraphRenderer {
 
   private onNodeMouseover(element: SVGGElement, node: GraphNode): void {
     node.highlighted = true
+
+    d3.select(element).raise()
+    d3.select(this.svg).selectAll(`.link-${node.key}`).raise()
+
     this.rerender(null, false)
   }
 
