@@ -173,6 +173,18 @@ def main():
             node = dict(zip(header, row))
             nodes[key][node["key"]] = node
 
+    # Check styles
+    too_long_descriptions = [
+        node
+        for node in nodes['persons'].values()
+        if len(node['description']) > 20
+    ]
+    if len(too_long_descriptions) > 0:
+        print('Following nodes have too long description:')
+        for node in too_long_descriptions:
+            print(f'- https://www.wikidata.org/wiki/{node["key"]} : '
+                  f'{node["description"]}')
+
     # Extract links
     links = extract_links(data, LINKS)
     print(f'Unique links: {len(links)}')

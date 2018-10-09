@@ -643,7 +643,7 @@ export class GraphRenderer {
           .attr('r', node => node.fullyExpanded ? 5 : 7)
           .attr('filter', node => node.selected || node.highlighted ? 'url(#dropShadow)' : '')
           .style('fill', node => {
-            if(!useAutoColor) return '#888888'
+            if (!useAutoColor) return '#888888'
 
             // Find visible links
             let links = node.links
@@ -657,7 +657,7 @@ export class GraphRenderer {
               .join('-')
 
             // If one or more children are visible, use children's key as color
-            if(key === '') key = links
+            if (key === '') key = links
               .filter(link => link.rel === 'child')
               .map(link => link.target.key)
               .sort()
@@ -847,9 +847,10 @@ export class GraphRenderer {
     node.x = node.fx = d3.event.x
     node.y = node.fy = d3.event.y
 
+    if (d3.select(element).classed('drag')) return
+
     this.root.select('g.grid')
       .classed('visible', true)
-
     d3.select<SVGGElement, Node>(element)
       .classed('drag', true)
       .classed('fixed', true)
@@ -857,14 +858,16 @@ export class GraphRenderer {
   }
 
   private onNodeDragEnd(element: SVGGElement, node: GraphNode): void {
+    if (!d3.select(element).classed('drag')) return
+
     node.x = node.fx = Math.round(d3.event.x / this.GRID_UNIT) * this.GRID_UNIT
     node.y = node.fy = Math.round(d3.event.y / this.GRID_UNIT) * this.GRID_UNIT
 
     this.root.select('g.grid')
       .classed('visible', false)
-
-    d3.select(element)
+  d3.select(element)
       .classed('drag', false)
+
     this.forceSim.alphaTarget(0)
   }
 
