@@ -350,10 +350,7 @@ export class Graph implements GraphManipulation, GraphDataSource {
   getPersonBrief(node: PersonNode): string {
     // Try description
     const description = node.description
-    if (description) {
-      const short = description.replace(/(한국의|대한민국의) /, '')
-      return `${node.name} (${short})`
-    }
+    if (description) `${node.name} (${description})`
 
     // Try birthdate and deathdate
     const birthdate = node.birthdate || null

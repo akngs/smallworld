@@ -1,3 +1,4 @@
+import re
 import networkx as nx
 
 KINSHIP = {'mother', 'father', 'child', 'spouse'}
@@ -121,6 +122,12 @@ def get_value(row, key):
         else:
             # Non-binaries
             return 'Q'
+
+    # Shorten description
+    if key == 'humanDescription':
+        value = re.sub(r'^(대한민국|한국)의 ', '', value)
+        value = re.sub(r'^조선민주주의인민공화국의 ', '북한의 ', value)
+        return value
 
     # Convert datetime values
     if key in ["birthdate", "deathdate"] and len(value) == 20:
