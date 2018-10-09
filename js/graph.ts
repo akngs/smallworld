@@ -436,7 +436,7 @@ export class GraphRenderer {
   private readonly MARGIN_B = 20
   private readonly MARGIN_L = 20
   private readonly MARGIN_R = 60
-  private readonly GRID_UNIT = 25
+  private readonly GRID_UNIT = 30
 
   private readonly svg: SVGElement
   private readonly graphDs: GraphDataSource
@@ -447,9 +447,13 @@ export class GraphRenderer {
   private readonly root: d3.Selection<SVGGElement, undefined, null, undefined>;
   private readonly forceSim: d3.Simulation<GraphNode, Link<GraphNode, GraphNode>>
   private readonly forceLink: d3.ForceLink<GraphNode, Link<GraphNode, GraphNode>>
-  private readonly timeScale: d3.ScaleTime<number, number>
+
+  private useAutoColor: boolean
+  private readonly autoColor: d3.ScaleOrdinal<string, any>
+
   private readonly timeAxis: d3.Axis<number>
   private useTimeScale: boolean
+  private readonly timeScale: d3.ScaleTime<number, number>
 
   private readonly clickHandler: (this: SVGGElement, node: GraphNode) => void
   private readonly doubleclickHandler: (this: SVGGElement, node: GraphNode) => void
@@ -484,11 +488,19 @@ export class GraphRenderer {
       </defs>
     `
     // Initialize scales
+    // 1. Color scale: Tableau10 except for gray
+    const tableau10 = ['#4e79a7', '#f28e2c', '#e15759', '#76b7b2', '#59a14f', '#edc949', '#af7aa1', '#ff9da7', '#9c755f']
+      .map(c => (d3.color(c) as any).darker(0.1))
+    this.useAutoColor = true
+    this.autoColor = d3.scaleOrdinal(tableau10)
+
+    // 2. Time scale
     this.useTimeScale = false
     this.timeScale = d3.scaleTime()
     this.timeAxis = d3.axisBottom(this.timeScale)
       .tickFormat(d => "" + new Date(+d).getFullYear()) as d3.Axis<number>
 
+    // Initialize SVG groups
     this.root = d3.select<SVGElement, undefined>(this.svg)
       .append<SVGGElement>('g')
       .attr('class', 'root')
@@ -508,7 +520,7 @@ export class GraphRenderer {
 
     // Initialize layout simulation
     this.forceLink = d3.forceLink<GraphNode, Link<GraphNode, GraphNode>>(this.linksSel.data())
-      .distance(60)
+      .distance(80)
     this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
       .alphaDecay(0.02)
       .on('tick', this.tick.bind(this))
@@ -540,6 +552,10 @@ export class GraphRenderer {
       })
 
     this.resize()
+  }
+
+  setUseAutoColor(enable: boolean): void {
+    this.useAutoColor = enable
   }
 
   setUseTimeScale(enable: boolean): void {
@@ -584,25 +600,28 @@ export class GraphRenderer {
     this.nodesSel.exit().remove()
 
     // 3. Enter and update
+    const color = this.autoColor
+    const useAutoColor = this.useAutoColor
+
     this.nodesSel = this.nodesSel.enter()
       .append<SVGGElement>('g')
       .attr('class', 'node person')
       .each(function (node: GraphNode) {
         d3.select<SVGGElement, GraphNode>(this).append('circle')
-        d3.select<SVGGElement, GraphNode>(this).append('text')
-          .attr('class', 'name')
+        const text = d3.select<SVGGElement, GraphNode>(this).append('text')
+          .attr('class', 'main')
           .attr('x', 10)
           .attr('y', '0.4em')
+        text.append('tspan')
+          .attr('class', 'name')
           .text(node.name)
-        d3.select<SVGGElement, GraphNode>(this).append('text')
+        text.append('tspan')
           .attr('class', 'birthdate')
-          .attr('x', 10)
-          .attr('y', '-1.0em')
-          .text(node.birthdate ? '' + node.birthdate.getFullYear() : '?')
+          .text(node.birthdate ? '' + node.birthdate.getFullYear() : '')
         d3.select<SVGGElement, GraphNode>(this).append('text')
           .attr('class', 'description')
           .attr('x', 10)
-          .attr('y', '1.8em')
+          .attr('y', '1.7em')
           .text(node.description || '')
       })
       .on('click', this.clickHandler)
@@ -612,20 +631,41 @@ export class GraphRenderer {
       .call(this.dragHandler)
       .merge(this.nodesSel)
       .classed('highlighted', node => {
-        for(let i = 0; i < node.links.length; i++) {
+        for (let i = 0; i < node.links.length; i++) {
           const link = node.links[i] as Link<GraphNode, GraphNode>
-          if(link.source.highlighted || link.target.highlighted) return true
+          if (link.source.highlighted || link.target.highlighted) return true
         }
         return false
       })
-    this.nodesSel
       .each(function (node) {
         d3.select<SVGGElement, GraphNode>(this).select('circle')
           .transition()
-          .duration(1500)
-          .ease(d3.easeElastic)
-          .attr('r', node => node.fullyExpanded ? 4 : 6)
+          .attr('r', node => node.fullyExpanded ? 5 : 7)
           .attr('filter', node => node.selected || node.highlighted ? 'url(#dropShadow)' : '')
+          .style('fill', node => {
+            if(!useAutoColor) return '#888888'
+
+            // Find visible links
+            let links = node.links
+              .filter(l => l.source === node && (l.target as GraphNode).shown)
+
+            // If one or more parents are visible, use parents' key as color
+            let key = links
+              .filter(link => link.rel === 'father' || link.rel === 'mother')
+              .map(link => link.target.key)
+              .sort()
+              .join('-')
+
+            // If one or more children are visible, use children's key as color
+            if(key === '') key = links
+              .filter(link => link.rel === 'child')
+              .map(link => link.target.key)
+              .sort()
+              .join('-')
+
+            // Use pale gray if the node is insignificant
+            return key ? color(key) : '#CCCCCC'
+          })
       })
 
     // Update links
@@ -691,6 +731,7 @@ export class GraphRenderer {
       .append('line')
       .attr('class', 'x')
       .merge(gridX)
+      .classed('major', d => (gridXStart + d * this.GRID_UNIT) % (4 * this.GRID_UNIT) === 0)
       .attr('x1', d => gridXStart + d * this.GRID_UNIT)
       .attr('x2', d => gridXStart + d * this.GRID_UNIT)
       .attr('y1', -height * 0.5)
@@ -706,6 +747,7 @@ export class GraphRenderer {
       .append('line')
       .attr('class', 'y')
       .merge(gridY)
+      .classed('major', d => (gridXStart + d * this.GRID_UNIT) % (4 * this.GRID_UNIT) === 0)
       .attr('x1', -width * 0.5)
       .attr('x2', width * 0.5)
       .attr('y1', d => gridYStart + d * this.GRID_UNIT)
@@ -750,11 +792,11 @@ export class GraphRenderer {
     const tx = (d.target as GraphNode).x as number
     const ty = (d.target as GraphNode).y as number
 
-    if(d.rel === 'spouse') {
+    if (d.rel === 'spouse') {
       return `M${sx},${sy} L${tx},${ty}`
     } else {
-      const dr = Math.sqrt((tx - sx) ** 2 + (ty - sy) ** 2)
-      return `M${sx},${sy}A${dr},${dr} 0 0,1 ${tx},${ty}`
+      const dr = Math.sqrt((tx - sx) ** 2 + (ty - sy) ** 2) * 1.2
+      return `M${sx},${sy}A${dr},${dr} 0 0 1 ${tx},${ty}`
     }
   }
 

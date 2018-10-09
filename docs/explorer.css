@@ -74,6 +74,8 @@ input[type="submit"],
 
 .help ul li {
     padding: 0;
+    line-height: 1.5rem;
+    height: 1.5rem;
 }
 
 .query {
@@ -196,19 +198,18 @@ input[type="submit"],
 }
 
 svg .arrow {
-    fill: #CCCCCC;
+    fill: #DDDDDD;
 }
 
 svg .links .link {
     stroke-width: 1px;
-    stroke: #CCCCCC;
+    stroke: #DDDDDD;
     fill: none;
 }
 
 svg .links .link.spouse {
     stroke-width: 1px;
     stroke: #FF6666;
-    stroke-dasharray: 2;
 }
 
 svg .arrow.highlighted {
@@ -239,12 +240,17 @@ svg .node.fixed .name {
 
 svg .node.highlighted .name {
     fill: #000000;
-    text-shadow: 0 1px 0 #75fc31, 1px 0 0 #75fc31, 0 -1px 0 #75fc31, -1px 0 0 #75fc31;
+    text-shadow: 0 1px 0 #43fc42, 1px 0 0 #43fc42, 0 -1px 0 #43fc42, -1px 0 0 #43fc42;
+}
+
+svg .node.selected .name {
+    fill: #000000;
+    text-shadow: 0 1px 0 #43fc42, 1px 0 0 #43fc42, 0 -1px 0 #43fc42, -1px 0 0 #43fc42;
 }
 
 svg .node .description {
     font-family: sans-serif;
-    font-size: 10px;
+    font-size: 9px;
     fill: #444444;
     text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
     visibility: hidden;
@@ -285,25 +291,26 @@ svg .node.selected .birthdate {
 svg .node circle {
     stroke-width: 1px;
     stroke: #FFFFFF;
-    fill: #999999;
+    fill: #444444;
 }
 
 svg .node.fixed circle {
-    fill: #444444;
 }
 
 svg .node.highlighted circle {
-    fill: #444444;
 }
 
 svg .node.selected circle {
-    fill: #444444;
-    stroke: #75fc31;
+    opacity: 1.0;
+    stroke: #43fc42;
 }
 
 svg .grid line {
     stroke: #EEEEEE;
     opacity: 0.0;
+}
+svg .grid line.major {
+    stroke: #CCCCCC;
 }
 
 svg .grid.visible line {

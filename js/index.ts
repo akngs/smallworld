@@ -44,12 +44,20 @@ export async function explorerMain(dataHash: string) {
   window.addEventListener('resize', () => renderer.resize())
 
   // Event handlers
+  const useAutoColor = document.querySelector<HTMLInputElement>('#useAutoColor')
+  if (!useAutoColor) throw new Error('Not found: "#useAutoColor"')
+  useAutoColor.addEventListener("change", function () {
+    renderer.setUseAutoColor(useAutoColor.checked)
+    renderer.rerender(null, false)
+  });
+
   const useTimeScale = document.querySelector<HTMLInputElement>('#useTimeScale')
   if (!useTimeScale) throw new Error('Not found: "#useTimeScale"')
   useTimeScale.addEventListener("change", function () {
     renderer.setUseTimeScale(useTimeScale.checked)
     renderer.rerender(null, true)
   });
+
   // Init autocomplete
   q.disabled = false
 
