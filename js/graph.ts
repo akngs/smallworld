@@ -436,7 +436,7 @@ export class GraphRenderer {
   private readonly MARGIN_B = 20
   private readonly MARGIN_L = 20
   private readonly MARGIN_R = 60
-  private readonly GRID_UNIT = 30
+  private readonly GRID_UNIT = 32
 
   private readonly svg: SVGElement
   private readonly graphDs: GraphDataSource
