@@ -569,16 +569,14 @@ export class GraphRenderer {
           return this.timeScale(date ? date.getTime() : 0)
         }))
         .force("y", d3.forceY(0).strength(0.05))
-        .force("center", null)
-        .force("charge", d3.forceManyBody().strength(-90))
+        .force("charge", d3.forceManyBody().strength(-80))
         .force("collide", d3.forceCollide(30))
     } else {
       this.forceSim
-        .force("link", this.forceLink.strength(0.5))
-        .force("x", d3.forceX(0).strength(0.02))
-        .force("y", d3.forceY(0).strength(0.02))
-        .force("center", d3.forceCenter(0, 0))
-        .force("charge", d3.forceManyBody().strength(-90))
+        .force("link", this.forceLink.strength(1))
+        .force("x", d3.forceX(0).strength(0.05))
+        .force("y", d3.forceY(0).strength(0.05))
+        .force("charge", d3.forceManyBody().strength(-80))
         .force("collide", d3.forceCollide(30))
     }
   }
