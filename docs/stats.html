@@ -22,7 +22,7 @@ permalink: /stats/
     {% assign subgraphs = stats.subgraphs | sort: 'nNodes' | reverse | slice:0,10 %}
     {% for graph in subgraphs %}
     <li>
-        <a href="{{ site.baseurl }}/explorer/?keys={{ graph.hub }}&&expands=5" class="person">{{ graph.hub }}</a>
+        <a href="{{ site.baseurl }}/explorer/?keys={{ graph.hub }}&&expands=2" class="person">{{ graph.hub }}</a>
         외 {{ graph.nNodes }}명
     </li>
     {% endfor %}

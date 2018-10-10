@@ -1,4 +1,4 @@
-declare var jsnx: any
+declare let jsnx: any
 
 import * as d3 from "d3"
 
@@ -522,7 +522,7 @@ export class GraphRenderer {
     this.forceLink = d3.forceLink<GraphNode, Link<GraphNode, GraphNode>>(this.linksSel.data())
       .distance(80)
     this.forceSim = d3.forceSimulation<GraphNode, Link<GraphNode, GraphNode>>(this.nodesSel.data())
-      .alphaDecay(0.02)
+      .alphaDecay(0.05)
       .on('tick', this.tick.bind(this))
     this.setUseTimeScale(false)
 
@@ -563,21 +563,22 @@ export class GraphRenderer {
 
     if (this.useTimeScale) {
       this.forceSim
-        .force("link", null)
+        .force("link", this.forceLink.strength(0.01))
         .force("x", d3.forceX((node: GraphNode) => {
           const date = node.estimateBirthdate
           return this.timeScale(date ? date.getTime() : 0)
         }))
-        .force("y", d3.forceY(0).strength(0.1))
-        .force("charge", d3.forceManyBody().strength(-300))
+        .force("y", d3.forceY(0).strength(0.05))
+        .force("center", null)
+        .force("charge", d3.forceManyBody().strength(-90))
         .force("collide", d3.forceCollide(30))
-
     } else {
       this.forceSim
-        .force("link", this.forceLink)
-        .force("x", d3.forceX(0).strength(0.1))
-        .force("y", d3.forceY(0).strength(0.1))
-        .force("charge", d3.forceManyBody().strength(-300))
+        .force("link", this.forceLink.strength(0.5))
+        .force("x", d3.forceX(0).strength(0.02))
+        .force("y", d3.forceY(0).strength(0.02))
+        .force("center", d3.forceCenter(0, 0))
+        .force("charge", d3.forceManyBody().strength(-90))
         .force("collide", d3.forceCollide(30))
     }
   }
@@ -795,7 +796,7 @@ export class GraphRenderer {
     if (d.rel === 'spouse') {
       return `M${sx},${sy} L${tx},${ty}`
     } else {
-      const dr = Math.sqrt((tx - sx) ** 2 + (ty - sy) ** 2) * 1.2
+      const dr = Math.sqrt((tx - sx) ** 2 + (ty - sy) ** 2) * 1.4
       return `M${sx},${sy}A${dr},${dr} 0 0 1 ${tx},${ty}`
     }
   }
@@ -804,6 +805,8 @@ export class GraphRenderer {
     if (!this.graphMan) return
 
     if (d3.event['altKey']) {
+      delete node.fx
+      delete node.fy
       node.highlighted = false
       this.graphMan.hide(node)
     } else if (node.selected) {
@@ -828,6 +831,9 @@ export class GraphRenderer {
   }
 
   private onNodeMouseover(element: SVGGElement, node: GraphNode): void {
+    node.fx = node.x
+    node.fy = node.y
+
     node.highlighted = true
     this.rerender(null, false)
     d3.select(element).raise()
@@ -835,12 +841,16 @@ export class GraphRenderer {
   }
 
   private onNodeMouseout(element: SVGGElement, node: GraphNode): void {
+    if (!d3.select(element).classed('fixed')) {
+      delete node.fx
+      delete node.fy
+    }
+
     node.highlighted = false
     this.rerender(null, false)
   }
 
   private onNodeDragStart(element: SVGGElement, node: GraphNode): void {
-    this.forceSim.alphaTarget(0.3).restart()
   }
 
   private onNodeDrag(element: SVGGElement, node: GraphNode): void {
@@ -855,6 +865,7 @@ export class GraphRenderer {
       .classed('drag', true)
       .classed('fixed', true)
       .attr("transform", `translate(${node.x}, ${node.y})`)
+    this.forceSim.alphaTarget(0.3).restart()
   }
 
   private onNodeDragEnd(element: SVGGElement, node: GraphNode): void {
@@ -865,9 +876,8 @@ export class GraphRenderer {
 
     this.root.select('g.grid')
       .classed('visible', false)
-  d3.select(element)
+    d3.select(element)
       .classed('drag', false)
-
     this.forceSim.alphaTarget(0)
   }
 
