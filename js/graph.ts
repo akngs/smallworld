@@ -455,6 +455,8 @@ export class GraphRenderer {
   private useTimeScale: boolean
   private readonly timeScale: d3.ScaleTime<number, number>
 
+  private bbox: {x0: number, x1: number, y0: number, y1: number}
+
   private readonly clickHandler: (this: SVGGElement, node: GraphNode) => void
   private readonly doubleclickHandler: (this: SVGGElement, node: GraphNode) => void
   private readonly mouseoverHandler: (this: SVGGElement, node: GraphNode) => void
@@ -526,6 +528,9 @@ export class GraphRenderer {
       .on('tick', this.tick.bind(this))
     this.setUseTimeScale(false)
 
+    // Bounding box
+    this.bbox = {x0: 0, x1: 0, y0: 0, y1: 0}
+
     // Event handlers
     const self = this
     this.clickHandler = function (this: SVGGElement, node: GraphNode) {
@@ -569,14 +574,14 @@ export class GraphRenderer {
           return this.timeScale(date ? date.getTime() : 0)
         }))
         .force("y", d3.forceY(0).strength(0.05))
-        .force("charge", d3.forceManyBody().strength(-80))
+        .force("charge", d3.forceManyBody().distanceMax(150).strength(-80))
         .force("collide", d3.forceCollide(30))
     } else {
       this.forceSim
         .force("link", this.forceLink.strength(1))
         .force("x", d3.forceX(0).strength(0.05))
         .force("y", d3.forceY(0).strength(0.05))
-        .force("charge", d3.forceManyBody().strength(-80))
+        .force("charge", d3.forceManyBody().distanceMax(150).strength(-80))
         .force("collide", d3.forceCollide(30))
     }
   }
@@ -707,6 +712,14 @@ export class GraphRenderer {
     const width = parent.clientWidth
     const height = parent.clientHeight
 
+    // Recalculate bounding box
+    this.bbox = {
+      x0: width * -0.5 + this.MARGIN_L,
+      x1: width * +0.5 - this.MARGIN_R,
+      y0: height * -0.5 + this.MARGIN_T,
+      y1: height * +0.5 - this.MARGIN_B,
+    }
+
     // Resize SVG
     d3.select('svg')
       .attr('width', width)
@@ -765,20 +778,13 @@ export class GraphRenderer {
   }
 
   private tick(): void {
-    // Calculate bounding box
-    const width = +(this.svg.getAttribute('width') || 0)
-    const height = +(this.svg.getAttribute('height') || 0)
-    const x0 = width * -0.5 + this.MARGIN_L
-    const x1 = width * +0.5 - this.MARGIN_R
-    const y0 = height * -0.5 + this.MARGIN_T
-    const y1 = height * +0.5 - this.MARGIN_B
-
+    const bbox = this.bbox
     // Update nodes
     this.nodesSel
       .classed('selected', node => node.selected)
       .classed('fully-expanded', node => node.fullyExpanded)
       .attr('transform', node => {
-        return `translate(${node.x = Math.max(x0, Math.min(x1, node.x || 0))}, ${node.y = Math.max(y0, Math.min(y1, node.y || 0))})`
+        return `translate(${node.x = Math.max(bbox.x0, Math.min(bbox.x1, node.x || 0))}, ${node.y = Math.max(bbox.y0, Math.min(bbox.y1, node.y || 0))})`
       })
 
     // Update links
