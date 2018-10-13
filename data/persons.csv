@@ -44,7 +44,7 @@ Q12583628,경명군,,M,,14890101,15260101
 Q6798094,경빈 김씨,,F,,18320101,19070101
 Q484610,경빈 박씨,,F,,,15330615
 Q11090010,경빈 박씨 (장조),,F,,,17610101
-Q16180284,경선공주,,F,,,
+Q16180284,경선공주,조선 태조의 차녀,F,,,
 Q12583773,경순공주,,F,,,
 Q12583779,경안공주,,F,,,
 Q16180324,경정공주,,F,,,
@@ -57,7 +57,7 @@ Q263732,고용희,김정일의 네번째 배우자,F,https://commons.wikimedia.o
 Q16177870,고윤,배우,M,,19880912,
 Q43110888,고은채,,F,,19800828,
 Q56880476,고은희,"기업가, 대림통상 이사",F,,19340101,
-Q56434125,고정주,구한말 규장각의 학자,M,,,
+Q56434125,고정주,구한말 규장각의 학자,M,,18630101,19330101
 Q6424117,고창석,South Korean actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/Ko%20Chang-Seok.jpg,19701013,
 Q488025,고현정,South Korean actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/Ko%20Hyun-Jung3.jpg,19710302,
 Q625389,공덕귀,4대 대통령 영부인,F,https://commons.wikimedia.org/wiki/Special:FilePath/Kong%20Deok%20Kui%201928%27s.jpg,19110421,19971124
@@ -127,11 +127,13 @@ Q15941156,귀인 권씨,,F,,,
 Q31180754,귀인 박씨,조선 세종의 후궁,F,,,
 Q6839165,귀인 엄씨,Korean noblewoman,F,,,
 Q6779816,귀인 이씨 (영보당),,F,,18430101,19281217
+Q16168686,귀인 장씨,,F,,,
 Q6699643,귀인 장씨,,F,,19000101,
 Q15928914,귀인 정씨,조선 14대 임금 선조의 후궁,F,,,
 Q6684451,귀인 정씨,조선 성종의 후궁,F,,,
 Q6699528,귀인 정씨 (고종),,F,,18820101,19430101
 Q6699576,귀인 조씨 (영조),,F,,17070101,17800101
+Q6806709,귀인 조씨 (인조),,F,,,
 Q31180751,귀인 최씨,조선 세종의 후궁,F,,,
 Q17502365,귀인권씨,,F,,,
 Q12586496,금성대군,,M,,,
@@ -573,7 +575,7 @@ Q56812740,설윤성,"기업가, 토터스자산운용 대표",M,,19840101,
 Q56813013,설윤호,"기업가, 대한제당 부회장",M,,19750101,
 Q12601920,성녕대군,,M,,,
 Q494222,성민,"가수, 배우",M,https://commons.wikimedia.org/wiki/Special:FilePath/Sungmin%202011.jpg,19860101,
-Q16173739,성빈 지씨,,F,,,
+Q16173739,성빈 지씨,조선 정종의 후궁,F,,,
 Q269537,성지현,배드민턴 선수,F,https://commons.wikimedia.org/wiki/Special:FilePath/Total%20world%20champion%202015%20semi-final.jpg,19910729,
 Q1656902,성한국,배드민턴 선수,M,https://commons.wikimedia.org/wiki/Special:FilePath/Sung%20Han-Gook.jpg,19631119,
 Q625739,성혜랑,북한의 작가,F,,19350101,
@@ -648,7 +650,7 @@ Q16160771,신승선,조선 중기의 문신,M,,,
 Q625870,신애라,Korean actress,F,,19690307,
 Q56803806,신영수,교수,M,,19430101,
 Q7218065,신은정,South Korean actress,F,,19740103,
-Q6743293,신의왕후,,F,,13370101,13911021
+Q6743293,신의왕후,조선 태조의 첫 배우자,F,,13370101,13911021
 Q16631014,신정균,,M,,19630512,
 Q56651606,신정숙,롯데그룹 신격호의 여동생,F,,19370101,
 Q624353,신정왕후,politician,F,https://commons.wikimedia.org/wiki/Special:FilePath/Empress%20sin-jung-ik2.PNG,18090121,18900604
@@ -663,6 +665,7 @@ Q11256848,아이하라 미카,Japanese actress,F,,19851214,
 Q12605541,안경희,,F,,19390101,20010714
 Q57266067,안리나,기업가 안용찬의 자녀,F,,19860101,
 Q4749844,안병훈,골프 선수,M,https://commons.wikimedia.org/wiki/Special:FilePath/Byeong-hun%20An.JPG,19910917,
+Q6821583,안빈 이씨,,F,,,
 Q57267659,안상호,"기업인, 플로코리아 대표",M,,19310101,
 Q402179,안성기,남자 배우,M,https://commons.wikimedia.org/wiki/Special:FilePath/Ahn%20Sung%20ki%20at%20reception.jpg,19520101,
 Q6783327,안양군,,M,,14800101,15050101
@@ -1039,6 +1042,7 @@ Q494190,장나라,"가수, 배우",F,https://commons.wikimedia.org/wiki/Special:
 Q702588,장녹수,조선 연산군의 후궁,F,,,15060101
 Q57263973,장대영,"기업가, 우영운수 대표",M,,19680101,
 Q468490,장동건,South Korean actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/Jangdonggun%2001.jpg,19720307,
+Q483603,장렬왕후,Korean royal consort,F,,16240101,16880101
 Q56668913,장상돈,"기업가, 한국철강 회장",M,,19370101,20170204
 Q16170033,장석주,일제강점기 귀족,M,,18480101,19210101
 Q57263585,장성돈,"기업인, 전 애경유지 사장",M,,,
@@ -1189,6 +1193,7 @@ Q378483,조선 태조,조선의 초대 임금,M,https://commons.wikimedia.org/wi
 Q14304,조선 태종,조선의 3대 임금,M,https://commons.wikimedia.org/wiki/Special:FilePath/Taejong.JPG,13670518,14220510
 Q484966,조선 헌종,조선의 제24대 왕,M,,18270908,18490725
 Q484253,조선 현종,조선의 제18대 임금,M,,16410315,16750917
+Q484446,조선 효종,조선의 17대 임금,M,,16190703,16590623
 Q12616843,조성모,수영 선수,M,,19850106,
 Q626073,조성민,야구 선수,M,,19730405,20130106
 Q18648496,조수호,전 한진해운 회장,M,,19540621,20061126
@@ -1240,7 +1245,7 @@ Q6305309,주주 장,미국의 저널리스트,F,https://commons.wikimedia.org/wi
 Q16068617,주호성,South Korean actor,M,,19481022,
 Q12617992,지상욱,정치인,M,,19650516,
 Q491763,지성,South Korean actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/180212%20%EC%A7%80%EC%84%B1.png,19770227,
-Q12618040,지윤,고려의 무신 (?~1377),M,,t1085581414,13770101
+Q12618040,지윤,고려의 무신,M,,t1158936584,13770101
 Q12618245,진산,작가,F,,,
 Q57269281,진상범,법조인,M,,19700101,
 Q57269239,진성규,"변호사, 전 서울고법 부장판사",M,,19410101,
@@ -1461,6 +1466,7 @@ Q624351,황신혜,Korean actress,F,,19630416,
 Q2598021,황준묵,수학자,M,https://commons.wikimedia.org/wiki/Special:FilePath/Hwang%20Jun-muk.jpg,19631027,
 Q16183695,황해,South Korean actor,M,,19200306,20050209
 Q483255,효령대군,조선 태종의 둘째 아들,M,https://commons.wikimedia.org/wiki/Special:FilePath/Hyoreongdaegun.JPG,13960101,14860101
+Q13515671,효명옹주,Only daughter of king injo,F,,16360101,17000101
 Q10944995,효빈 김씨,,F,,,14540101
 Q484753,효정왕후,Korean royal consort,F,,18310101,19030101
 Q483384,효현왕후,Korean royal consort,F,,18280101,18430101
