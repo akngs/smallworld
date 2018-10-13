@@ -31,10 +31,26 @@ WHERE {
   OPTIONAL { ?human wdt:P18 ?image. }
   OPTIONAL { ?human wdt:P569 ?birthdate. }
   OPTIONAL { ?human wdt:P570 ?deathdate. }
-  OPTIONAL { ?human wdt:P26 ?spouse. }
-  OPTIONAL { ?human wdt:P25 ?mother. }
-  OPTIONAL { ?human wdt:P22 ?father. }
-  OPTIONAL { ?human wdt:P40 ?child. }
+  OPTIONAL {
+    ?human p:P26 ?spouseStatement.
+    ?spouseStatement ps:P26 ?spouse.
+    ?spouseStatement wikibase:rank ?spouseRank.
+  }
+  OPTIONAL { 
+    ?human p:P25 ?motherStatement.
+    ?motherStatement ps:P25 ?mother.
+    ?motherStatement wikibase:rank ?motherRank.
+  }
+  OPTIONAL { 
+    ?human p:P22 ?fatherStatement.
+    ?fatherStatement ps:P22 ?father.
+    ?fatherStatement wikibase:rank ?fatherRank.
+  }
+  OPTIONAL { 
+    ?human p:P40 ?childStatement.
+    ?childStatement ps:P40 ?child.
+    ?childStatement wikibase:rank ?childRank.
+  }
   OPTIONAL { ?human wdt:P19 ?birthplace. }
   OPTIONAL { ?human wdt:P463/wdt:P1647* ?membership. }
   OPTIONAL { ?human wdt:P1416/wdt:P1647* ?affiliation. }
