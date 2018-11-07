@@ -29,7 +29,7 @@ Q6824264,강부자,배우,F,https://commons.wikimedia.org/wiki/Special:FilePath/
 Q17963959,강석현,,M,,19670207,
 Q56879758,강세원,"기업가, 희성금속 회장",M,,19240101,20090510
 Q16177672,강세형,정치인,M,,18990621,19600701
-Q7497224,강신성일,"배우, 전 국회의원",M,,19370508,
+Q7497224,강신성일,"배우, 전 국회의원",M,,19370508,20181104
 Q2233555,강영섭,북한의 정치인,M,,19311015,20120121
 Q56879801,강영혜,기업가 강세원의 자녀,F,,19530101,19960101
 Q42155021,강주은,미스코리아,F,,19710101,
@@ -693,6 +693,7 @@ Q624197,안평대군,,M,,14181018,14531118
 Q24866021,안흥군,의원군 이혁의 자녀,M,,,
 Q56812605,양귀애,"기업가, 대한전선 명예회장",F,,19470101,
 Q486251,양녕대군,Korean prince,M,,13940101,14620907
+Q626022,양미경,South Korean actress,F,,19610725,
 Q12606356,양재선,작사가,F,,19750610,
 Q12606380,양정모,"기업인, 전 국제그룹 회장",M,,19210913,20090329
 Q56812546,양태진,"기업가, 국제그룹 창업주",M,,,
@@ -739,6 +740,8 @@ Q56669030,위진영,기업가 위창남의 자녀,F,,19530101,
 Q56669029,위창남,광주투자금융 사장,M,,19260101,
 Q624135,유동근,South Korean actor,M,,19560618,
 Q2600733,유상희,배드민턴 선수,F,,19640101,
+Q493671,유선,South Korean actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/Yoo%20Sun%20%28born%20Wang%20Yoo-sun%20on%20February%2011%2C%201976%29.jpg,19760211,
+Q8334187,유세윤,"South Korean comedian, presenter, host",M,https://commons.wikimedia.org/wiki/Special:FilePath/Yu%20Se-yun%20from%20acrofan%20cropped.jpg,19800912,
 Q17487449,유숙,,F,,19670101,
 Q16169960,유은성,,M,,19770103,
 Q495407,유준상,South Korean actor,M,,19691128,
@@ -761,7 +764,7 @@ Q12610328,윤소정,배우,F,,19440722,20170616
 Q56526162,윤순명,오당 윤영선의 자녀,F,,,
 Q488038,윤승아,actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/Yoon%20Seung-ah%20at%20OnStyle%20reality%20show%20Sold%20Out%20premiere%20%28from%20acrofan%29.jpg,19830929,
 Q19599257,윤양하,South Korean actor,M,,19400501,
-Q491013,윤여정,South Korean actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/Yoon%20Yeo-Jung.jpg,19470619,
+Q491013,윤여정,South Korean actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/Yoon%20Yeo-jeong%20at%20the%202016%20Women%20In%20Film%20Korea%20Festival%20and%20Kim%20Taer-ri%20at%20the%202016%20Women%20In%20Film%20Korea%20Festival.jpg,19470619,
 Q496634,윤영렬,"일제강점기의 군인, 정치가",M,https://commons.wikimedia.org/wiki/Special:FilePath/%EC%9C%A4%EC%98%81%EB%A0%AC%20%26%20%ED%95%9C%EC%A7%84%EC%88%99%20%ED%9A%8C%ED%98%BC%EB%A1%80.jpg,18540415,19390101
 Q482889,윤영선,정치인,M,,18961225,19880206
 Q56881555,윤용구,"기업가, 일동제약 창업주",M,,19080101,
@@ -842,7 +845,7 @@ Q12611404,이묵원,,M,,19380426,
 Q56805419,이미경,기업가 이희상의 자녀,F,,19760101,
 Q12611423,이미경,기업인,F,,19580408,
 Q56432906,이미성,기업가 이용학의 자녀,F,,,
-Q484399,이미연,South Korean actress,F,,19710923,
+Q484399,이미연,여자 배우,F,,19710923,
 Q12611431,이미영,배우,F,,19610316,
 Q6781730,이민영 (배우),South Korean actress,F,,19760206,
 Q12611449,이민자,배우,F,,19290410,19860119
@@ -928,7 +931,7 @@ Q6781992,이은성,배우,F,https://commons.wikimedia.org/wiki/Special:FilePath/
 Q16181084,이은영,,F,,19630901,
 Q13646009,이은주,가수,F,,19810309,
 Q12612345,이은혜,정치인,F,,19020421,19800823
-Q14483063,이응경,South Korean actress,F,,19660203,
+Q14483063,이응경,여자 배우,F,,19660203,
 Q56884215,이의숙,전 국방부 차관 이흥배의 자녀,F,,19380101,
 Q379653,이이,조선의 유학자,M,https://commons.wikimedia.org/wiki/Special:FilePath/Sitting%20Yi%20I.jpg,15361226,15840101
 Q12612362,이이경,배우,M,,19890108,
@@ -1189,7 +1192,7 @@ Q56432838,조동만,"기업가, 한솔아이글로브 회장",M,,,
 Q12616637,조동익,,M,,19600306,
 Q56432609,조동혁,한솔그룹 명예회장,M,,,
 Q56651387,조명희,"기업가 조중훈의 아버지, 직물도매상",M,,18950101,19710101
-Q24323646,조백상,외교관,M,https://commons.wikimedia.org/wiki/Special:FilePath/Cho%20Baek-sang%20%EC%A1%B0%EB%B0%B1%EC%83%81%20%28%E8%B3%B4%E5%B8%82%E9%95%B7%E8%87%B4%E8%B4%88%E8%87%BA%E5%8D%97%E5%9C%A8%E5%9C%B0%E4%BC%B4%E6%89%8B%E7%A6%AE%E7%B5%A6%E9%9F%93%E5%9C%8B%E4%BB%A3%E8%A1%A8%E8%B6%99%E7%99%BE%E7%9B%B8%29.jpg,,
+Q24323646,조백상,외교관,M,https://commons.wikimedia.org/wiki/Special:FilePath/Cho%20Baek-sang%20%EC%A1%B0%EB%B0%B1%EC%83%81%20%28%E9%83%9D%E9%BE%8D%E6%96%8C%E5%91%BC%E7%B1%B2%E9%96%A3%E6%8F%86%E5%8F%AC%E9%96%8B%E5%85%A8%E5%9C%8B%E6%95%99%E8%82%B2%E6%9C%83%E8%AD%B0%20%E9%80%9A%E7%9B%A4%E6%AA%A2%E8%A8%8E12%E5%B9%B4%E5%9C%8B%E6%95%99%E7%BC%BA%E5%A4%B1%20481420151221%29.jpg,,
 Q56432855,조범석,일제강점기의 금융인,M,,,
 Q56651501,조병규,구한말 중추원 의관,M,,18510101,19090101
 Q12616720,조석래,전 효성그룹 회장,M,,19351119,
@@ -1239,7 +1242,7 @@ Q17964206,조운해,강북삼성병원 이사장,M,,19250805,
 Q18648498,조원태,대한항공 사장,M,,19760125,
 Q56813718,조윤경,기업가 조욱래의 자녀,F,,19780902,
 Q56655703,조윤정,조중건 전 대한항공 부회장의 자녀,F,,19640101,
-Q488015,조윤희,South Korean actress and model,F,https://commons.wikimedia.org/wiki/Special:FilePath/Jo%20Yoon-hee%20from%20acrofan.jpg,19821013,
+Q488015,조윤희,South Korean actress and model,F,https://commons.wikimedia.org/wiki/Special:FilePath/%EC%A1%B0%EC%9C%A4%ED%9D%AC%2C%20%22%EB%B6%84%EC%9C%84%EA%B8%B0%EA%B0%80%20%EB%8B%A4%ED%96%88%EC%96%B4%22.jpg,19821013,
 Q56432916,조은정,기업가 조동만의 자녀,F,,,
 Q56651465,조인숙,기업가 조중열의 자녀,F,,19460101,
 Q486241,조재현,배우,M,https://commons.wikimedia.org/wiki/Special:FilePath/%EC%84%B1%EC%9A%B0%20%EB%90%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%20%EA%B6%81%EA%B8%88%ED%95%B4%20%EB%A9%94%EB%A5%B4%EC%8B%9C%20%EC%84%B1%EC%9A%B0%20%EC%9D%B4%ED%98%84%EC%A7%84%EC%B2%98%EB%9F%BC%20%EB%84%88%EB%8F%84%20%EC%84%B1%EC%9A%B0%EA%B0%80%20%EB%90%A0%20%EC%88%98%20%EC%9E%88%EC%96%B4%21%20%EC%84%B1%EC%9A%B0%EA%B3%BC%20%288%29.png,19650630,
@@ -1288,6 +1291,7 @@ Q12618516,차용애,15대 대통령 김대중의 첫째 부인,F,,19270428,19590
 Q489036,차인표,Korean actor,M,,19671014,
 Q56813237,차진영,교수 차동완의 자녀,F,,19770829,
 Q12618537,차현우,배우,M,,19800209,
+Q6694271,차화연,South Korean actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/Cha%20Hwa-yeon%20from%20acrofan.jpg,19601227,
 Q12618606,창녕대군,연산군의 차남,M,,,
 Q484809,창빈 안씨,,F,,14990101,15490101
 Q57263361,채구석,조선 후기 제주판관,M,,18500101,19200101
@@ -1389,7 +1393,7 @@ Q17172386,하호정,바둑 기사,F,,19800305,
 Q56879665,하효락,기업가 하국선의 아버지,M,,19420101,19960101
 Q56879646,하효준,"기업가, 전 오성사 사장",M,,19270101,19970101
 Q625766,하희라,South Korean actress,F,,19691029,
-Q496439,한가인,South Korean actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/Han%20Ga-in%20at%20the%20Secretly%2C%20Greatly%20premier01.jpg,19820202,
+Q496439,한가인,South Korean actress,F,https://commons.wikimedia.org/wiki/Special:FilePath/%EB%AF%B8%EC%8A%A4%ED%8A%B8%EB%A6%AC%EC%8A%A4%20%EC%A0%9C%EC%9E%91%EB%B0%9C%ED%91%9C%ED%9A%8C%20%ED%95%9C%EA%B0%80%EC%9D%B8.jpg,19820202,
 Q5646626,한강,작가,F,https://commons.wikimedia.org/wiki/Special:FilePath/HanKang.jpg,19701127,
 Q56433228,한경록,법조인 한상호의 자녀,M,,,
 Q56880271,한경진,전 대림미술관 관장,F,,19400527,20141205
