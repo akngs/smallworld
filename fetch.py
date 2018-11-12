@@ -1,7 +1,6 @@
 import csv
 import json
 import os
-import shutil
 from json import JSONDecodeError
 
 import requests
