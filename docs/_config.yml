@@ -33,7 +33,7 @@ plugins:
 gtm: "GTM-52FMCWR"
 google_analytics: "dummy"
 
-datahash: "3e991d8"
+datahash: "59b3de7"
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
