@@ -574,14 +574,14 @@ export class GraphRenderer {
           return this.timeScale(date ? date.getTime() : 0)
         }))
         .force("y", d3.forceY(0).strength(0.05))
-        .force("charge", d3.forceManyBody().distanceMax(150).strength(-80))
+        .force("charge", d3.forceManyBody().distanceMax(150).strength(-150))
         .force("collide", d3.forceCollide(30))
     } else {
       this.forceSim
         .force("link", this.forceLink.strength(1))
-        .force("x", d3.forceX(0).strength(0.05))
-        .force("y", d3.forceY(0).strength(0.05))
-        .force("charge", d3.forceManyBody().distanceMax(150).strength(-80))
+        .force("x", d3.forceX(0).strength(0.01))
+        .force("y", d3.forceY(0).strength(0.01))
+        .force("charge", d3.forceManyBody().distanceMax(150).strength(-150))
         .force("collide", d3.forceCollide(30))
     }
   }

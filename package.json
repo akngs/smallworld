@@ -9,7 +9,7 @@
     "fetch": "FORCE_FETCH=1 pipenv run python fetch.py && npm run copydata",
     "copydata": "cp data/stats.json docs/_data/ && cp data/persons.csv docs/_data/ && cp data/hubs.csv docs/_data/",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "jekyll": "cp -r data docs/ && cd docs && bundle exec jekyll serve --watch",
+    "jekyll": "cp -r data docs/ && cd docs && jekyll serve --watch",
     "start": "concurrently \"npm:watch\" \"npm:jekyll\""
   },
   "repository": {
