@@ -6,7 +6,6 @@ Q8250391,Han Lifei,영락제의 후궁,F,,,14240101
 Q28663892,Han Sung-Chul,South Korean judoka,M,,,
 Q16189313,Hwang Chul-soon,Olympic athlete,M,,19570913,
 Q489210,K,가수,M,,19831116,
-Q6409055,Kim Kwe-Ryong,Olympic basketball player,F,,19791217,
 Q53679453,Kim Thaek-se,김영남의 아버지,M,,,
 Q20038611,Kōji Iizuka,,M,,,
 Q19561180,Lee Eun-hee,Olympic judoka,F,,19790310,
@@ -36,6 +35,7 @@ Q16177672,강세형,정치인,M,,18990621,19600701
 Q7497224,강신성일,"배우, 전 국회의원",M,,19370508,20181104
 Q2233555,강영섭,북한의 정치인,M,,19311015,20120121
 Q56879801,강영혜,기업가 강세원의 자녀,F,,19530101,19960101
+Q16080034,강인숙,문학평론가,F,,19331015,
 Q42155021,강주은,미스코리아,F,,19710101,
 Q41520985,강한옥,,F,,19280101,
 Q485387,강혜정,배우,F,https://commons.wikimedia.org/wiki/Special:FilePath/Kang%20Hye-jung%20from%20acrofan.jpg,19820104,
@@ -154,6 +154,7 @@ Q24049012,김 페굴라,한국계 미국인 기업가,F,,19690101,
 Q8512836,김개시,광해군 때의 상궁,F,,,16230101
 Q12586929,김경중,조선의 문신,M,https://commons.wikimedia.org/wiki/Special:FilePath/%EC%A7%80%EC%82%B0%20%EA%B9%80%EA%B2%BD%EC%A4%91.png,18630101,19450427
 Q271067,김경희,김일성의 자녀,F,,19460530,
+Q6409055,김계령,농구 선수,F,,19791217,
 Q11646457,김광호,북한의 축구 선수,M,,19551209,
 Q55727984,김교창,변호사,M,,,
 Q6408665,김구라,방송인,M,https://commons.wikimedia.org/wiki/Special:FilePath/Kim%20GuRa%20from%20acrofan.jpg,19701003,
@@ -330,8 +331,9 @@ Q56651569,김태호,전 충북대 교수,M,,19500101,
 Q28355519,김태호,정치인,M,,19350303,20020710
 Q56660168,김태효,"교수, 관료",M,,19670101,
 Q464574,김태희,"배우, 모델",F,https://commons.wikimedia.org/wiki/Special:FilePath/180329%20%EC%85%80%ED%81%90%EC%96%BC%EB%A6%AC%EB%8D%94%EC%8A%A4%20%ED%96%89%EC%82%AC%20%EA%B9%80%ED%83%9C%ED%9D%AC.jpg,19800329,
-Q12589081,김택진,,M,https://commons.wikimedia.org/wiki/Special:FilePath/T.J.%20Kim%20%28the%20CEO%20of%20NC%20Soft%29%20from%20acrofan.jpg,19670314,
+Q12589081,김택진,기업인,M,https://commons.wikimedia.org/wiki/Special:FilePath/T.J.%20Kim%20%28the%20CEO%20of%20NC%20Soft%29%20from%20acrofan.jpg,19670314,
 Q710805,김평일,북한의 외교관,M,https://commons.wikimedia.org/wiki/Special:FilePath/Kim%20Pyong-il.jpg,19540810,
+Q16181314,김한구,,M,,,
 Q10855915,김한길,정치인,M,https://commons.wikimedia.org/wiki/Special:FilePath/Kim%20Han-Gil%20%28cropped%29.jpg,19530917,
 Q1280778,김한솔,Korean student,M,,19950616,
 Q56668947,김향식,한학자 김원만의 자녀,F,,,
@@ -362,7 +364,7 @@ Q339595,나시모토노미야 모리마사,Japanese prince,M,https://commons.wik
 Q10855990,나시모토노미야 이쓰코,Japanese princess,F,https://commons.wikimedia.org/wiki/Special:FilePath/Nashimoto-no-miya-hi-Itsuko%201915-11-14.jpg,18820202,19760819
 Q841146,나운규,"독립운동가, 영화인",M,https://commons.wikimedia.org/wiki/Special:FilePath/Na%20Woon-gyu.jpg,19021027,19370809
 Q16183879,나혜국,,F,,19010101,19920101
-Q9326975,나혜미,South Korean film actor,F,https://commons.wikimedia.org/wiki/Special:FilePath/180912%20KBS%20%EC%A3%BC%EB%A7%90%EB%93%9C%EB%9D%BC%EB%A7%88%20%27%ED%95%98%EB%82%98%EB%BF%90%EC%9D%B8%20%EB%82%B4%ED%8E%B8%27%20%EC%A0%9C%EC%9E%91%EB%B0%9C%ED%91%9C%ED%9A%8C%20%EB%82%98%ED%98%9C%EB%AF%B8%20%282%29.jpg,19910224,
+Q9326975,나혜미,영화 배우,F,https://commons.wikimedia.org/wiki/Special:FilePath/180912%20KBS%20%EC%A3%BC%EB%A7%90%EB%93%9C%EB%9D%BC%EB%A7%88%20%27%ED%95%98%EB%82%98%EB%BF%90%EC%9D%B8%20%EB%82%B4%ED%8E%B8%27%20%EC%A0%9C%EC%9E%91%EB%B0%9C%ED%91%9C%ED%9A%8C%20%EB%82%98%ED%98%9C%EB%AF%B8%20%282%29.jpg,19910224,
 Q12589753,남경민,배우,F,,19871027,
 Q6961101,남궁원,배우,M,https://commons.wikimedia.org/wiki/Special:FilePath/Namkoong%20Won%20at%2018th%20Puchon%20International%20Fantastic%20Film%20Festival%2C%20July%2017%2C%202014.jpg,19340801,
 Q7253672,남성진,South Korean actor,M,,19701231,
@@ -431,7 +433,7 @@ Q56651459,문재관,전 제일은행 이사,M,,,
 Q21001,문재인,제19대 대통령,M,https://commons.wikimedia.org/wiki/Special:FilePath/Moon%20Jae-in%20May%202017.jpg,19530124,
 Q12595795,문정숙,배우,F,,19270329,20000301
 Q486286,문정왕후,조선 중종의 계비,F,,15020201,15660108
-Q491580,문정혁,South Korean singer and actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/130718%20eric%20MNET%2020%27S%20CHOICE.jpg,19790216,
+Q491580,문정혁,"가수, 배우",M,https://commons.wikimedia.org/wiki/Special:FilePath/130718%20eric%20MNET%2020%27S%20CHOICE.jpg,19790216,
 Q484065,문효세자,조선 정조의 장자,M,,17820907,17860511
 Q488600,문희준,"가수, 배우",M,https://commons.wikimedia.org/wiki/Special:FilePath/%28%28TV10%29%20%EB%AC%B8%ED%9D%AC%EC%A4%80%EC%9D%B4%20%EB%B0%9D%ED%9E%8C%20%EC%86%8C%EC%9C%A8%EA%B3%BC%EC%9D%98%20%EA%B2%B0%ED%98%BC%20%EC%86%8C%EA%B0%90%20%28feat.%20%ED%81%AC%EB%A0%88%EC%9A%A9%ED%8C%9D%20%EB%B9%A0%EB%B9%A0%EB%B9%A0%29%201m14s.jpg,19780314,
 Q47004960,민유숙,,F,,19650313,
@@ -539,7 +541,7 @@ Q56881967,배염자,배상준의 자녀,F,,,
 Q56664584,배영환,"기업인, 삼화고속 회장",M,,19330101,
 Q334504,배용준,"배우, 사업가",M,https://commons.wikimedia.org/wiki/Special:FilePath/Bae%20Yong%20Joon.jpg,19720829,
 Q16178136,배정자,,F,https://commons.wikimedia.org/wiki/Special:FilePath/Hyun%20Song-ja.jpg,18700223,19520227
-Q483798,백건우,피아노 연주자,M,https://commons.wikimedia.org/wiki/Special:FilePath/Kun-Woo%20Paik.jpg,19460310,
+Q483798,백건우,피아노 연주자,M,https://commons.wikimedia.org/wiki/Special:FilePath/Kun-Woo%20Paik.jpg,19460510,
 Q12597726,백낙승,"기업인, 백남준의 아버지",M,,18960101,19561012
 Q7847850,백남의,박정희의 어머니,F,,18720101,19490812
 Q158056,백남준,비디오 아티스트,M,https://commons.wikimedia.org/wiki/Special:FilePath/Bob%20Benamou.jpg,19320720,20060129
@@ -662,6 +664,7 @@ Q7214272,순명효황후,,F,,18721120,19070720
 Q491768,순원왕후,조선 23대 순조의 정비,F,,17890608,18570927
 Q128454,순정효황후,대한제국의 마지막 황후,F,https://commons.wikimedia.org/wiki/Special:FilePath/Empress%20Sunjeong%20of%20the%20Korean%20Empire.jpg,18940820,19660203
 Q7214248,순헌황귀비,,F,https://commons.wikimedia.org/wiki/Special:FilePath/Princess%20Consort%20Sunheon.JPG,18540202,19110720
+Q428490,승리,South Korean singer,M,https://commons.wikimedia.org/wiki/Special:FilePath/%EC%9D%B4%EC%8A%B9%ED%98%84%20%28%EC%8A%B9%EB%A6%AC%29.jpg,19901212,
 Q168567,신격호,기업인,M,,19221004,
 Q384293,신경숙,Korean writer,F,https://commons.wikimedia.org/wiki/Special:FilePath/Shin%20Kyung%20sook.jpg,19630112,
 Q56805325,신기철,교수 신영수의 자녀,M,,19700101,
@@ -749,10 +752,10 @@ Q12608395,완원군,조선 성종과 숙의 홍씨의 자녀,M,,,
 Q7242942,완친왕,대한제국 고종과 귀인 이씨의 서자,M,,18680101,18800101
 Q434562,요코타 메구미,최연소 납북 일본인,F,,19641005,19940313
 Q6853912,원경왕후,조선 태종의 왕비,F,,13650729,14200818
-Q494856,원빈,배우,M,https://commons.wikimedia.org/wiki/Special:FilePath/Won%20Bin.jpg,19771110,
+Q494856,원빈,배우,M,https://commons.wikimedia.org/wiki/Special:FilePath/Won%20Bin%20from%20acrofan.jpg,19771110,
 Q6853940,원빈 홍씨,,F,,,
 Q12609319,원용덕,일제 강점기와 대한민국의 군인,M,https://commons.wikimedia.org/wiki/Special:FilePath/General%20Won%20Yong-Deok.jpg,19080101,19680204
-Q4124884,원정식,South Korean weightlifter,M,https://commons.wikimedia.org/wiki/Special:FilePath/Won%20Jeong-sik%20Rio2016.jpg,19901209,
+Q4124884,원정식,역도 선수,M,https://commons.wikimedia.org/wiki/Special:FilePath/Won%20Jeong-sik%20Rio2016.jpg,19901209,
 Q492990,원종,조선의 왕자. 추존왕,M,https://commons.wikimedia.org/wiki/Special:FilePath/%EC%A1%B0%EC%84%A0%20%EC%9B%90%EC%A2%85%20%EC%96%B4%EC%A7%84.jpg,15800622,16190101
 Q56882056,원창희,대한민국 육군 준장,M,,19270101,19840706
 Q16167043,월산대군,,M,,,
@@ -784,7 +787,7 @@ Q56434339,윤성선,숙명여자대학교 교수,F,,,
 Q12610322,윤세웅,성우,M,,19730318,
 Q12610323,윤세인,actress,F,,19870118,
 Q12610328,윤소정,배우,F,,19440722,20170616
-Q12610329,윤송이,,F,,19751226,
+Q12610329,윤송이,기업인,F,,19751226,
 Q56526162,윤순명,오당 윤영선의 자녀,F,,,
 Q488038,윤승아,배우,F,https://commons.wikimedia.org/wiki/Special:FilePath/Yoon%20Seung-ah%20at%20OnStyle%20reality%20show%20Sold%20Out%20premiere%20%28from%20acrofan%29.jpg,19830929,
 Q19599257,윤양하,South Korean actor,M,,19400501,
@@ -817,7 +820,7 @@ Q493891,윤치창,일제강점기의 기업가,M,https://commons.wikimedia.org/w
 Q192111,윤치호,"독립운동가, 친일파, 정치인",M,https://commons.wikimedia.org/wiki/Special:FilePath/Yun%20%D0%A1hiho.jpg,18641226,19451209
 Q56880046,윤태수,"기업가, 전 대영알프스리조트 회장",M,,19460101,
 Q4857706,윤택영,"조선의 문신, 대한제국의 관료",M,,18760101,19351024
-Q12610509,윤학길,South Korean baseball player (1961-),M,,19610704,
+Q12610509,윤학길,South Korean baseball player,M,,19610704,
 Q16173139,윤혜진,South Korean dancer,F,,19800109,
 Q56434552,윤활란,대한제국 군인 운영렬의 자녀,F,,18840309,19671206
 Q22974658,윰댕,인터넷 방송인,F,https://commons.wikimedia.org/wiki/Special:FilePath/%EC%9C%B0%EB%8C%95%20%EC%9A%94%EB%A6%AC%20%EC%BB%A8%ED%85%90%EC%B8%A0%EB%A5%BC%20%EB%8C%80%ED%95%98%EB%8A%94%20%EB%8C%80%EB%8F%84%EC%84%9C%EA%B4%80%EB%8B%98%EC%9D%98%20%EC%9E%90%EC%84%B8%20%28a.k.a%EB%8C%80%EC%B0%A1%EC%B0%A1%29.jpg,19850101,
@@ -872,6 +875,7 @@ Q12611423,이미경,기업인,F,,19580408,
 Q56432906,이미성,기업가 이용학의 자녀,F,,,
 Q484399,이미연,배우,F,,19710923,
 Q12611431,이미영,배우,F,,19610316,
+Q16177000,이민아,"한국계 미국인 변호사, 목회자",F,,19590101,20120315
 Q6781730,이민영,배우,F,,19760206,
 Q12611449,이민자,배우,F,,19290410,19860119
 Q496384,이민정,배우,F,https://commons.wikimedia.org/wiki/Special:FilePath/131024%20%27%EC%9D%91%EC%A7%95%EC%9E%90%27%20VIP%20%EC%8B%9C%EC%82%AC%ED%9A%8C%20%EC%9D%B4%EB%AF%BC%EC%A0%95%20%EC%A7%81%EC%B0%8D.jpg,19820216,
@@ -928,6 +932,7 @@ Q57021800,이시형,다스 중국법인 대표,M,,19780307,
 Q56882107,이신자,전 국회의장 이재형의 자녀,F,,,
 Q12611977,이아주,독립운동가,F,,18990101,19680911
 Q19161949,이애,,M,,,
+Q11266309,이어령,소설가,M,https://commons.wikimedia.org/wiki/Special:FilePath/NMKCH%20Symposium%20logo%2005%20%288226739376%29.jpg,19340115,
 Q56812321,이여진,기업가 이부식의 자녀,F,,,
 Q56804639,이연희,정치인 이회창의 자녀,F,,19640101,
 Q12612052,이영범,South Korean actor,M,,19611020,
@@ -1059,7 +1064,7 @@ Q12613263,이효린,"조선의 유학자, 의병장",M,,15400101,16220101
 Q30609486,이흥배,일제 강점기와 대한민국의 관료,M,,19080514,19941029
 Q56805103,이희상,"기업가, 운산그룹 회장",M,,19470101,
 Q56884223,이희종,"기업가, 전 LG산전 부회장",M,,19330101,
-Q492243,이희준,actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/%28%ED%95%B4%EB%AC%B4%29%20VIP%EC%8B%9C%EC%82%AC%20%ED%9B%84%EA%B8%B0%20%EC%98%81%EC%83%81%20%28%EC%9D%B4%ED%9D%AC%EC%A4%80%29.jpg,19790629,
+Q492243,이희준,actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/Lee%20Hee-joon%2002.jpg,19790629,
 Q56833651,이희현,기업가 이화영의 자녀,F,,19790101,
 Q11267083,이희호,전 대통령 영부인,F,https://commons.wikimedia.org/wiki/Special:FilePath/Leehiho2010.jpg,19220921,
 Q488670,익안대군,조선 태조와 신의왕후의 왕자,M,,13600101,14041005
@@ -1311,7 +1316,7 @@ Q16068617,주호성,South Korean actor,M,,19481022,
 Q12617992,지상욱,정치인,M,,19650516,
 Q491763,지성,South Korean actor,M,https://commons.wikimedia.org/wiki/Special:FilePath/180212%20%EC%A7%80%EC%84%B1.png,19770227,
 Q59299044,지성한,"기업가, 한성실업 회장",M,,19330101,
-Q12618040,지윤,고려의 무신,M,,t1162218299,13770101
+Q12618040,지윤,고려의 무신,M,,t1272802227,13770101
 Q12618245,진산,작가,F,,,
 Q57269281,진상범,법조인,M,,19700101,
 Q57269239,진성규,"변호사, 전 서울고법 부장판사",M,,19410101,
